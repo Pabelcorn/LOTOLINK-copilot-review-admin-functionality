@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">LotoLink</string>
+    <string name="title_activity_main">LotoLink</string>
+    <string name="package_name">com.lotolink.app</string>
+    <string name="custom_url_scheme">com.lotolink.app</string>
+</resources>

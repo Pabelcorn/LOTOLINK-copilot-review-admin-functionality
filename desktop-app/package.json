@@ -1,0 +1,102 @@
+{
+  "name": "lotolink-desktop",
+  "version": "1.0.0",
+  "description": "LotoLink - Desktop Application for Lottery Management",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder",
+    "build:win": "electron-builder --win",
+    "build:mac": "electron-builder --mac",
+    "build:linux": "electron-builder --linux",
+    "build:all": "electron-builder --win --mac --linux",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "keywords": [
+    "lottery",
+    "lotolink",
+    "desktop",
+    "electron"
+  ],
+  "author": "LotoLink",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Pabelcorn/LOTOLINK.git"
+  },
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.1"
+  },
+  "build": {
+    "appId": "com.lotolink.desktop",
+    "productName": "LotoLink",
+    "copyright": "Copyright © 2024 LotoLink",
+    "publish": null,
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "index.html",
+      "lotolink-logo.png",
+      "0.png"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        }
+      ],
+      "icon": "lotolink-logo.png",
+      "artifactName": "${productName}-Setup-${version}.${ext}",
+      "publisherName": "LotoLink",
+      "fileAssociations": [
+        {
+          "ext": "lotolink",
+          "name": "LotoLink File"
+        }
+      ]
+    },
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "icon": "lotolink-logo.png",
+      "category": "public.app-category.finance",
+      "darkModeSupport": true,
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "type": "distribution"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb",
+        "rpm"
+      ],
+      "icon": "lotolink-logo.png",
+      "category": "Office",
+      "maintainer": "LotoLink Team",
+      "desktop": {
+        "Name": "LotoLink",
+        "Comment": "Lottery Management Desktop Application",
+        "Categories": "Office;Finance;"
+      }
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "LotoLink"
+    }
+  }
+}

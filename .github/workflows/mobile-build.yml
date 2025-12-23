@@ -1,0 +1,855 @@
+name: Build Mobile Installers
+
+on:
+  push:
+    branches: [main]
+    tags:
+      - 'mobile-v*'
+    paths:
+      - 'mobile-app/**'
+      - '.github/workflows/mobile-build.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'mobile-app/**'
+      - '.github/workflows/mobile-build.yml'
+  workflow_dispatch:
+    inputs:
+      platforms:
+        description: 'Platforms to build (all, android, ios)'
+        required: false
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - android
+          - ios
+      create_release:
+        description: 'Create a GitHub release (draft)'
+        required: false
+        type: boolean
+        default: false
+      release_tag:
+        description: 'Release tag name (e.g., mobile-v1.0.7) - required if create_release is true'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+# Prevent concurrent builds of the same ref
+concurrency:
+  group: mobile-build-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '20'
+  JAVA_VERSION: '17'
+  GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx2048m" -Dorg.gradle.daemon=false -Dorg.gradle.parallel=true'
+
+jobs:
+  quality-checks:
+    name: Code Quality & Security
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: mobile-app/package-lock.json
+
+      - name: Verify npm cache integrity
+        working-directory: mobile-app
+        run: |
+          echo "Verifying npm cache integrity..."
+          npm cache verify || {
+            echo "⚠️ npm cache verification failed, cleaning cache..."
+            npm cache clean --force
+          }
+        continue-on-error: true
+
+      - name: Install dependencies
+        working-directory: mobile-app
+        run: |
+          echo "Installing dependencies with npm ci..."
+          if npm ci --legacy-peer-deps 2>&1; then
+            echo "✓ npm ci succeeded"
+          else
+            echo "⚠️ npm ci failed, trying npm install as fallback..."
+            rm -rf node_modules package-lock.json
+            if npm install --legacy-peer-deps 2>&1; then
+              echo "✓ npm install succeeded"
+            else
+              echo "⚠️ npm install failed, clearing cache and retrying..."
+              npm cache clean --force
+              npm install --legacy-peer-deps 2>&1
+              echo "✓ npm install with clean cache succeeded"
+            fi
+          fi
+
+          # Verify installation succeeded
+          if [ ! -d "node_modules" ]; then
+            echo "❌ ERROR: node_modules not created after npm install!"
+            exit 1
+          fi
+          echo "✓ Dependencies installed successfully"
+
+      - name: Run pre-flight checks
+        working-directory: mobile-app
+        run: |
+          chmod +x scripts/preflight-check.sh
+          ./scripts/preflight-check.sh || true
+          echo "Pre-flight checks completed (warnings only)"
+
+      - name: Run ESLint
+        working-directory: mobile-app
+        run: npm run lint
+        continue-on-error: true
+        id: lint
+
+      - name: Report ESLint status
+        if: steps.lint.outcome == 'failure'
+        run: |
+          echo "::warning::ESLint found issues, but continuing build"
+          echo "ESLint Status: FAILED ⚠️" >> $GITHUB_STEP_SUMMARY
+
+      - name: Run TypeScript check
+        working-directory: mobile-app
+        run: npx tsc --noEmit
+        continue-on-error: true
+        id: tsc
+
+      - name: Report TypeScript status
+        if: steps.tsc.outcome == 'failure'
+        run: |
+          echo "::warning::TypeScript check found issues, but continuing build"
+          echo "TypeScript Status: FAILED ⚠️" >> $GITHUB_STEP_SUMMARY
+
+      - name: Run tests with coverage
+        working-directory: mobile-app
+        run: npm test -- --run --coverage
+        continue-on-error: true
+        id: tests
+
+      - name: Upload coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile-coverage
+          path: mobile-app/coverage/
+          retention-days: 14
+          if-no-files-found: ignore
+        if: always()
+        continue-on-error: true
+
+      - name: Security audit
+        working-directory: mobile-app
+        run: |
+          echo "Running npm audit with --audit-level=high..."
+          echo "This will only fail for HIGH and CRITICAL vulnerabilities."
+          npm audit --audit-level=high
+          AUDIT_EXIT_CODE=$?
+          if [ $AUDIT_EXIT_CODE -eq 0 ]; then
+            echo "✓ No high or critical vulnerabilities found"
+          else
+            echo "❌ High or critical vulnerabilities detected!"
+            exit $AUDIT_EXIT_CODE
+          fi
+
+      - name: Check for outdated dependencies
+        working-directory: mobile-app
+        run: npm outdated || true
+        continue-on-error: true
+
+      - name: Quality Checks Summary
+        if: always()
+        run: |
+          echo "# Quality Checks Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Check | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| ESLint | ${{ steps.lint.outcome == 'success' && '✅ Passed' || '⚠️ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| TypeScript | ${{ steps.tsc.outcome == 'success' && '✅ Passed' || '⚠️ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Tests | ${{ steps.tests.outcome == 'success' && '✅ Passed' || '⚠️ Warning' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [[ "${{ steps.lint.outcome }}" == "failure" ]] || [[ "${{ steps.tsc.outcome }}" == "failure" ]]; then
+            echo "::warning::Some quality checks failed but build will continue"
+          fi
+
+  build-android:
+    name: Build Android App
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    needs: quality-checks
+    if: |
+      (github.event_name == 'workflow_dispatch' &&
+       (github.event.inputs.platforms == 'all' ||
+        github.event.inputs.platforms == 'android')) ||
+      github.event_name != 'workflow_dispatch'
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: mobile-app/package-lock.json
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - name: Setup Gradle cache
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: ${{ github.ref != 'refs/heads/main' }}
+
+      - name: Verify npm cache integrity
+        working-directory: mobile-app
+        run: |
+          echo "Verifying npm cache integrity..."
+          npm cache verify || {
+            echo "⚠️ npm cache verification failed, cleaning cache..."
+            npm cache clean --force
+          }
+        continue-on-error: true
+
+      - name: Install dependencies
+        working-directory: mobile-app
+        # Using --legacy-peer-deps due to @capacitor-firebase/messaging peer dependency conflict with @capacitor/core
+        run: |
+          echo "Installing dependencies with npm ci..."
+          if npm ci --legacy-peer-deps 2>&1; then
+            echo "✓ npm ci succeeded"
+          else
+            echo "⚠️ npm ci failed, trying npm install as fallback..."
+            rm -rf node_modules package-lock.json
+            if npm install --legacy-peer-deps 2>&1; then
+              echo "✓ npm install succeeded"
+            else
+              echo "⚠️ npm install failed, clearing cache and retrying..."
+              npm cache clean --force
+              npm install --legacy-peer-deps 2>&1
+              echo "✓ npm install with clean cache succeeded"
+            fi
+          fi
+
+          # Verify installation succeeded
+          if [ ! -d "node_modules" ]; then
+            echo "❌ ERROR: node_modules not created after npm install!"
+            exit 1
+          fi
+          echo "✓ Dependencies installed successfully"
+
+      - name: Build web assets
+        working-directory: mobile-app
+        run: npm run build
+
+      - name: Verify build output
+        working-directory: mobile-app
+        run: |
+          if [ ! -d "dist" ]; then
+            echo "❌ ERROR: dist directory not found after build!"
+            exit 1
+          fi
+          echo "✓ Build output verified: dist directory exists"
+          echo "Build artifacts:"
+          ls -lh dist/ | head -10
+
+      - name: Verify Capacitor configuration
+        working-directory: mobile-app
+        run: |
+          if [ ! -f "capacitor.config.ts" ]; then
+            echo "❌ ERROR: capacitor.config.ts not found!"
+            exit 1
+          fi
+          echo "✓ Capacitor configuration found"
+          echo "Capacitor app info:"
+          grep -E "appId|appName" capacitor.config.ts || echo "Could not extract app info"
+
+      - name: Sync Capacitor Android
+        working-directory: mobile-app
+        run: npx cap sync android
+
+      - name: Verify Android project structure
+        working-directory: mobile-app
+        run: |
+          if [ ! -d "android" ]; then
+            echo "❌ ERROR: android directory not found after sync!"
+            exit 1
+          fi
+          if [ ! -f "android/gradlew" ]; then
+            echo "❌ ERROR: gradlew not found in android directory!"
+            exit 1
+          fi
+          echo "✓ Android project structure verified"
+
+      - name: Grant execute permission for gradlew
+        working-directory: mobile-app/android
+        run: |
+          chmod +x gradlew
+          echo "✓ Gradle wrapper is executable"
+          # Verify gradlew exists and is valid
+          if [ ! -f "gradlew" ]; then
+            echo "❌ ERROR: gradlew file not found!"
+            exit 1
+          fi
+
+      - name: Clean Gradle build cache (if exists)
+        working-directory: mobile-app/android
+        run: |
+          if [ -d "app/build" ]; then
+            echo "Cleaning existing build directory..."
+            ./gradlew clean
+          fi
+        continue-on-error: true
+
+      - name: Build Debug APK
+        working-directory: mobile-app/android
+        id: gradle-build
+        run: |
+          echo "Building Debug APK..."
+          echo "Gradle version:"
+          ./gradlew --version
+          echo ""
+          echo "Starting build..."
+          ./gradlew assembleDebug --build-cache --parallel --stacktrace --warning-mode all
+          echo "✓ Debug APK built successfully"
+
+      - name: Build Release AAB (unsigned)
+        working-directory: mobile-app/android
+        run: ./gradlew bundleRelease --build-cache --parallel
+        continue-on-error: true
+
+      - name: Upload Gradle build logs (on failure)
+        if: failure() && steps.gradle-build.outcome == 'failure'
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-gradle-logs
+          path: |
+            mobile-app/android/build/reports/
+            mobile-app/android/app/build/reports/
+          retention-days: 14
+          if-no-files-found: ignore
+
+      - name: Get APK/AAB info
+        working-directory: mobile-app/android
+        run: |
+          echo "### Build Artifacts Information" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ -f "app/build/outputs/apk/debug/app-debug.apk" ]; then
+            APK_SIZE=$(du -h app/build/outputs/apk/debug/app-debug.apk | cut -f1)
+            APK_SHA256=$(sha256sum app/build/outputs/apk/debug/app-debug.apk | cut -d' ' -f1)
+            echo "**Debug APK:**" >> $GITHUB_STEP_SUMMARY
+            echo "- Size: $APK_SIZE" >> $GITHUB_STEP_SUMMARY
+            echo "- SHA256: \`$APK_SHA256\`" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ **Debug APK not found**" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          if [ -f "app/build/outputs/bundle/release/app-release.aab" ]; then
+            AAB_SIZE=$(du -h app/build/outputs/bundle/release/app-release.aab | cut -f1)
+            AAB_SHA256=$(sha256sum app/build/outputs/bundle/release/app-release.aab | cut -d' ' -f1)
+            echo "**Release AAB:**" >> $GITHUB_STEP_SUMMARY
+            echo "- Size: $AAB_SIZE" >> $GITHUB_STEP_SUMMARY
+            echo "- SHA256: \`$AAB_SHA256\`" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "ℹ️ **Release AAB not built** (requires signing configuration)" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📥 Download Artifacts" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Artifacts are available for **30 days** after the workflow run." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "To download:" >> $GITHUB_STEP_SUMMARY
+          echo "1. Go to the [Actions tab](https://github.com/${{ github.repository }}/actions)" >> $GITHUB_STEP_SUMMARY
+          echo "2. Select this workflow run" >> $GITHUB_STEP_SUMMARY
+          echo "3. Scroll down to the **Artifacts** section" >> $GITHUB_STEP_SUMMARY
+          echo "4. Click on the artifact name to download" >> $GITHUB_STEP_SUMMARY
+
+      - name: Verify APK exists before upload
+        working-directory: mobile-app/android
+        run: |
+          if [ ! -f "app/build/outputs/apk/debug/app-debug.apk" ]; then
+            echo "❌ ERROR: app-debug.apk not found!"
+            echo "Build outputs:"
+            find app/build/outputs -name "*.apk" -o -name "*.aab" 2>/dev/null || echo "No APK/AAB files found"
+            exit 1
+          fi
+          echo "✓ APK verified: app-debug.apk exists"
+          ls -lh app/build/outputs/apk/debug/app-debug.apk
+
+      - name: Upload Debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-debug-apk
+          path: mobile-app/android/app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 30
+          if-no-files-found: error
+
+      - name: Upload Release AAB (if built)
+        # Note: continue-on-error is intentional here because AAB requires signing configuration
+        # which may not be available in all build scenarios. APK is always required, AAB is optional.
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-release-aab
+          path: mobile-app/android/app/build/outputs/bundle/release/app-release.aab
+          retention-days: 30
+          if-no-files-found: ignore
+        continue-on-error: true
+
+      - name: Upload to Release (if tag)
+        if: startsWith(github.ref, 'refs/tags/mobile-v')
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            mobile-app/android/app/build/outputs/apk/debug/app-debug.apk
+            mobile-app/android/app/build/outputs/bundle/release/app-release.aab
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+
+      - name: Upload to Release (if manual with flag)
+        if: |
+          github.event_name == 'workflow_dispatch' &&
+          github.event.inputs.create_release == 'true' &&
+          github.event.inputs.release_tag != ''
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            mobile-app/android/app/build/outputs/apk/debug/app-debug.apk
+            mobile-app/android/app/build/outputs/bundle/release/app-release.aab
+          tag_name: ${{ github.event.inputs.release_tag }}
+          draft: true
+          prerelease: true
+          name: 'Mobile Release ${{ github.event.inputs.release_tag }} (Draft)'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+
+  build-ios:
+    name: Build iOS App
+    runs-on: macos-latest
+    timeout-minutes: 45
+    needs: quality-checks
+    if: |
+      (github.event_name == 'workflow_dispatch' &&
+       (github.event.inputs.platforms == 'all' ||
+        github.event.inputs.platforms == 'ios')) ||
+      github.event_name != 'workflow_dispatch'
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: mobile-app/package-lock.json
+
+      - name: Cache CocoaPods
+        uses: actions/cache@v4
+        with:
+          path: |
+            mobile-app/ios/App/Pods
+            ~/Library/Caches/CocoaPods
+            ~/.cocoapods
+          key: ${{ runner.os }}-pods-${{ hashFiles('mobile-app/ios/App/Podfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pods-
+
+      - name: Verify npm cache integrity
+        working-directory: mobile-app
+        run: |
+          echo "Verifying npm cache integrity..."
+          npm cache verify || {
+            echo "⚠️ npm cache verification failed, cleaning cache..."
+            npm cache clean --force
+          }
+        continue-on-error: true
+
+      - name: Install dependencies
+        working-directory: mobile-app
+        # Using --legacy-peer-deps due to @capacitor-firebase/messaging peer dependency conflict with @capacitor/core
+        run: |
+          echo "Installing dependencies with npm ci..."
+          if npm ci --legacy-peer-deps 2>&1; then
+            echo "✓ npm ci succeeded"
+          else
+            echo "⚠️ npm ci failed, trying npm install as fallback..."
+            rm -rf node_modules package-lock.json
+            if npm install --legacy-peer-deps 2>&1; then
+              echo "✓ npm install succeeded"
+            else
+              echo "⚠️ npm install failed, clearing cache and retrying..."
+              npm cache clean --force
+              npm install --legacy-peer-deps 2>&1
+              echo "✓ npm install with clean cache succeeded"
+            fi
+          fi
+
+          # Verify installation succeeded
+          if [ ! -d "node_modules" ]; then
+            echo "❌ ERROR: node_modules not created after npm install!"
+            exit 1
+          fi
+          echo "✓ Dependencies installed successfully"
+
+      - name: Build web assets
+        working-directory: mobile-app
+        run: npm run build
+
+      - name: Verify build output
+        working-directory: mobile-app
+        run: |
+          if [ ! -d "dist" ]; then
+            echo "❌ ERROR: dist directory not found after build!"
+            exit 1
+          fi
+          echo "✓ Build output verified: dist directory exists"
+          echo "Build artifacts:"
+          ls -lh dist/ | head -10
+
+      - name: Verify Capacitor configuration
+        working-directory: mobile-app
+        run: |
+          if [ ! -f "capacitor.config.ts" ]; then
+            echo "❌ ERROR: capacitor.config.ts not found!"
+            exit 1
+          fi
+          echo "✓ Capacitor configuration found"
+
+      - name: Add iOS platform and configure deployment target
+        working-directory: mobile-app
+        run: |
+          echo "Adding iOS platform (ios/ directory is gitignored, always needs to be generated)..."
+          
+          # Add iOS platform - this will create the ios/ directory and Xcode project
+          # Note: This may fail during the pod install step if there are deployment target conflicts
+          # but the platform structure should still be created
+          if npx cap add ios 2>&1 | tee /tmp/ios-add-output.log; then
+            echo "✓ iOS platform add completed successfully"
+          else
+            IOS_ADD_EXIT_CODE=$?
+            echo "⚠️ Warning: iOS platform add failed with exit code $IOS_ADD_EXIT_CODE"
+            echo "Last 20 lines of error output (for debugging):"
+            tail -20 /tmp/ios-add-output.log || echo "Could not read error log"
+            echo "Checking if platform structure was still created..."
+          fi
+
+          # Verify that the iOS platform structure was created
+          if [ ! -d "ios" ]; then
+            echo "❌ ERROR: ios/ directory was not created by 'npx cap add ios'"
+            echo "This is unexpected. The command should create the directory even if pod install fails."
+            exit 1
+          fi
+
+          if [ ! -d "ios/App" ]; then
+            echo "❌ ERROR: ios/App/ directory was not created"
+            echo "Directory structure:"
+            ls -la ios/
+            exit 1
+          fi
+
+          # Check if Podfile was created
+          if [ ! -f "ios/App/Podfile" ]; then
+            echo "❌ ERROR: Podfile was not created at ios/App/Podfile"
+            echo "Directory structure of ios/App/:"
+            ls -la ios/App/
+            exit 1
+          fi
+
+          echo "✓ iOS platform structure created successfully"
+          
+          # Configure deployment target in Podfile
+          echo "Configuring Podfile deployment target to iOS 14.0..."
+          if grep -q "platform :ios" ios/App/Podfile; then
+            # Update existing platform line to iOS 14.0
+            # Handle both single and double quotes separately to ensure matching quotes
+            if grep -q "platform :ios, '[^']*'" ios/App/Podfile; then
+              sed -i.bak "s/platform :ios, '[^']*'/platform :ios, '14.0'/" ios/App/Podfile
+            else
+              sed -i.bak 's/platform :ios, "[^"]*"/platform :ios, "14.0"/' ios/App/Podfile
+            fi
+            rm -f ios/App/Podfile.bak
+            echo "✓ Updated existing platform line in Podfile"
+          else
+            # Add platform line at the beginning of the file using a more efficient approach
+            { printf "platform :ios, '14.0'\n"; cat ios/App/Podfile; } > ios/App/Podfile.tmp
+            mv ios/App/Podfile.tmp ios/App/Podfile
+            echo "✓ Added platform line to Podfile"
+          fi
+
+          echo "Podfile deployment target configuration:"
+          grep "platform :ios" ios/App/Podfile || echo "⚠️ Could not find platform line after configuration"
+
+      - name: Sync Capacitor iOS and install pods
+        working-directory: mobile-app
+        run: npx cap sync ios
+
+      - name: Build iOS app (Debug)
+        working-directory: mobile-app/ios/App
+        id: ios-build
+        run: |
+          set -o pipefail
+          echo "Starting iOS build for simulator..."
+          xcodebuild \
+            -workspace App.xcworkspace \
+            -scheme App \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -derivedDataPath build \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO 2>&1 | tee build.log
+
+          echo "✓ iOS build completed successfully"
+        continue-on-error: true
+
+      - name: Upload iOS build logs (on failure)
+        if: always() && steps.ios-build.outcome == 'failure'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-build-logs
+          path: mobile-app/ios/App/build.log
+          retention-days: 14
+          if-no-files-found: ignore
+
+      - name: Get build info
+        working-directory: mobile-app
+        run: |
+          echo "### iOS Build Information" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ -d "ios/App/build/Build/Products/Debug-iphonesimulator" ]; then
+            APP_SIZE=$(du -sh ios/App/build/Build/Products/Debug-iphonesimulator/*.app 2>/dev/null | cut -f1 || echo "N/A")
+            echo "**Build artifacts:**" >> $GITHUB_STEP_SUMMARY
+            echo "- App bundle size: $APP_SIZE" >> $GITHUB_STEP_SUMMARY
+            echo "- Configuration: Debug (Simulator)" >> $GITHUB_STEP_SUMMARY
+            echo "- Deployment target: iOS 14.0+" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ Build artifacts not found. Check build logs." >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Create IPA archive info
+        working-directory: mobile-app
+        run: |
+          echo "# iOS Build Information" > ios-build-info.txt
+          echo "" >> ios-build-info.txt
+          echo "Build completed at: $(date)" >> ios-build-info.txt
+          echo "Commit: ${{ github.sha }}" >> ios-build-info.txt
+          echo "" >> ios-build-info.txt
+          echo "## Note" >> ios-build-info.txt
+          echo "iOS builds require code signing with Apple Developer certificates." >> ios-build-info.txt
+          echo "For production builds:" >> ios-build-info.txt
+          echo "1. Open the project in Xcode on a Mac" >> ios-build-info.txt
+          echo "2. Configure signing with your Apple Developer account" >> ios-build-info.txt
+          echo "3. Archive the app (Product > Archive)" >> ios-build-info.txt
+          echo "4. Upload to App Store Connect or export IPA" >> ios-build-info.txt
+          echo "" >> ios-build-info.txt
+          echo "Refer to mobile-app/BUILD_GUIDE.md for detailed instructions." >> ios-build-info.txt
+
+      - name: Upload iOS build info
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-build-info
+          path: mobile-app/ios-build-info.txt
+          retention-days: 30
+          if-no-files-found: warn
+
+      - name: Upload iOS app bundle (if available)
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-app-bundle
+          path: mobile-app/ios/App/build/Build/Products/Debug-iphonesimulator/*.app
+          retention-days: 30
+          if-no-files-found: ignore
+        continue-on-error: true
+
+  create-mobile-release-summary:
+    name: Create Mobile Release Summary
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: [build-android, build-ios]
+    if: |
+      always() && (
+        startsWith(github.ref, 'refs/tags/mobile-v') ||
+        (github.event_name == 'workflow_dispatch' &&
+        github.event.inputs.create_release == 'true' &&
+        github.event.inputs.release_tag != '')
+      )
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Generate release summary
+        run: |
+          # Determine the version/tag to use
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]] && [[ "${{ github.event.inputs.create_release }}" == "true" ]]; then
+            VERSION="${{ github.event.inputs.release_tag }}"
+            VERSION_NUM="${VERSION#mobile-v}"
+          else
+            VERSION="${GITHUB_REF#refs/tags/}"
+            VERSION_NUM="${GITHUB_REF#refs/tags/mobile-v}"
+          fi
+          
+          echo "# LotoLink Mobile Application Release" > mobile_release_summary.md
+          echo "" >> mobile_release_summary.md
+          echo "## Release Information" >> mobile_release_summary.md
+          echo "- **Version:** $VERSION_NUM" >> mobile_release_summary.md
+          echo "- **Date:** $(date +'%Y-%m-%d %H:%M:%S UTC')" >> mobile_release_summary.md
+          echo "- **Commit:** ${{ github.sha }}" >> mobile_release_summary.md
+          echo "" >> mobile_release_summary.md
+          echo "## Available Builds" >> mobile_release_summary.md
+          echo "" >> mobile_release_summary.md
+
+          echo "### Android" >> mobile_release_summary.md
+          echo "" >> mobile_release_summary.md
+          if [ -d "artifacts/android-debug-apk" ]; then
+            echo "**Debug APK (for testing):**" >> mobile_release_summary.md
+            cd artifacts/android-debug-apk
+            for file in *.apk; do
+              if [ -f "$file" ]; then
+                SIZE=$(du -h "$file" | cut -f1)
+                echo "- \`$file\` ($SIZE)" >> ../../mobile_release_summary.md
+              fi
+            done
+            cd ../..
+          fi
+
+          if [ -d "artifacts/android-release-aab" ]; then
+            echo "" >> mobile_release_summary.md
+            echo "**Release AAB (for Google Play):**" >> mobile_release_summary.md
+            cd artifacts/android-release-aab
+            for file in *.aab; do
+              if [ -f "$file" ]; then
+                SIZE=$(du -h "$file" | cut -f1)
+                echo "- \`$file\` ($SIZE)" >> ../../mobile_release_summary.md
+              fi
+            done
+            cd ../..
+          fi
+
+          echo "" >> mobile_release_summary.md
+          echo "### iOS" >> mobile_release_summary.md
+          echo "" >> mobile_release_summary.md
+          echo "iOS builds require Apple Developer certificates for code signing." >> mobile_release_summary.md
+          echo "The workflow has prepared the iOS project. To create a distributable IPA:" >> mobile_release_summary.md
+          echo "" >> mobile_release_summary.md
+          echo "1. Clone the repository and checkout this tag" >> mobile_release_summary.md
+          echo "2. Follow the iOS build instructions in \`mobile-app/BUILD_GUIDE.md\`" >> mobile_release_summary.md
+          echo "3. Use Xcode to archive and export the IPA" >> mobile_release_summary.md
+          echo "" >> mobile_release_summary.md
+
+          echo "## Installation Instructions" >> mobile_release_summary.md
+          echo "" >> mobile_release_summary.md
+          echo "### Android" >> mobile_release_summary.md
+          echo "" >> mobile_release_summary.md
+          echo "**Debug APK (Testing):**" >> mobile_release_summary.md
+          echo "1. Download the \`app-debug.apk\` file" >> mobile_release_summary.md
+          echo "2. Enable \"Install from Unknown Sources\" on your Android device" >> mobile_release_summary.md
+          echo "3. Transfer the APK to your device and install" >> mobile_release_summary.md
+          echo "" >> mobile_release_summary.md
+          echo "**Release AAB (Production):**" >> mobile_release_summary.md
+          echo "1. Sign the AAB with your release keystore" >> mobile_release_summary.md
+          echo "2. Upload to Google Play Console" >> mobile_release_summary.md
+          echo "3. Follow Google Play's submission process" >> mobile_release_summary.md
+          echo "" >> mobile_release_summary.md
+
+          echo "### iOS" >> mobile_release_summary.md
+          echo "" >> mobile_release_summary.md
+          echo "1. Build and archive the app in Xcode (macOS required)" >> mobile_release_summary.md
+          echo "2. Upload to App Store Connect" >> mobile_release_summary.md
+          echo "3. Submit for App Store review" >> mobile_release_summary.md
+          echo "" >> mobile_release_summary.md
+
+          echo "## Requirements" >> mobile_release_summary.md
+          echo "" >> mobile_release_summary.md
+          echo "### Android" >> mobile_release_summary.md
+          echo "- Minimum SDK: API 22 (Android 5.1)" >> mobile_release_summary.md
+          echo "- Target SDK: API 34 (Android 14)" >> mobile_release_summary.md
+          echo "- Architecture: ARM, ARM64, x86, x86_64" >> mobile_release_summary.md
+          echo "" >> mobile_release_summary.md
+          echo "### iOS" >> mobile_release_summary.md
+          echo "- Minimum version: iOS 14.0+" >> mobile_release_summary.md
+          echo "- Devices: iPhone, iPad" >> mobile_release_summary.md
+          echo "" >> mobile_release_summary.md
+
+          echo "## Documentation" >> mobile_release_summary.md
+          echo "" >> mobile_release_summary.md
+          echo "- [Build Guide](mobile-app/BUILD_GUIDE.md)" >> mobile_release_summary.md
+          echo "- [Deployment Guide](mobile-app/DEPLOYMENT_GUIDE.md)" >> mobile_release_summary.md
+          echo "- [Quick Start](mobile-app/QUICKSTART.md)" >> mobile_release_summary.md
+          echo "" >> mobile_release_summary.md
+
+          echo "---" >> mobile_release_summary.md
+          echo "" >> mobile_release_summary.md
+          echo "For support and issues, please visit the repository." >> mobile_release_summary.md
+
+          cat mobile_release_summary.md
+
+      - name: Upload release summary
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile-release-summary
+          path: mobile_release_summary.md
+          retention-days: 90
+
+      - name: Add summary to release (tag)
+        if: startsWith(github.ref, 'refs/tags/mobile-v')
+        uses: softprops/action-gh-release@v1
+        with:
+          body_path: mobile_release_summary.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+
+      - name: Add summary to release (manual)
+        if: |
+          github.event_name == 'workflow_dispatch' &&
+          github.event.inputs.create_release == 'true' &&
+          github.event.inputs.release_tag != ''
+        uses: softprops/action-gh-release@v1
+        with:
+          body_path: mobile_release_summary.md
+          tag_name: ${{ github.event.inputs.release_tag }}
+          draft: true
+          prerelease: true
+          name: 'Mobile Release ${{ github.event.inputs.release_tag }} (Draft)'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true

@@ -1,0 +1,479 @@
+/* ========================================
+   LOTOLINK MOBILE APP - RESPONSIVE STYLES
+   Comprehensive responsive design for all device sizes
+   ======================================== */
+
+/* ========================================
+   NUMBER GRID - ADAPTIVE LAYOUT
+   ======================================== */
+
+.number-grid {
+  display: grid;
+  gap: 8px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Default: 5 columns for narrow phones (320px - 480px) */
+@media (max-width: 480px) {
+  .number-grid {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+  }
+}
+
+/* Small phones (481px - 640px): 6 columns */
+@media (min-width: 481px) and (max-width: 640px) {
+  .number-grid {
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+  }
+}
+
+/* Large phones and small tablets (641px - 768px): 8 columns */
+@media (min-width: 641px) and (max-width: 768px) {
+  .number-grid {
+    grid-template-columns: repeat(8, 1fr);
+    gap: 10px;
+  }
+}
+
+/* Tablets (769px - 1024px): 10 columns */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .number-grid {
+    grid-template-columns: repeat(10, 1fr);
+    gap: 12px;
+  }
+}
+
+/* Desktop (1025px+): 10 columns with larger gaps */
+@media (min-width: 1025px) {
+  .number-grid {
+    grid-template-columns: repeat(10, 1fr);
+    gap: 14px;
+    max-width: 900px;
+  }
+}
+
+/* ========================================
+   NUMBER BUTTONS - RESPONSIVE SIZING
+   ======================================== */
+
+.number-button {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  border: 2px solid var(--ion-color-medium-tint);
+  border-radius: 8px;
+  background: var(--ion-background-color);
+  transition: all 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  min-height: 44px; /* Touch-friendly minimum */
+  min-width: 44px;
+}
+
+.number-button:active {
+  transform: scale(0.95);
+}
+
+.number-button.selected {
+  background: var(--ion-color-primary);
+  color: var(--ion-color-primary-contrast);
+  border-color: var(--ion-color-primary);
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 113, 227, 0.3);
+}
+
+/* Responsive button sizing */
+@media (max-width: 375px) {
+  .number-button {
+    font-size: 12px;
+    border-radius: 6px;
+    min-height: 38px;
+    min-width: 38px;
+  }
+}
+
+@media (min-width: 376px) and (max-width: 640px) {
+  .number-button {
+    font-size: 14px;
+    border-radius: 8px;
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  .number-button {
+    font-size: 16px;
+    border-radius: 10px;
+    min-height: 52px;
+    min-width: 52px;
+  }
+}
+
+@media (min-width: 1025px) {
+  .number-button {
+    font-size: 18px;
+    border-radius: 12px;
+    min-height: 56px;
+    min-width: 56px;
+  }
+}
+
+/* ========================================
+   PREMIUM HEADER - RESPONSIVE
+   ======================================== */
+
+.premium-header {
+  --background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+/* Dark mode */
+.ios .dark .premium-header,
+.md .dark .premium-header {
+  --background: rgba(28, 28, 30, 0.95);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ========================================
+   GLASS CARD - RESPONSIVE
+   ======================================== */
+
+.glass-card {
+  --background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  border-radius: 16px;
+  padding: clamp(12px, 3vw, 24px);
+}
+
+/* Dark mode */
+.ios .dark .glass-card,
+.md .dark .glass-card {
+  --background: rgba(28, 28, 30, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ========================================
+   PREMIUM CARD - RESPONSIVE
+   ======================================== */
+
+.premium-card {
+  border-radius: clamp(12px, 2vw, 20px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+  padding: clamp(12px, 3vw, 24px);
+}
+
+.premium-card:active {
+  transform: scale(0.98);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+/* ========================================
+   ION-CARD CUSTOMIZATION - RESPONSIVE
+   ======================================== */
+
+ion-card {
+  margin: clamp(8px, 2vw, 16px);
+  border-radius: clamp(12px, 2vw, 20px);
+}
+
+ion-card-content {
+  padding: clamp(12px, 3vw, 20px);
+}
+
+/* ========================================
+   ION-BUTTON CUSTOMIZATION - RESPONSIVE
+   ======================================== */
+
+ion-button {
+  --border-radius: clamp(10px, 2vw, 16px);
+  --padding-top: clamp(10px, 2vw, 14px);
+  --padding-bottom: clamp(10px, 2vw, 14px);
+  --padding-start: clamp(16px, 3vw, 24px);
+  --padding-end: clamp(16px, 3vw, 24px);
+  font-size: clamp(14px, 2vw, 16px);
+  font-weight: 600;
+  min-height: 44px; /* Touch-friendly */
+}
+
+/* Large screens */
+@media (min-width: 1025px) {
+  ion-button {
+    --border-radius: 20px;
+    min-height: 52px;
+  }
+}
+
+/* ========================================
+   BOTTOM CART BAR - RESPONSIVE & SAFE AREAS
+   ======================================== */
+
+.bottom-cart-bar {
+  position: fixed;
+  bottom: calc(65px + env(safe-area-inset-bottom));
+  left: 0;
+  right: 0;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--glass-border);
+  padding: clamp(10px, 2vw, 16px);
+  padding-bottom: calc(clamp(10px, 2vw, 16px) + env(safe-area-inset-bottom));
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Tablet and Desktop */
+@media (min-width: 769px) {
+  .bottom-cart-bar {
+    bottom: calc(0px + env(safe-area-inset-bottom));
+    padding: clamp(16px, 2vw, 24px);
+    padding-bottom: calc(clamp(16px, 2vw, 24px) + env(safe-area-inset-bottom));
+  }
+}
+
+/* ========================================
+   CONTENT PADDING - RESPONSIVE
+   ======================================== */
+
+ion-content {
+  --padding-start: clamp(12px, 3vw, 24px);
+  --padding-end: clamp(12px, 3vw, 24px);
+  --padding-top: clamp(12px, 2vw, 20px);
+  --padding-bottom: clamp(80px, 10vw, 120px);
+}
+
+/* ========================================
+   GAME TYPE CARDS - RESPONSIVE LAYOUT
+   ======================================== */
+
+.game-type-grid {
+  display: grid;
+  gap: clamp(12px, 2vw, 20px);
+  padding: clamp(12px, 3vw, 24px);
+}
+
+/* Mobile: 1 column */
+@media (max-width: 640px) {
+  .game-type-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Tablet: 2 columns */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .game-type-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Desktop: 3 columns */
+@media (min-width: 1025px) {
+  .game-type-grid {
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+}
+
+/* ========================================
+   BANCA CARDS - RESPONSIVE LAYOUT
+   ======================================== */
+
+.banca-list {
+  display: grid;
+  gap: clamp(12px, 2vw, 16px);
+  padding: clamp(12px, 3vw, 24px);
+}
+
+/* Mobile: 1 column */
+@media (max-width: 768px) {
+  .banca-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Tablet: 2 columns */
+@media (min-width: 769px) and (max-width: 1200px) {
+  .banca-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Desktop: 3 columns */
+@media (min-width: 1201px) {
+  .banca-list {
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+}
+
+/* ========================================
+   TYPOGRAPHY - RESPONSIVE SCALING
+   ======================================== */
+
+h1, .text-4xl, .text-5xl {
+  font-size: clamp(1.5rem, 5vw, 3rem);
+  line-height: 1.2;
+}
+
+h2, .text-3xl {
+  font-size: clamp(1.25rem, 4vw, 2.25rem);
+  line-height: 1.3;
+}
+
+h3, .text-2xl {
+  font-size: clamp(1.125rem, 3vw, 1.875rem);
+  line-height: 1.4;
+}
+
+.text-xl {
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+}
+
+.text-lg {
+  font-size: clamp(0.95rem, 2vw, 1.125rem);
+}
+
+/* ========================================
+   LANDSCAPE ORIENTATION ADJUSTMENTS
+   ======================================== */
+
+@media (max-width: 768px) and (orientation: landscape) {
+  .number-grid {
+    grid-template-columns: repeat(10, 1fr);
+    gap: 6px;
+  }
+  
+  .number-button {
+    font-size: 12px;
+    min-height: 36px;
+    min-width: 36px;
+  }
+  
+  ion-content {
+    --padding-top: 8px;
+    --padding-bottom: 60px;
+  }
+  
+  .bottom-cart-bar {
+    padding: 8px;
+  }
+}
+
+/* ========================================
+   SAFE AREA INSETS FOR NOTCHED DEVICES
+   ======================================== */
+
+@supports (padding-top: env(safe-area-inset-top)) {
+  ion-header {
+    padding-top: env(safe-area-inset-top);
+  }
+  
+  ion-content {
+    --padding-bottom: calc(80px + env(safe-area-inset-bottom));
+  }
+  
+  ion-tab-bar {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* ========================================
+   TOUCH FEEDBACK - IMPROVED UX
+   ======================================== */
+
+@media (hover: none) and (pointer: coarse) {
+  /* Ensure all interactive elements are touch-friendly */
+  button,
+  ion-button,
+  ion-chip,
+  ion-item,
+  ion-card[button],
+  [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Disable hover effects on touch devices */
+  .premium-card:hover,
+  .glass-card:hover {
+    transform: none;
+    box-shadow: inherit;
+  }
+  
+  /* Add active states for better feedback */
+  button:active,
+  ion-button:active,
+  ion-chip:active,
+  ion-card[button]:active {
+    opacity: 0.8;
+    transform: scale(0.98);
+  }
+}
+
+/* ========================================
+   HIGH CONTRAST MODE SUPPORT
+   ======================================== */
+
+@media (prefers-contrast: high) {
+  .premium-card,
+  .glass-card,
+  .number-button {
+    border-width: 2px;
+  }
+  
+  ion-button {
+    --border-width: 2px;
+  }
+}
+
+/* ========================================
+   REDUCED MOTION PREFERENCE
+   ======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ========================================
+   PRINT STYLES
+   ======================================== */
+
+@media print {
+  .bottom-cart-bar,
+  ion-header,
+  ion-tab-bar,
+  ion-fab,
+  .no-print {
+    display: none !important;
+  }
+  
+  ion-content {
+    --padding-start: 0;
+    --padding-end: 0;
+    --padding-top: 0;
+    --padding-bottom: 0;
+  }
+}

@@ -1,0 +1,87 @@
+# Dependencies
+node_modules/
+.npm
+
+# Build outputs
+dist/
+build/
+*.js.map
+
+# Mobile app builds
+mobile/ios/build/
+mobile/android/app/build/
+mobile/android/.gradle/
+*.apk
+*.ipa
+*.aab
+
+# Desktop app builds
+desktop/dist/
+desktop/out/
+*.exe
+*.dmg
+*.AppImage
+*.deb
+*.rpm
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+backend.log
+adminpanel.log
+backend_*.log
+adminpanel_*.log
+
+# Coverage
+coverage/
+.nyc_output/
+
+# TypeScript
+*.tsbuildinfo
+
+# Testing
+.jest/
+
+# E2E Testing
+e2e/playwright-report/
+e2e/test-results/
+e2e/node_modules/
+
+# Temporary files
+tmp/
+temp/
+
+# LOTOLINK Process IDs
+.lotolink.pids
+
+# Docker
+.docker/
+
+# Kubernetes secrets (local)
+k8s/secrets/
+*.pem
+*.key
+
+# Generated integration packages
+lotolink-integration-package-*.zip
+*.backup
+test-responsive-modal.html
+demo-modal-scroll-fix.html
+demo-unified-modals.html

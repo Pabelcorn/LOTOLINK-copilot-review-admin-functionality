@@ -1,0 +1,320 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+# Default permissions for all jobs
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: '18'
+
+jobs:
+  security-audit:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: ./backend
+
+      - name: Run npm audit
+        run: npm audit --audit-level=high
+        working-directory: ./backend
+        continue-on-error: true
+
+      - name: Install mock-banca dependencies
+        run: npm ci
+        working-directory: ./mock-banca
+
+      - name: Run npm audit (mock-banca)
+        run: npm audit --audit-level=high
+        working-directory: ./mock-banca
+        continue-on-error: true
+
+  lint-and-test-backend:
+    name: Lint & Test Backend
+    runs-on: ubuntu-latest
+    needs: security-audit
+    permissions:
+      contents: read
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: lotolink
+          POSTGRES_PASSWORD: test_password
+          POSTGRES_DB: lotolink_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    defaults:
+      run:
+        working-directory: ./backend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run linter
+        run: npm run lint
+        continue-on-error: true
+
+      - name: Run TypeScript check
+        run: npx tsc --noEmit
+
+      - name: Run tests
+        run: npm test
+        env:
+          DATABASE_HOST: localhost
+          DATABASE_PORT: 5432
+          DATABASE_USERNAME: lotolink
+          DATABASE_PASSWORD: test_password
+          DATABASE_NAME: lotolink_test
+          JWT_SECRET: test_jwt_secret
+          HMAC_SECRET: test_hmac_secret
+
+      - name: Upload coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: backend/coverage/
+          retention-days: 14
+          if-no-files-found: ignore
+        if: always()
+        continue-on-error: true
+
+  build-backend:
+    name: Build Backend
+    runs-on: ubuntu-latest
+    needs: lint-and-test-backend
+    permissions:
+      contents: read
+
+    defaults:
+      run:
+        working-directory: ./backend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-dist
+          path: backend/dist/
+          retention-days: 14
+          if-no-files-found: warn
+        if: github.ref == 'refs/heads/main'
+        continue-on-error: true
+
+  container-scan:
+    name: Container Security Scan
+    runs-on: ubuntu-latest
+    needs: build-backend
+    if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
+    permissions:
+      contents: read
+      security-events: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Backend Docker image for scanning
+        run: docker build -t lotolink-backend:scan ./backend
+
+      - name: Run Trivy vulnerability scanner (Backend)
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'lotolink-backend:scan'
+          format: 'sarif'
+          output: 'trivy-backend-results.sarif'
+          severity: 'CRITICAL,HIGH'
+        continue-on-error: true
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'trivy-backend-results.sarif'
+        if: always()
+        continue-on-error: true
+
+      - name: Build Mock Banca Docker image for scanning
+        run: docker build -t mock-banca:scan ./mock-banca
+
+      - name: Run Trivy vulnerability scanner (Mock Banca)
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'mock-banca:scan'
+          format: 'table'
+          severity: 'CRITICAL,HIGH'
+        continue-on-error: true
+
+  build-docker:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
+    needs: [build-backend, container-scan]
+    if: github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set lowercase repository name
+        run: echo "REPO_LOWERCASE=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Backend
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend
+          push: true
+          tags: |
+            ghcr.io/${{ env.REPO_LOWERCASE }}/backend:latest
+            ghcr.io/${{ env.REPO_LOWERCASE }}/backend:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build and push Mock Banca
+        uses: docker/build-push-action@v5
+        with:
+          context: ./mock-banca
+          push: true
+          tags: |
+            ghcr.io/${{ env.REPO_LOWERCASE }}/mock-banca:latest
+            ghcr.io/${{ env.REPO_LOWERCASE }}/mock-banca:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: build-docker
+    if: github.ref == 'refs/heads/main'
+    environment: staging
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to Kubernetes
+        run: |
+          echo "Deploying to staging environment..."
+          # kubectl apply -k k8s/overlays/staging/
+
+  e2e-tests:
+    name: E2E Tests
+    runs-on: ubuntu-latest
+    needs: deploy-staging
+    if: github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: e2e/package-lock.json
+
+      - name: Install E2E dependencies
+        run: |
+          cd e2e
+          npm ci
+          npx playwright install --with-deps chromium
+
+      - name: Run E2E tests
+        run: |
+          cd e2e
+          npx playwright test --project=api-tests
+        env:
+          BASE_URL: ${{ secrets.STAGING_URL || 'http://localhost:3000' }}
+          HMAC_SECRET: ${{ secrets.HMAC_SECRET || 'test_hmac_secret' }}
+        continue-on-error: true
+
+      - name: Upload E2E test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-report
+          path: e2e/playwright-report/
+          retention-days: 14
+          if-no-files-found: ignore
+        if: always()
+        continue-on-error: true
+
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: e2e-tests
+    if: github.ref == 'refs/heads/main'
+    environment: production
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to Kubernetes
+        run: |
+          echo "Deploying to production environment..."
+          # kubectl apply -k k8s/overlays/production/

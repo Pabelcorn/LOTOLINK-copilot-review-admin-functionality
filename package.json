@@ -1,0 +1,32 @@
+{
+  "name": "lotolink",
+  "version": "1.0.0",
+  "description": "LOTOLINK - Lottery Marketplace Platform",
+  "scripts": {
+    "start": "./scripts/start-lotolink.sh",
+    "stop": "./scripts/stop-lotolink.sh",
+    "admin-panel": "npx http-server -p 8080 -c-1 -o admin-panel.html",
+    "backend": "cd backend && npm run start:dev",
+    "backend:prod": "cd backend && npm run build && npm start",
+    "test": "cd backend && npm test",
+    "setup": "cd backend && npm install && cp .env.example .env",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f"
+  },
+  "keywords": [
+    "lottery",
+    "marketplace",
+    "api",
+    "nestjs"
+  ],
+  "author": "LOTOLINK Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Pabelcorn/LOTOLINK"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

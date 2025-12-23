@@ -1,0 +1,104 @@
+name: Cleanup Old Artifacts
+
+on:
+  schedule:
+    # Run every week on Sunday at midnight UTC to clean up old artifacts
+    - cron: '0 0 * * 0'
+  workflow_dispatch:
+    inputs:
+      days_to_keep:
+        description: 'Number of days to keep artifacts (default: 30 for installers, 14 for others)'
+        required: false
+        default: '30'
+        type: string
+
+permissions:
+  actions: write
+
+env:
+  DAYS_TO_KEEP: 30
+
+jobs:
+  cleanup:
+    name: Clean up old artifacts
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clean up artifacts older than configured days
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const days_to_keep = parseInt('${{ github.event.inputs.days_to_keep || env.DAYS_TO_KEEP }}');
+            const cutoff_date = new Date();
+            // Set to start of day (midnight) to ensure all artifacts from today are kept
+            cutoff_date.setDate(cutoff_date.getDate() - days_to_keep);
+            cutoff_date.setHours(0, 0, 0, 0);
+
+            console.log(`Deleting artifacts older than ${cutoff_date.toISOString()}`);
+            console.log(`Configured retention: ${days_to_keep} days`);
+            console.log('');
+
+            // Get all artifacts
+            const artifacts = await github.paginate(github.rest.actions.listArtifactsForRepo, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              per_page: 100
+            });
+
+            let deleted_count = 0;
+            let kept_count = 0;
+            let skipped_count = 0;
+
+            // Artifact types that should have longer retention
+            const long_retention_patterns = [
+              'release-summary',
+              'mobile-release-summary',
+              // Don't auto-delete installer artifacts - let GitHub's built-in expiration handle them
+              'android-debug-apk',
+              'android-release-aab',
+              'ios-app-bundle',
+              'windows-installer',
+              'macos-installer',
+              'linux-installers'
+            ];
+
+            for (const artifact of artifacts) {
+              const created_at = new Date(artifact.created_at);
+              const age_days = Math.floor((Date.now() - created_at.getTime()) / (1000 * 60 * 60 * 24));
+              
+              // Check if this artifact should have extended retention
+              const is_long_retention = long_retention_patterns.some(pattern => 
+                artifact.name.includes(pattern)
+              );
+
+              if (is_long_retention) {
+                console.log(`Skipping ${artifact.name} (ID: ${artifact.id}, Age: ${age_days} days) - long retention type`);
+                skipped_count++;
+                kept_count++;
+                continue;
+              }
+
+              if (created_at < cutoff_date) {
+                console.log(`Deleting artifact: ${artifact.name} (ID: ${artifact.id}, Created: ${artifact.created_at}, Age: ${age_days} days)`);
+
+                try {
+                  await github.rest.actions.deleteArtifact({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    artifact_id: artifact.id
+                  });
+                  deleted_count++;
+                } catch (error) {
+                  console.error(`Failed to delete artifact ${artifact.id}: ${error.message}`);
+                }
+              } else {
+                console.log(`Keeping ${artifact.name} (Age: ${age_days} days)`);
+                kept_count++;
+              }
+            }
+
+            console.log('');
+            console.log(`Summary:`);
+            console.log(`- Deleted: ${deleted_count} artifacts`);
+            console.log(`- Kept: ${kept_count} artifacts (${skipped_count} with extended retention)`);
+            console.log(`- Total processed: ${artifacts.length} artifacts`);
