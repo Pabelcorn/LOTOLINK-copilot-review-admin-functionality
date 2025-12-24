@@ -2085,7 +2085,7 @@
                         className="mt-1 w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" 
                       />
                       <span className="text-sm text-gray-600 leading-tight">
-                        He leído y acepto los <a href="#" className="text-blue-600 hover:underline">Términos de Servicio</a>.
+                        He leído y acepto los <a href="#" onClick={(e) => { e.preventDefault(); window.openTermsModal && window.openTermsModal(); }} className="text-blue-600 hover:underline">Términos de Servicio</a>.
                       </span>
                     </label>
                   </div>
@@ -5452,6 +5452,198 @@
                      style={{WebkitOverflowScrolling: 'touch'}}
                    ></section>
                  </div>
+                 
+                 {/* Terms of Service Modal for Bancas */}
+                 <div id="terms-modal-root" className="fixed inset-0 z-50 hidden overflow-y-auto overflow-x-hidden" style={{WebkitOverflowScrolling: 'touch'}}>
+                   <div 
+                     id="terms-modal-backdrop" 
+                     className="fixed inset-0 bg-black/60 backdrop-blur-sm" 
+                     onClick={() => window.closeTermsModal && window.closeTermsModal()}
+                   ></div>
+                   <div className="relative min-h-screen flex items-center justify-center p-4">
+                     <div 
+                       id="terms-modal-card" 
+                       className="relative w-full max-w-4xl bg-white dark:bg-slate-800 rounded-2xl shadow-2xl overflow-hidden"
+                       style={{
+                         background: 'rgba(255, 255, 255, 0.95)',
+                         backdropFilter: 'blur(20px) saturate(180%)',
+                         WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+                         border: '1px solid rgba(255, 255, 255, 0.18)',
+                         maxHeight: '90vh'
+                       }}
+                     >
+                       {/* Modal Header */}
+                       <div className="sticky top-0 z-10 bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6 flex items-center justify-between">
+                         <div className="flex items-center gap-4">
+                           <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center text-2xl">
+                             📄
+                           </div>
+                           <div>
+                             <h2 className="text-2xl font-bold">Términos y Condiciones</h2>
+                             <p className="text-sm text-blue-100 mt-1">Para Bancas Asociadas a LotoLink</p>
+                           </div>
+                         </div>
+                         <button 
+                           onClick={() => window.closeTermsModal && window.closeTermsModal()}
+                           className="w-10 h-10 bg-white/20 hover:bg-white/30 rounded-lg flex items-center justify-center transition-colors"
+                           aria-label="Cerrar modal"
+                         >
+                           <span className="text-2xl">✕</span>
+                         </button>
+                       </div>
+                       
+                       {/* Modal Content - Scrollable */}
+                       <div className="overflow-y-auto" style={{maxHeight: 'calc(90vh - 180px)'}}>
+                         <div className="p-6 space-y-6">
+                           
+                           {/* Section 1 */}
+                           <div className="bg-gray-50 dark:bg-slate-900 p-5 rounded-xl border border-gray-200 dark:border-slate-700">
+                             <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                               <span className="text-xl">🏢</span> 1. DATOS DE LA EMPRESA
+                             </h3>
+                             <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+                               <li><strong>Nombre Comercial:</strong> LOTOLINK</li>
+                               <li><strong>Tipo de Servicio:</strong> Plataforma de intermediación para loterías</li>
+                               <li><strong>País de Operación:</strong> República Dominicana</li>
+                             </ul>
+                           </div>
+                           
+                           {/* Section 2 */}
+                           <div className="bg-blue-50 dark:bg-blue-900/20 p-5 rounded-xl border border-blue-200 dark:border-blue-800">
+                             <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                               <span className="text-xl">🤝</span> 2. RELACIÓN DE INTERMEDIACIÓN
+                             </h3>
+                             <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                               LOTOLINK actúa exclusivamente como intermediario tecnológico entre usuarios finales y bancas autorizadas. <strong>LOTOLINK NO es una banca, NO emite tickets de lotería, y NO paga premios directamente.</strong>
+                             </p>
+                           </div>
+                           
+                           {/* Section 3 */}
+                           <div className="bg-green-50 dark:bg-green-900/20 p-5 rounded-xl border border-green-200 dark:border-green-800">
+                             <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                               <span className="text-xl">💰</span> 3. COMISIONES Y PAGOS
+                             </h3>
+                             <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300 list-disc list-inside">
+                               <li>Las comisiones son porcentuales y configurables por banca</li>
+                               <li>Los pagos se procesan a través de Stripe</li>
+                               <li>Las comisiones se separan automáticamente de los pagos</li>
+                               <li>Los premios son responsabilidad de la banca que emitió el ticket</li>
+                             </ul>
+                           </div>
+                           
+                           {/* Section 4 */}
+                           <div className="bg-purple-50 dark:bg-purple-900/20 p-5 rounded-xl border border-purple-200 dark:border-purple-800">
+                             <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                               <span className="text-xl">🔧</span> 4. INTEGRACIÓN TÉCNICA
+                             </h3>
+                             <p className="text-sm text-gray-700 dark:text-gray-300 mb-3">Las bancas pueden integrarse mediante tres modalidades:</p>
+                             <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300 list-disc list-inside mb-3">
+                               <li><strong>API Directa:</strong> Para bancas con sistema propio</li>
+                               <li><strong>App White-Label:</strong> App POS proporcionada por LOTOLINK</li>
+                               <li><strong>Middleware:</strong> Para integraciones personalizadas</li>
+                             </ul>
+                             <p className="text-sm text-gray-700 dark:text-gray-300">
+                               Al aprobar una banca, se generan automáticamente: <strong>Client ID, Client Secret y HMAC Secret</strong>
+                             </p>
+                           </div>
+                           
+                           {/* Section 5 */}
+                           <div className="bg-yellow-50 dark:bg-yellow-900/20 p-5 rounded-xl border border-yellow-200 dark:border-yellow-800">
+                             <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                               <span className="text-xl">✅</span> 5. OBLIGACIONES DE LA BANCA
+                             </h3>
+                             <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300 list-disc list-inside">
+                               <li>Mantener licencias y permisos vigentes</li>
+                               <li>Procesar jugadas en tiempo real</li>
+                               <li>Pagar premios a los ganadores</li>
+                               <li>Cumplir con regulaciones locales</li>
+                               <li>Mantener la confidencialidad de credenciales</li>
+                             </ul>
+                           </div>
+                           
+                           {/* Section 6 */}
+                           <div className="bg-indigo-50 dark:bg-indigo-900/20 p-5 rounded-xl border border-indigo-200 dark:border-indigo-800">
+                             <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                               <span className="text-xl">🛡️</span> 6. OBLIGACIONES DE LOTOLINK
+                             </h3>
+                             <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300 list-disc list-inside">
+                               <li>Transmitir correctamente las jugadas</li>
+                               <li>Proporcionar soporte técnico</li>
+                               <li>Mantener la plataforma operativa</li>
+                               <li>Proteger los datos de usuarios</li>
+                             </ul>
+                           </div>
+                           
+                           {/* Section 7 */}
+                           <div className="bg-pink-50 dark:bg-pink-900/20 p-5 rounded-xl border border-pink-200 dark:border-pink-800">
+                             <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                               <span className="text-xl">🔒</span> 7. CONFIDENCIALIDAD Y DATOS
+                             </h3>
+                             <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300 list-disc list-inside">
+                               <li>Los datos de usuarios están protegidos</li>
+                               <li>Las credenciales son confidenciales</li>
+                               <li>Se cumple con normativas de protección de datos</li>
+                             </ul>
+                           </div>
+                           
+                           {/* Section 8 */}
+                           <div className="bg-red-50 dark:bg-red-900/20 p-5 rounded-xl border border-red-200 dark:border-red-800">
+                             <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                               <span className="text-xl">⚠️</span> 8. TERMINACIÓN
+                             </h3>
+                             <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300 list-disc list-inside">
+                               <li>LOTOLINK puede suspender o terminar la relación si la banca viola estos términos</li>
+                               <li>La banca puede terminar la relación con previo aviso</li>
+                               <li>Los fondos pendientes serán liquidados según acuerdo</li>
+                             </ul>
+                           </div>
+                           
+                           {/* Section 9 */}
+                           <div className="bg-orange-50 dark:bg-orange-900/20 p-5 rounded-xl border border-orange-200 dark:border-orange-800">
+                             <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                               <span className="text-xl">⚖️</span> 9. LIMITACIÓN DE RESPONSABILIDAD
+                             </h3>
+                             <p className="text-sm text-gray-700 dark:text-gray-300 mb-2"><strong>LOTOLINK no es responsable de:</strong></p>
+                             <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300 list-disc list-inside">
+                               <li>Jugadas rechazadas por la banca</li>
+                               <li>Falta de pago de premios por parte de la banca</li>
+                               <li>Errores en sistemas de la banca</li>
+                               <li>Disputas entre usuarios y bancas</li>
+                             </ul>
+                           </div>
+                           
+                           {/* Section 10 */}
+                           <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 p-5 rounded-xl border-2 border-blue-300 dark:border-blue-700">
+                             <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                               <span className="text-xl">✍️</span> 10. ACEPTACIÓN
+                             </h3>
+                             <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">
+                               <strong>Al marcar "He leído y acepto los Términos de Servicio", la banca declara que:</strong>
+                             </p>
+                             <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300 list-disc list-inside">
+                               <li>Ha leído y comprendido estos términos</li>
+                               <li>Acepta estar legalmente vinculada</li>
+                               <li>Tiene capacidad legal para contratar</li>
+                               <li>La información proporcionada es veraz</li>
+                             </ul>
+                           </div>
+                           
+                         </div>
+                       </div>
+                       
+                       {/* Modal Footer */}
+                       <div className="sticky bottom-0 bg-gray-50 dark:bg-slate-900 border-t border-gray-200 dark:border-slate-700 p-6 flex justify-center">
+                         <button 
+                           onClick={() => window.closeTermsModal && window.closeTermsModal()}
+                           className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-full shadow-lg hover:shadow-xl transition-all transform hover:scale-105 flex items-center gap-2"
+                         >
+                           <span>✓</span>
+                           <span>Entendido</span>
+                         </button>
+                       </div>
+                     </div>
+                   </div>
+                 </div>
                </section>
             )}
 
@@ -8249,6 +8441,44 @@
       window.updateStake = updateStake;
       window.toggleLotteryDarkMode = toggleLotteryDarkMode;
       window.renderModal = renderModal;
+    })();
+  </script>
+  
+  <!-- Terms of Service Modal Logic -->
+  <script>
+    (function() {
+      // Open Terms of Service Modal
+      function openTermsModal() {
+        const modal = document.getElementById('terms-modal-root');
+        if (modal) {
+          modal.classList.remove('hidden');
+          modal.classList.add('flex');
+          // Prevent body scroll when modal is open
+          document.body.style.overflow = 'hidden';
+        }
+      }
+      
+      // Close Terms of Service Modal
+      function closeTermsModal() {
+        const modal = document.getElementById('terms-modal-root');
+        if (modal) {
+          modal.classList.add('hidden');
+          modal.classList.remove('flex');
+          // Restore body scroll
+          document.body.style.overflow = '';
+        }
+      }
+      
+      // Close modal on Escape key
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          closeTermsModal();
+        }
+      });
+      
+      // Expose functions globally
+      window.openTermsModal = openTermsModal;
+      window.closeTermsModal = closeTermsModal;
     })();
   </script>
   
