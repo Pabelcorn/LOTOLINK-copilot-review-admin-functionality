@@ -1614,142 +1614,152 @@
         </div>
         
         <!-- Modal Content - Scrollable -->
-        <div class="overflow-y-auto" style="max-height: calc(90vh - 180px); -webkit-overflow-scrolling: touch;">
-          <div class="p-6 space-y-6">
-            
-            <!-- Section 1 -->
-            <div class="bg-gray-50 dark:bg-slate-900 p-5 rounded-xl border border-gray-200 dark:border-slate-700" style="background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px;">
-              <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2" style="display: flex; align-items: center; gap: 8px;">
-                <span class="text-xl">🏢</span> 1. DATOS DE LA EMPRESA
-              </h3>
-              <ul class="space-y-2 text-sm text-gray-700 dark:text-gray-300" style="list-style: none; padding: 0;">
-                <li style="margin-bottom: 8px;"><strong>Nombre Comercial:</strong> LOTOLINK</li>
-                <li style="margin-bottom: 8px;"><strong>Tipo de Servicio:</strong> Plataforma de intermediación para loterías</li>
-                <li><strong>País de Operación:</strong> República Dominicana</li>
-              </ul>
-            </div>
-            
-            <!-- Section 2 -->
-            <div class="bg-blue-50 dark:bg-blue-900/20 p-5 rounded-xl border border-blue-200 dark:border-blue-800" style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 12px; padding: 20px;">
-              <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2" style="display: flex; align-items: center; gap: 8px;">
-                <span class="text-xl">🤝</span> 2. RELACIÓN DE INTERMEDIACIÓN
-              </h3>
-              <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed" style="line-height: 1.6;">
-                LOTOLINK actúa exclusivamente como intermediario tecnológico entre usuarios finales y bancas autorizadas. <strong>LOTOLINK NO es una banca, NO emite tickets de lotería, y NO paga premios directamente.</strong>
-              </p>
-            </div>
-            
-            <!-- Section 3 -->
-            <div class="bg-green-50 dark:bg-green-900/20 p-5 rounded-xl border border-green-200 dark:border-green-800" style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 20px;">
-              <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2" style="display: flex; align-items: center; gap: 8px;">
-                <span class="text-xl">💰</span> 3. COMISIONES Y PAGOS
-              </h3>
-              <ul class="text-sm text-gray-700 dark:text-gray-300 list-disc list-inside" style="padding-left: 20px;">
-                <li style="margin-bottom: 8px;">Las comisiones son porcentuales y configurables por banca</li>
-                <li style="margin-bottom: 8px;">Los pagos se procesan a través de Stripe</li>
-                <li style="margin-bottom: 8px;">Las comisiones se separan automáticamente de los pagos</li>
-                <li>Los premios son responsabilidad de la banca que emitió el ticket</li>
-              </ul>
-            </div>
-            
-            <!-- Section 4 -->
-            <div class="bg-purple-50 dark:bg-purple-900/20 p-5 rounded-xl border border-purple-200 dark:border-purple-800" style="background: #faf5ff; border: 1px solid #e9d5ff; border-radius: 12px; padding: 20px;">
-              <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2" style="display: flex; align-items: center; gap: 8px;">
-                <span class="text-xl">🔧</span> 4. INTEGRACIÓN TÉCNICA
-              </h3>
-              <p class="text-sm text-gray-700 dark:text-gray-300 mb-3">Las bancas pueden integrarse mediante tres modalidades:</p>
-              <ul class="text-sm text-gray-700 dark:text-gray-300 list-disc list-inside mb-3" style="padding-left: 20px;">
-                <li style="margin-bottom: 8px;"><strong>API Directa:</strong> Para bancas con sistema propio</li>
-                <li style="margin-bottom: 8px;"><strong>App White-Label:</strong> App POS proporcionada por LOTOLINK</li>
-                <li style="margin-bottom: 8px;"><strong>Middleware:</strong> Para integraciones personalizadas</li>
-              </ul>
-              <p class="text-sm text-gray-700 dark:text-gray-300">
-                Al aprobar una banca, se generan automáticamente: <strong>Client ID, Client Secret y HMAC Secret</strong>
-              </p>
-            </div>
-            
-            <!-- Section 5 -->
-            <div class="bg-yellow-50 dark:bg-yellow-900/20 p-5 rounded-xl border border-yellow-200 dark:border-yellow-800" style="background: #fefce8; border: 1px solid #fde047; border-radius: 12px; padding: 20px;">
-              <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2" style="display: flex; align-items: center; gap: 8px;">
-                <span class="text-xl">✅</span> 5. OBLIGACIONES DE LA BANCA
-              </h3>
-              <ul class="text-sm text-gray-700 dark:text-gray-300 list-disc list-inside" style="padding-left: 20px;">
-                <li style="margin-bottom: 8px;">Mantener licencias y permisos vigentes</li>
-                <li style="margin-bottom: 8px;">Procesar jugadas en tiempo real</li>
-                <li style="margin-bottom: 8px;">Pagar premios a los ganadores</li>
-                <li style="margin-bottom: 8px;">Cumplir con regulaciones locales</li>
-                <li>Mantener la confidencialidad de credenciales</li>
-              </ul>
-            </div>
-            
-            <!-- Section 6 -->
-            <div class="bg-indigo-50 dark:bg-indigo-900/20 p-5 rounded-xl border border-indigo-200 dark:border-indigo-800" style="background: #eef2ff; border: 1px solid #c7d2fe; border-radius: 12px; padding: 20px;">
-              <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2" style="display: flex; align-items: center; gap: 8px;">
-                <span class="text-xl">🛡️</span> 6. OBLIGACIONES DE LOTOLINK
-              </h3>
-              <ul class="text-sm text-gray-700 dark:text-gray-300 list-disc list-inside" style="padding-left: 20px;">
-                <li style="margin-bottom: 8px;">Transmitir correctamente las jugadas</li>
-                <li style="margin-bottom: 8px;">Proporcionar soporte técnico</li>
-                <li style="margin-bottom: 8px;">Mantener la plataforma operativa</li>
-                <li>Proteger los datos de usuarios</li>
-              </ul>
-            </div>
-            
-            <!-- Section 7 -->
-            <div class="bg-pink-50 dark:bg-pink-900/20 p-5 rounded-xl border border-pink-200 dark:border-pink-800" style="background: #fdf2f8; border: 1px solid #fbcfe8; border-radius: 12px; padding: 20px;">
-              <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2" style="display: flex; align-items: center; gap: 8px;">
-                <span class="text-xl">🔒</span> 7. CONFIDENCIALIDAD Y DATOS
-              </h3>
-              <ul class="text-sm text-gray-700 dark:text-gray-300 list-disc list-inside" style="padding-left: 20px;">
-                <li style="margin-bottom: 8px;">Los datos de usuarios están protegidos</li>
-                <li style="margin-bottom: 8px;">Las credenciales son confidenciales</li>
-                <li>Se cumple con normativas de protección de datos</li>
-              </ul>
-            </div>
-            
-            <!-- Section 8 -->
-            <div class="bg-red-50 dark:bg-red-900/20 p-5 rounded-xl border border-red-200 dark:border-red-800" style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 12px; padding: 20px;">
-              <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2" style="display: flex; align-items: center; gap: 8px;">
-                <span class="text-xl">⚠️</span> 8. TERMINACIÓN
-              </h3>
-              <ul class="text-sm text-gray-700 dark:text-gray-300 list-disc list-inside" style="padding-left: 20px;">
-                <li style="margin-bottom: 8px;">LOTOLINK puede suspender o terminar la relación si la banca viola estos términos</li>
-                <li style="margin-bottom: 8px;">La banca puede terminar la relación con previo aviso</li>
-                <li>Los fondos pendientes serán liquidados según acuerdo</li>
-              </ul>
-            </div>
-            
-            <!-- Section 9 -->
-            <div class="bg-orange-50 dark:bg-orange-900/20 p-5 rounded-xl border border-orange-200 dark:border-orange-800" style="background: #fff7ed; border: 1px solid #fed7aa; border-radius: 12px; padding: 20px;">
-              <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2" style="display: flex; align-items: center; gap: 8px;">
-                <span class="text-xl">⚖️</span> 9. LIMITACIÓN DE RESPONSABILIDAD
-              </h3>
-              <p class="text-sm text-gray-700 dark:text-gray-300 mb-2"><strong>LOTOLINK no es responsable de:</strong></p>
-              <ul class="text-sm text-gray-700 dark:text-gray-300 list-disc list-inside" style="padding-left: 20px;">
-                <li style="margin-bottom: 8px;">Jugadas rechazadas por la banca</li>
-                <li style="margin-bottom: 8px;">Falta de pago de premios por parte de la banca</li>
-                <li style="margin-bottom: 8px;">Errores en sistemas de la banca</li>
-                <li>Disputas entre usuarios y bancas</li>
-              </ul>
-            </div>
-            
-            <!-- Section 10 -->
-            <div class="p-5 rounded-xl border-2" style="background: linear-gradient(90deg, #eff6ff 0%, #faf5ff 100%); border: 2px solid #93c5fd; border-radius: 12px; padding: 20px;">
-              <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2" style="display: flex; align-items: center; gap: 8px;">
-                <span class="text-xl">✍️</span> 10. ACEPTACIÓN
-              </h3>
-              <p class="text-sm text-gray-700 dark:text-gray-300 mb-2">
-                <strong>Al marcar "He leído y acepto los Términos de Servicio", la banca declara que:</strong>
-              </p>
-              <ul class="text-sm text-gray-700 dark:text-gray-300 list-disc list-inside" style="padding-left: 20px;">
-                <li style="margin-bottom: 8px;">Ha leído y comprendido estos términos</li>
-                <li style="margin-bottom: 8px;">Acepta estar legalmente vinculada</li>
-                <li style="margin-bottom: 8px;">Tiene capacidad legal para contratar</li>
-                <li>La información proporcionada es veraz</li>
-              </ul>
-            </div>
-            
+        <div class="overflow-y-auto" style="max-height: calc(90vh - 180px); -webkit-overflow-scrolling: touch; padding: 40px 50px; background: white; font-family: 'Times New Roman', Times, serif;">
+          
+          <!-- Contract-style header -->
+          <div style="text-align: center; margin-bottom: 30px; border-bottom: 2px solid #1f2937; padding-bottom: 20px;">
+            <h2 style="font-size: 22px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; color: #1f2937; margin-bottom: 10px;">CONTRATO DE TÉRMINOS Y CONDICIONES</h2>
+            <p style="font-size: 14px; color: #4b5563; margin: 5px 0;">Para Bancas Asociadas a LotoLink</p>
+            <p style="font-size: 12px; color: #6b7280; margin: 5px 0;">República Dominicana</p>
           </div>
+          
+          <!-- Section 1 -->
+          <div style="margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #d1d5db; padding-bottom: 6px;">
+              ARTÍCULO 1. DATOS DE LA EMPRESA
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0;"><strong>Nombre Comercial:</strong> LOTOLINK</p>
+              <p style="margin: 8px 0;"><strong>Tipo de Servicio:</strong> Plataforma de intermediación para loterías</p>
+              <p style="margin: 8px 0;"><strong>País de Operación:</strong> República Dominicana</p>
+            </div>
+          </div>
+          
+          <!-- Section 2 -->
+          <div style="margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #d1d5db; padding-bottom: 6px;">
+              ARTÍCULO 2. RELACIÓN DE INTERMEDIACIÓN
+            </h3>
+            <p style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify; margin: 0;">
+              LOTOLINK actúa exclusivamente como intermediario tecnológico entre usuarios finales y bancas autorizadas. <strong>LOTOLINK NO es una banca, NO emite tickets de lotería, y NO paga premios directamente.</strong> La presente relación se establece únicamente como una intermediación de servicios tecnológicos.
+            </p>
+          </div>
+          
+          <!-- Section 3 -->
+          <div style="margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #d1d5db; padding-bottom: 6px;">
+              ARTÍCULO 3. COMISIONES Y PAGOS
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0 8px 20px;">3.1. Las comisiones son porcentuales y configurables por banca.</p>
+              <p style="margin: 8px 0 8px 20px;">3.2. Los pagos se procesan a través de Stripe como procesador autorizado.</p>
+              <p style="margin: 8px 0 8px 20px;">3.3. Las comisiones se separan automáticamente de los pagos recibidos.</p>
+              <p style="margin: 8px 0 8px 20px;">3.4. Los premios son responsabilidad exclusiva de la banca que emitió el ticket.</p>
+            </div>
+          </div>
+          
+          <!-- Section 4 -->
+          <div style="margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #d1d5db; padding-bottom: 6px;">
+              ARTÍCULO 4. INTEGRACIÓN TÉCNICA
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0;">Las bancas pueden integrarse mediante tres modalidades:</p>
+              <p style="margin: 8px 0 8px 20px;">4.1. <strong>API Directa:</strong> Para bancas con sistema propio de gestión.</p>
+              <p style="margin: 8px 0 8px 20px;">4.2. <strong>App White-Label:</strong> Aplicación POS proporcionada por LOTOLINK.</p>
+              <p style="margin: 8px 0 8px 20px;">4.3. <strong>Middleware:</strong> Para integraciones personalizadas según necesidades específicas.</p>
+              <p style="margin: 8px 0;">Al aprobar una banca, se generan automáticamente las credenciales de acceso: <strong>Client ID, Client Secret y HMAC Secret</strong>, las cuales deben ser resguardadas con absoluta confidencialidad.</p>
+            </div>
+          </div>
+          
+          <!-- Section 5 -->
+          <div style="margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #d1d5db; padding-bottom: 6px;">
+              ARTÍCULO 5. OBLIGACIONES DE LA BANCA
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0;">La BANCA se compromete a:</p>
+              <p style="margin: 8px 0 8px 20px;">5.1. Mantener todas las licencias y permisos legales vigentes para su operación.</p>
+              <p style="margin: 8px 0 8px 20px;">5.2. Procesar las jugadas recibidas en tiempo real.</p>
+              <p style="margin: 8px 0 8px 20px;">5.3. Pagar los premios correspondientes a los ganadores según los términos establecidos.</p>
+              <p style="margin: 8px 0 8px 20px;">5.4. Cumplir estrictamente con todas las regulaciones locales aplicables.</p>
+              <p style="margin: 8px 0 8px 20px;">5.5. Mantener la confidencialidad absoluta de las credenciales de acceso proporcionadas.</p>
+            </div>
+          </div>
+          
+          <!-- Section 6 -->
+          <div style="margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #d1d5db; padding-bottom: 6px;">
+              ARTÍCULO 6. OBLIGACIONES DE LOTOLINK
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0;">LOTOLINK se compromete a:</p>
+              <p style="margin: 8px 0 8px 20px;">6.1. Transmitir correctamente todas las jugadas realizadas a través de la plataforma.</p>
+              <p style="margin: 8px 0 8px 20px;">6.2. Proporcionar soporte técnico para la integración y operación de los servicios.</p>
+              <p style="margin: 8px 0 8px 20px;">6.3. Mantener la plataforma operativa y funcional durante el horario establecido.</p>
+              <p style="margin: 8px 0 8px 20px;">6.4. Proteger los datos de usuarios conforme a las leyes de protección de datos aplicables.</p>
+            </div>
+          </div>
+          
+          <!-- Section 7 -->
+          <div style="margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #d1d5db; padding-bottom: 6px;">
+              ARTÍCULO 7. CONFIDENCIALIDAD Y PROTECCIÓN DE DATOS
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0 8px 20px;">7.1. Los datos de usuarios están protegidos bajo estrictas medidas de seguridad.</p>
+              <p style="margin: 8px 0 8px 20px;">7.2. Las credenciales de acceso son estrictamente confidenciales.</p>
+              <p style="margin: 8px 0 8px 20px;">7.3. Se cumple con todas las normativas vigentes de protección de datos personales.</p>
+            </div>
+          </div>
+          
+          <!-- Section 8 -->
+          <div style="margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #d1d5db; padding-bottom: 6px;">
+              ARTÍCULO 8. TERMINACIÓN DEL CONTRATO
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0 8px 20px;">8.1. LOTOLINK puede suspender o terminar la relación contractual si la BANCA viola estos términos.</p>
+              <p style="margin: 8px 0 8px 20px;">8.2. La BANCA puede terminar la relación contractual con previo aviso por escrito.</p>
+              <p style="margin: 8px 0 8px 20px;">8.3. Los fondos pendientes serán liquidados según lo acordado en el plazo establecido.</p>
+            </div>
+          </div>
+          
+          <!-- Section 9 -->
+          <div style="margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #d1d5db; padding-bottom: 6px;">
+              ARTÍCULO 9. LIMITACIÓN DE RESPONSABILIDAD
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0;"><strong>LOTOLINK no será responsable de:</strong></p>
+              <p style="margin: 8px 0 8px 20px;">9.1. Jugadas rechazadas por la banca por razones técnicas o regulatorias.</p>
+              <p style="margin: 8px 0 8px 20px;">9.2. Falta de pago de premios por parte de la banca a los usuarios.</p>
+              <p style="margin: 8px 0 8px 20px;">9.3. Errores en los sistemas de gestión propios de la banca.</p>
+              <p style="margin: 8px 0 8px 20px;">9.4. Disputas surgidas directamente entre usuarios finales y bancas.</p>
+            </div>
+          </div>
+          
+          <!-- Section 10 -->
+          <div style="margin-bottom: 25px; border: 2px solid #1f2937; padding: 20px; background: #f9fafb;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; text-align: center;">
+              ARTÍCULO 10. ACEPTACIÓN Y DECLARACIÓN
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0;"><strong>Al marcar la casilla "He leído y acepto los Términos de Servicio", la BANCA declara bajo juramento que:</strong></p>
+              <p style="margin: 8px 0 8px 20px;">10.1. Ha leído íntegramente y comprendido todos los términos establecidos en este documento.</p>
+              <p style="margin: 8px 0 8px 20px;">10.2. Acepta estar legalmente vinculada por los presentes términos y condiciones.</p>
+              <p style="margin: 8px 0 8px 20px;">10.3. Posee la capacidad legal necesaria para contratar y obligarse.</p>
+              <p style="margin: 8px 0 8px 20px;">10.4. Toda la información proporcionada es verídica y exacta.</p>
+            </div>
+          </div>
+          
+          <!-- Signature section -->
+          <div style="margin-top: 40px; padding-top: 30px; border-top: 2px solid #1f2937;">
+            <p style="font-size: 13px; color: #6b7280; text-align: center; line-height: 1.6;">
+              Este documento constituye el acuerdo completo entre las partes. La firma electrónica mediante la aceptación del checkbox tiene la misma validez legal que una firma manuscrita.
+            </p>
+          </div>
+          
         </div>
         
         <!-- Modal Footer -->
