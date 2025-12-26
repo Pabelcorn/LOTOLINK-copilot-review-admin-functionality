@@ -1579,6 +1579,328 @@
 
   <div id="root"></div>
 
+  <!-- Terms of Service Modal for Bancas (Outside React) -->
+  <div id="terms-modal-root" class="fixed inset-0 z-50 hidden overflow-y-auto overflow-x-hidden" style="-webkit-overflow-scrolling: touch;">
+    <div 
+      id="terms-modal-backdrop" 
+      class="fixed inset-0 bg-black/60 backdrop-blur-sm" 
+      onclick="window.closeTermsModal && window.closeTermsModal()"
+    ></div>
+    <div class="relative min-h-screen flex items-center justify-center p-4">
+      <div 
+        id="terms-modal-card" 
+        class="relative w-full max-w-4xl bg-white dark:bg-slate-800 rounded-2xl shadow-2xl overflow-hidden"
+        style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); border: 1px solid rgba(255, 255, 255, 0.18); max-height: 90vh;"
+      >
+        <!-- Modal Header -->
+        <div class="sticky top-0 z-10 bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6 flex items-center justify-between" style="background: linear-gradient(90deg, #2563eb 0%, #1d4ed8 100%);">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center text-2xl" style="background: rgba(255, 255, 255, 0.2); border-radius: 12px;">
+              📄
+            </div>
+            <div>
+              <h2 class="text-2xl font-bold">Términos y Condiciones</h2>
+              <p class="text-sm text-blue-100 mt-1">Para Bancas Asociadas a LotoLink</p>
+            </div>
+          </div>
+          <button 
+            onclick="window.closeTermsModal && window.closeTermsModal()"
+            class="w-10 h-10 bg-white/20 hover:bg-white/30 rounded-lg flex items-center justify-center transition-colors"
+            style="background: rgba(255, 255, 255, 0.2); border-radius: 8px; cursor: pointer; border: none;"
+            aria-label="Cerrar modal"
+          >
+            <span class="text-2xl">✕</span>
+          </button>
+        </div>
+        
+        <!-- Modal Content - Scrollable -->
+        <div class="overflow-y-auto" style="max-height: calc(90vh - 180px); -webkit-overflow-scrolling: touch; padding: 40px 50px; background: white; font-family: 'Times New Roman', Times, serif;">
+          
+          <!-- Contract-style header -->
+          <div style="text-align: center; margin-bottom: 30px; border-bottom: 2px solid #1f2937; padding-bottom: 20px;">
+            <h2 style="font-size: 22px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; color: #1f2937; margin-bottom: 10px;">TÉRMINOS DE SERVICIO PARA BANCAS</h2>
+            <p style="font-size: 14px; color: #4b5563; margin: 5px 0;"><strong>LOTOLINK SRL</strong></p>
+            <p style="font-size: 12px; color: #6b7280; margin: 5px 0;">Versión: 1.0 — Fecha de entrada en vigor: 23 de diciembre de 2025</p>
+          </div>
+          
+          <!-- Index -->
+          <div style="margin-bottom: 30px; padding: 20px; background: #f9fafb; border: 1px solid #e5e7eb;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 15px; text-align: center;">ÍNDICE</h3>
+            <div style="font-size: 13px; line-height: 2; color: #374151;">
+              <p style="margin: 5px 0;">1. Partes y Objeto</p>
+              <p style="margin: 5px 0;">2. Definiciones</p>
+              <p style="margin: 5px 0;">3. Elegibilidad, Registro y Validación</p>
+              <p style="margin: 5px 0;">4. Obligaciones de la Banca</p>
+              <p style="margin: 5px 0;">5. Obligaciones de LOTOLINK</p>
+              <p style="margin: 5px 0;">6. Pagos, Comisiones y Facturación</p>
+              <p style="margin: 5px 0;">7. Integraciones Técnicas y Herramientas</p>
+              <p style="margin: 5px 0;">8. Protección de Datos y Confidencialidad</p>
+              <p style="margin: 5px 0;">9. Prevención de Lavado de Activos (AML/KYC)</p>
+              <p style="margin: 5px 0;">10. Responsabilidad e Indemnización</p>
+              <p style="margin: 5px 0;">11. Suspensión y Terminación</p>
+              <p style="margin: 5px 0;">12. Modificaciones</p>
+              <p style="margin: 5px 0;">13. Resolución de Conflictos, Ley Aplicable y Jurisdicción</p>
+              <p style="margin: 5px 0;">14. Disposiciones Generales</p>
+              <p style="margin: 5px 0; font-style: italic;">Anexos: A. Checklist de Onboarding, B. Cláusula de Aceptación</p>
+            </div>
+          </div>
+          
+          <!-- Section 1: Partes y Objeto -->
+          <div style="margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #d1d5db; padding-bottom: 6px;">
+              1. PARTES Y OBJETO
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0;">Estos Términos de Servicio ("Términos") se celebran entre <strong>LOTOLINK SRL, RNC 123-456-789</strong>, con domicilio en Calle Fantasía #42, Santo Domingo, República Dominicana ("LOTOLINK"), y la persona jurídica o física que se registra como Banca en la plataforma ("Banca").</p>
+              <p style="margin: 8px 0;"><strong>Objeto:</strong> LOTOLINK provee una plataforma tecnológica que permite la recepción, transmisión y gestión de jugadas de lotería realizadas por Usuarios y la integración de Bancas para procesar dichas jugadas. LOTOLINK actúa exclusivamente como intermediario tecnológico y no como operador de lotería ni como pagador de premios.</p>
+            </div>
+          </div>
+          
+          <!-- Section 2: Definiciones -->
+          <div style="margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #d1d5db; padding-bottom: 6px;">
+              2. DEFINICIONES
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0;"><strong>Banca:</strong> Entidad o negocio, físico o digital, que se registra y valida para recibir jugadas a través de la Plataforma.</p>
+              <p style="margin: 8px 0;"><strong>Usuario:</strong> Persona natural que realiza jugadas por medio de la Plataforma.</p>
+              <p style="margin: 8px 0;"><strong>Plataforma / Sistema:</strong> Conjunto de aplicaciones móviles, paneles web, APIs, servicios y procesos operados por LOTOLINK.</p>
+              <p style="margin: 8px 0;"><strong>Jugadas / Boletos:</strong> Solicitudes de participación en sorteos que la Banca procesa y valida según reglas aplicables.</p>
+              <p style="margin: 8px 0;"><strong>Comisión:</strong> Porcentaje retenido por LOTOLINK sobre el importe de cada jugada vendida a través de la Plataforma.</p>
+              <p style="margin: 8px 0;"><strong>Integración:</strong> Modalidad técnica de conexión: API Directa, App White-Label (POS) o Middleware.</p>
+            </div>
+          </div>
+          
+          <!-- Section 3: Elegibilidad -->
+          <div style="margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #d1d5db; padding-bottom: 6px;">
+              3. ELEGIBILIDAD, REGISTRO Y VALIDACIÓN
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0;">La Banca declara que su actividad está permitida en su jurisdicción y que cumple con permisos, licencias y obligaciones legales aplicables. La Banca podrá ser ubicada dentro o fuera de la República Dominicana siempre que cumpla la regulación local pertinente.</p>
+              <p style="margin: 8px 0;"><strong>Documentación requerida:</strong> identificación del propietario/representante legal, RNC o NIT (si aplica), licencia o permiso de operación, datos bancarios para transferencias, cédula o documento de identidad y documentación adicional KYC/AML que LOTOLINK requiera.</p>
+              <p style="margin: 8px 0;">LOTOLINK podrá realizar verificaciones KYC/AML y auditorías; si la documentación no resulta satisfactoria, LOTOLINK podrá rechazar el registro o suspender la relación.</p>
+            </div>
+          </div>
+          
+          <!-- Section 4: Obligaciones de la Banca -->
+          <div style="margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #d1d5db; padding-bottom: 6px;">
+              4. OBLIGACIONES DE LA BANCA
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0;">• Pagar directamente los premios a los Usuarios ganadores de acuerdo con las reglas de la lotería y la Banca. LOTOLINK solo facilita la notificación y el proceso técnico.</p>
+              <p style="margin: 8px 0;">• Mantener vigentes licencias, permisos y registros, y notificar a LOTOLINK cualquier cambio que afecte la operación.</p>
+              <p style="margin: 8px 0;">• Cumplir las obligaciones fiscales y reportes exigidos por su jurisdicción; colaborar con auditorías y requerimientos regulatorios.</p>
+              <p style="margin: 8px 0;">• Implementar controles internos contra fraude y abuso, mantener la integridad de sus cuentas y proteger credenciales/API keys.</p>
+              <p style="margin: 8px 0;">• Responder a las reclamaciones de Usuarios y coordinar con LOTOLINK los procesos de verificación y resolución.</p>
+            </div>
+          </div>
+          
+          <!-- Section 5: Obligaciones de LOTOLINK -->
+          <div style="margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #d1d5db; padding-bottom: 6px;">
+              5. OBLIGACIONES DE LOTOLINK
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0;">• Proveer, mantener y operar la Plataforma con esfuerzos razonables para asegurar disponibilidad, seguridad y continuidad del servicio.</p>
+              <p style="margin: 8px 0;">• Retener las comisiones pactadas en el flujo de pagos, emitir comprobantes/facturas por las comisiones y remitir reportes periódicos a la Banca con detalle de ventas, comisiones y conciliaciones.</p>
+              <p style="margin: 8px 0;">• Implementar medidas técnicas y organizativas de seguridad y tratar los datos personales conforme a la Política de Privacidad y la Ley 172-13 de Protección de Datos Personales.</p>
+              <p style="margin: 8px 0;">• Notificar a la Banca de cambios técnicos relevantes, mantenimientos programados e incidentes de seguridad.</p>
+            </div>
+          </div>
+          
+          <!-- Section 6: Pagos y Comisiones -->
+          <div style="margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #d1d5db; padding-bottom: 6px;">
+              6. PAGOS, COMISIONES Y FACTURACIÓN
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0;">La Banca acepta que LOTOLINK retendrá una comisión porcentual sobre cada jugada vendida por la Plataforma. La comisión vigente al momento de entrada en vigor de estos Términos es del <strong>7%</strong> y podrá incrementarse hasta <strong>10%</strong> previa notificación con 30 días de antelación.</p>
+              <p style="margin: 8px 0;"><strong>Retención automática:</strong> las comisiones se retendrán automáticamente en el flujo de pago (por ejemplo, Stripe Connect) antes de transferir el saldo a la cuenta de la Banca.</p>
+              <p style="margin: 8px 0;"><strong>Facturación:</strong> LOTOLINK emitirá facturas o comprobantes por las comisiones cobradas. La Banca es responsable por impuestos, retenciones u otros cargos que su jurisdicción exija.</p>
+              <p style="margin: 8px 0;"><strong>Devoluciones y ajustes:</strong> en caso de transacciones rechazadas, fallidas o jugadas no aceptadas por la Banca, se aplicarán ajustes y notas de crédito conforme a la política de pagos y conciliación definida en la documentación técnica.</p>
+            </div>
+          </div>
+          
+          <!-- Section 7: Integraciones Técnicas -->
+          <div style="margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #d1d5db; padding-bottom: 6px;">
+              7. INTEGRACIONES TÉCNICAS Y HERRAMIENTAS
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0;">LOTOLINK soporta las siguientes modalidades de integración:</p>
+              <p style="margin: 8px 0;"><strong>• API Directa:</strong> Para Bancas con sistema propio. Se entregan especificaciones OpenAPI, claves y endpoints. La Banca es responsable de implementar llamadas con seguridad adecuada.</p>
+              <p style="margin: 8px 0;"><strong>• App White-Label / POS:</strong> Aplicación móvil proporcionada por LOTOLINK (marca blanca) para vendedores y POS que permita registrar jugadas y emitir comprobantes.</p>
+              <p style="margin: 8px 0;"><strong>• Middleware / Integración personalizada:</strong> Conexiones a medida para sistemas legacy o terceros.</p>
+              <p style="margin: 8px 0;"><strong>Responsabilidades técnicas:</strong> la Banca conservará en secreto sus credenciales y las claves API, respetará límites de uso y reportará errores a LOTOLINK. LOTOLINK no será responsable por integraciones realizadas por terceros elegidos por la Banca sin autorización.</p>
+              <p style="margin: 8px 0;"><strong>SLA y mantenimiento:</strong> LOTOLINK hará esfuerzos razonables por mantener la Plataforma disponible; los mantenimientos programados se anunciarán con antelación razonable.</p>
+            </div>
+          </div>
+          
+          <!-- Section 8: Protección de Datos -->
+          <div style="margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #d1d5db; padding-bottom: 6px;">
+              8. PROTECCIÓN DE DATOS Y CONFIDENCIALIDAD
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0;">Ambas partes cumplirán la <strong>Ley 172-13 de Protección de Datos Personales</strong> y normativa aplicable. LOTOLINK actuará como responsable del tratamiento de los datos procesados en la Plataforma.</p>
+              <p style="margin: 8px 0;">La Banca garantizará que cuenta con la base legal para el tratamiento de los datos que facilite a LOTOLINK y cooperará en la atención de solicitudes ARCO de Usuarios.</p>
+              <p style="margin: 8px 0;"><strong>Confidencialidad:</strong> la información técnica, comercial y de clientes se considera confidencial. Las partes mantendrán confidencialidad por tres (3) años tras la terminación del vínculo, salvo obligaciones legales en contrario.</p>
+            </div>
+          </div>
+          
+          <!-- Section 9: AML/KYC -->
+          <div style="margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #d1d5db; padding-bottom: 6px;">
+              9. PREVENCIÓN DE LAVADO DE ACTIVOS (AML/KYC)
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0;">La Banca implementará procedimientos KYC/AML conforme a su jurisdicción y cooperará con LOTOLINK para detectar y reportar operaciones sospechosas.</p>
+              <p style="margin: 8px 0;">LOTOLINK podrá requerir documentación adicional y suspender operaciones ante indicios de lavado de activos, fraude o conductas ilícitas, y reportar a autoridades competentes cuando sea obligatorio.</p>
+            </div>
+          </div>
+          
+          <!-- Section 10: Responsabilidad -->
+          <div style="margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #d1d5db; padding-bottom: 6px;">
+              10. RESPONSABILIDAD E INDEMNIZACIÓN
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0;">La Banca indemnizará y mantendrá indemne a LOTOLINK frente a reclamaciones, sanciones, pérdidas o gastos que resulten de: (i) incumplimiento por la Banca de leyes aplicables; (ii) impago de premios o deudas fiscales; (iii) fraude o manipulación de jugadas; (iv) violaciones de derechos de terceros.</p>
+              <p style="margin: 8px 0;">LOTOLINK indemnizará a la Banca únicamente por fallas técnicas demostrables imputables exclusivamente a LOTOLINK y que causen daño directo comprobable a la Banca.</p>
+              <p style="margin: 8px 0;"><strong>Limitación de responsabilidad:</strong> salvo por dolo o fraude, la responsabilidad total se limitará al mayor de: (a) las comisiones efectivamente pagadas por la Banca durante los doce (12) meses anteriores al evento; o (b) RD$100,000. En ningún caso se cubrirán daños indirectos o lucro cesante.</p>
+            </div>
+          </div>
+          
+          <!-- Section 11: Suspensión y Terminación -->
+          <div style="margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #d1d5db; padding-bottom: 6px;">
+              11. SUSPENSIÓN Y TERMINACIÓN
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0;">LOTOLINK podrá suspender o cancelar el acceso en caso de: fraude, impago, incumplimiento material, orden judicial, o riesgo reputacional. La suspensión podrá ser inmediata cuando existan indicios serios.</p>
+              <p style="margin: 8px 0;"><strong>Efectos:</strong> al terminar la relación, la Banca perderá acceso; obligaciones de pago, confidencialidad e indemnización subsistirán. LOTOLINK podrá retener fondos justificados para cubrir deudas pendientes.</p>
+              <p style="margin: 8px 0;">La Banca podrá resolver la relación con 30 días de aviso, coordinando la liquidación de operaciones en curso.</p>
+            </div>
+          </div>
+          
+          <!-- Section 12: Modificaciones -->
+          <div style="margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #d1d5db; padding-bottom: 6px;">
+              12. MODIFICACIONES
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0;">LOTOLINK podrá modificar estos Términos con 30 días de aviso previo; cambios urgentes por razones de seguridad o regulatorias podrán aplicarse con menor preaviso. El uso continuado implica aceptación.</p>
+            </div>
+          </div>
+          
+          <!-- Section 13: Resolución de Conflictos -->
+          <div style="margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #d1d5db; padding-bottom: 6px;">
+              13. RESOLUCIÓN DE CONFLICTOS, LEY APLICABLE Y JURISDICCIÓN
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0;"><strong>Ley aplicable:</strong> República Dominicana.</p>
+              <p style="margin: 8px 0;"><strong>Jurisdicción:</strong> Tribunales de Santo Domingo, República Dominicana.</p>
+            </div>
+          </div>
+          
+          <!-- Section 14: Disposiciones Generales -->
+          <div style="margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #d1d5db; padding-bottom: 6px;">
+              14. DISPOSICIONES GENERALES
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0;"><strong>Notificaciones:</strong> se enviarán a las direcciones registradas y a legal@lotolink.com.</p>
+              <p style="margin: 8px 0;"><strong>Cesión:</strong> la Banca no podrá ceder derechos sin consentimiento; LOTOLINK podrá ceder en eventos de fusión o venta de activos.</p>
+              <p style="margin: 8px 0;"><strong>Acuerdo completo:</strong> estos Términos y la Política de Privacidad constituyen el acuerdo completo.</p>
+            </div>
+          </div>
+          
+          <!-- Anexo A -->
+          <div style="margin-bottom: 25px; padding: 20px; background: #f9fafb; border: 1px solid #d1d5db;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase;">
+              ANEXO A — CHECKLIST DE ONBOARDING PARA BANCAS
+            </h3>
+            <div style="font-size: 13px; line-height: 1.8; color: #374151;">
+              <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                <tr style="background: #e5e7eb;">
+                  <th style="padding: 8px; text-align: left; border: 1px solid #d1d5db; font-weight: bold;">Documento</th>
+                  <th style="padding: 8px; text-align: left; border: 1px solid #d1d5db; font-weight: bold;">Descripción</th>
+                </tr>
+                <tr>
+                  <td style="padding: 8px; border: 1px solid #d1d5db;">Formulario completado</td>
+                  <td style="padding: 8px; border: 1px solid #d1d5db;">Datos del negocio, propietario, cuenta bancaria, contactos.</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px; border: 1px solid #d1d5db;">Documentos KYC</td>
+                  <td style="padding: 8px; border: 1px solid #d1d5db;">Cédula/ID, RNC/NIT, licencia de operación.</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px; border: 1px solid #d1d5db;">Integración técnica</td>
+                  <td style="padding: 8px; border: 1px solid #d1d5db;">Tipo API / App / Middleware y endpoints.</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px; border: 1px solid #d1d5db;">Pruebas</td>
+                  <td style="padding: 8px; border: 1px solid #d1d5db;">Pruebas de extremo a extremo: ventas, reembolsos y conciliación.</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px; border: 1px solid #d1d5db;">Firma/aceptación</td>
+                  <td style="padding: 8px; border: 1px solid #d1d5db;">Checkbox + registro de IP y timestamp.</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px; border: 1px solid #d1d5db;">Producción</td>
+                  <td style="padding: 8px; border: 1px solid #d1d5db;">Activación y monitoreo inicial 72 horas.</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          
+          <!-- Anexo B -->
+          <div style="margin-bottom: 25px; padding: 20px; background: #eff6ff; border: 2px solid #2563eb;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase;">
+              ANEXO B — CLÁUSULA DE ACEPTACIÓN
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0; font-weight: bold;">Al marcar esta casilla y enviar el formulario, declaro que soy representante legal de la banca, que la información suministrada es verdadera y que acepto quedar vinculado por los Términos para Bancas y la Política de Privacidad.</p>
+            </div>
+          </div>
+          
+          <!-- Contact Information -->
+          <div style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #1f2937; text-align: center;">
+            <h4 style="font-size: 14px; font-weight: bold; color: #1f2937; margin-bottom: 10px;">CONTACTO</h4>
+            <p style="font-size: 12px; color: #6b7280; line-height: 1.6;">
+              <strong>Soporte:</strong> soporte@lotolink.com<br>
+              <strong>Legal:</strong> legal@lotolink.com<br>
+              <strong>Privacidad:</strong> privacidad@lotolink.com
+            </p>
+          </div>
+          
+          <!-- Signature section -->
+          <div style="margin-top: 40px; padding-top: 30px; border-top: 2px solid #1f2937;">
+            <p style="font-size: 13px; color: #6b7280; text-align: center; line-height: 1.6;">
+              Este documento constituye el acuerdo completo entre las partes. La firma electrónica mediante la aceptación del checkbox tiene la misma validez legal que una firma manuscrita.
+            </p>
+          </div>
+          
+        </div>
+        
+        <!-- Modal Footer -->
+        <div class="sticky bottom-0 bg-gray-50 dark:bg-slate-900 border-t border-gray-200 dark:border-slate-700 p-6 flex justify-center" style="background: #f9fafb; border-top: 1px solid #e5e7eb; padding: 24px; display: flex; justify-content: center;">
+          <button 
+            onclick="window.closeTermsModal && window.closeTermsModal()"
+            class="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-full shadow-lg hover:shadow-xl transition-all transform hover:scale-105 flex items-center gap-2"
+            style="background: #2563eb; color: white; border: none; padding: 12px 32px; border-radius: 9999px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3); transition: all 0.2s;"
+          >
+            <span>✓</span>
+            <span>Entendido</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- React Libraries -->
   <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
@@ -2085,7 +2407,7 @@
                         className="mt-1 w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" 
                       />
                       <span className="text-sm text-gray-600 leading-tight">
-                        He leído y acepto los <a href="#" className="text-blue-600 hover:underline">Términos de Servicio</a>.
+                        He leído y acepto los <a href="#" onClick={(e) => { e.preventDefault(); window.openTermsModal && window.openTermsModal(); }} className="text-blue-600 hover:underline">Términos de Servicio</a>.
                       </span>
                     </label>
                   </div>
@@ -8249,6 +8571,44 @@
       window.updateStake = updateStake;
       window.toggleLotteryDarkMode = toggleLotteryDarkMode;
       window.renderModal = renderModal;
+    })();
+  </script>
+  
+  <!-- Terms of Service Modal Logic -->
+  <script>
+    (function() {
+      // Open Terms of Service Modal
+      function openTermsModal() {
+        const modal = document.getElementById('terms-modal-root');
+        if (modal) {
+          modal.classList.remove('hidden');
+          modal.classList.add('flex');
+          // Prevent body scroll when modal is open
+          document.body.style.overflow = 'hidden';
+        }
+      }
+      
+      // Close Terms of Service Modal
+      function closeTermsModal() {
+        const modal = document.getElementById('terms-modal-root');
+        if (modal) {
+          modal.classList.add('hidden');
+          modal.classList.remove('flex');
+          // Restore body scroll
+          document.body.style.overflow = '';
+        }
+      }
+      
+      // Close modal on Escape key
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          closeTermsModal();
+        }
+      });
+      
+      // Expose functions globally
+      window.openTermsModal = openTermsModal;
+      window.closeTermsModal = closeTermsModal;
     })();
   </script>
   
