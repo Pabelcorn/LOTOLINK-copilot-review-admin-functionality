@@ -8,6 +8,7 @@ import {
   IonTabBar,
   IonTabButton,
   IonTabs,
+  IonSplitPane,
   setupIonicReact,
   isPlatform
 } from '@ionic/react';
@@ -45,6 +46,10 @@ import Bancas from './pages/Bancas';
 import Profile from './pages/Profile';
 import Play from './pages/Play';
 import PaymentMethods from './pages/PaymentMethods';
+import LegalDocument from './pages/LegalDocument';
+
+/* Components */
+import Menu from './components/Menu';
 
 /* Services */
 import { setupNotificationListeners } from './services/notifications.service';
@@ -113,53 +118,59 @@ const App: React.FC = () => {
   return (
     <IonApp>
       <IonReactRouter>
-        <IonTabs>
-          <IonRouterOutlet>
-            <Route exact path="/home">
-              <Home />
-            </Route>
-            <Route exact path="/lotteries">
-              <Lotteries />
-            </Route>
-            <Route path="/play/:lotteryId">
-              <Play />
-            </Route>
-            <Route exact path="/bancas">
-              <Bancas />
-            </Route>
-            <Route exact path="/profile">
-              <Profile />
-            </Route>
-            <Route exact path="/payment-methods">
-              <PaymentMethods />
-            </Route>
-            <Route exact path="/">
-              <Redirect to="/home" />
-            </Route>
-          </IonRouterOutlet>
-          <IonTabBar slot="bottom" className="tab-bar-custom">
-            <IonTabButton tab="home" href="/home" aria-label="Página de inicio">
-              <IonIcon aria-hidden="true" icon={home} />
-              <IonLabel>Inicio</IonLabel>
-            </IonTabButton>
-            <IonTabButton tab="lotteries" href="/lotteries" aria-label="Ver loterías disponibles">
-              <IonIcon aria-hidden="true" icon={trophy} />
-              <IonLabel>Loterías</IonLabel>
-            </IonTabButton>
-            <IonTabButton tab="play" href="/lotteries" className="tab-play-button" aria-label="Jugar ahora">
-              <IonIcon aria-hidden="true" icon={ticket} size="large" />
-              <IonLabel>Jugar</IonLabel>
-            </IonTabButton>
-            <IonTabButton tab="bancas" href="/bancas" aria-label="Ver bancas cercanas">
-              <IonIcon aria-hidden="true" icon={storefront} />
-              <IonLabel>Bancas</IonLabel>
-            </IonTabButton>
-            <IonTabButton tab="profile" href="/profile" aria-label="Ver perfil de usuario">
-              <IonIcon aria-hidden="true" icon={personCircle} />
-              <IonLabel>Perfil</IonLabel>
-            </IonTabButton>
-          </IonTabBar>
-        </IonTabs>
+        <IonSplitPane contentId="main">
+          <Menu />
+          <IonTabs id="main">
+            <IonRouterOutlet>
+              <Route exact path="/home">
+                <Home />
+              </Route>
+              <Route exact path="/lotteries">
+                <Lotteries />
+              </Route>
+              <Route path="/play/:lotteryId">
+                <Play />
+              </Route>
+              <Route exact path="/bancas">
+                <Bancas />
+              </Route>
+              <Route exact path="/profile">
+                <Profile />
+              </Route>
+              <Route exact path="/payment-methods">
+                <PaymentMethods />
+              </Route>
+              <Route path="/legal/:documentType">
+                <LegalDocument />
+              </Route>
+              <Route exact path="/">
+                <Redirect to="/home" />
+              </Route>
+            </IonRouterOutlet>
+            <IonTabBar slot="bottom" className="tab-bar-custom">
+              <IonTabButton tab="home" href="/home" aria-label="Página de inicio">
+                <IonIcon aria-hidden="true" icon={home} />
+                <IonLabel>Inicio</IonLabel>
+              </IonTabButton>
+              <IonTabButton tab="lotteries" href="/lotteries" aria-label="Ver loterías disponibles">
+                <IonIcon aria-hidden="true" icon={trophy} />
+                <IonLabel>Loterías</IonLabel>
+              </IonTabButton>
+              <IonTabButton tab="play" href="/lotteries" className="tab-play-button" aria-label="Jugar ahora">
+                <IonIcon aria-hidden="true" icon={ticket} size="large" />
+                <IonLabel>Jugar</IonLabel>
+              </IonTabButton>
+              <IonTabButton tab="bancas" href="/bancas" aria-label="Ver bancas cercanas">
+                <IonIcon aria-hidden="true" icon={storefront} />
+                <IonLabel>Bancas</IonLabel>
+              </IonTabButton>
+              <IonTabButton tab="profile" href="/profile" aria-label="Ver perfil de usuario">
+                <IonIcon aria-hidden="true" icon={personCircle} />
+                <IonLabel>Perfil</IonLabel>
+              </IonTabButton>
+            </IonTabBar>
+          </IonTabs>
+        </IonSplitPane>
       </IonReactRouter>
     </IonApp>
   );

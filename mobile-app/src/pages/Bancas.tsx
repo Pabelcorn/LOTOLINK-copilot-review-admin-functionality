@@ -11,7 +11,9 @@ import {
   IonButton,
   IonSegment,
   IonSegmentButton,
-  IonLabel
+  IonLabel,
+  IonButtons,
+  IonMenuButton
 } from '@ionic/react';
 import { location, time, call } from 'ionicons/icons';
 import { useState } from 'react';
@@ -73,6 +75,9 @@ const Bancas: React.FC = () => {
     <IonPage>
       <IonHeader className="ion-no-border">
         <IonToolbar className="premium-header">
+          <IonButtons slot="start">
+            <IonMenuButton />
+          </IonButtons>
           <IonTitle style={{ fontWeight: '700' }}>Bancas</IonTitle>
         </IonToolbar>
         <IonToolbar>
