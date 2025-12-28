@@ -64,9 +64,12 @@ const LegalDocument: React.FC = () => {
   }, [documentType, document]);
 
   // Convert markdown to basic HTML for display
+  // Note: This is a simple markdown parser for controlled content (legal documents).
+  // For user-generated content, consider using a dedicated library like react-markdown.
   const formatMarkdown = (markdown: string): string => {
     let html = markdown
       // Escape any existing HTML to prevent XSS
+      // Note: This escapes before markdown processing, so raw HTML in markdown won't render
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
       // Headers (must be done before other replacements)
@@ -137,10 +140,11 @@ const LegalDocument: React.FC = () => {
             <div 
               style={{ 
                 fontSize: '14px',
-                lineHeight: '1.6'
+                lineHeight: '1.6',
+                margin: '16px 0'
               }}
               dangerouslySetInnerHTML={{ 
-                __html: `<p style="margin: 16px 0; line-height: 1.6; color: var(--ion-color-medium);">${formatMarkdown(content)}</p>` 
+                __html: `<div>${formatMarkdown(content)}</div>` 
               }}
             />
           )}
