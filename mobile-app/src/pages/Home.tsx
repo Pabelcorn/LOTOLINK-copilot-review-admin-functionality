@@ -260,53 +260,53 @@ const Home: React.FC = () => {
             justifyContent: 'center', 
             alignItems: 'center',
             flexWrap: 'wrap',
-            gap: '8px',
+            gap: '4px',
             fontSize: '12px'
           }}>
-            <button 
+            <IonButton 
+              fill="clear"
+              size="small"
               onClick={() => history.push('/legal/privacy-policy')}
               style={{ 
-                background: 'none', 
-                border: 'none', 
-                color: 'var(--ion-color-primary)',
-                textDecoration: 'underline',
-                cursor: 'pointer',
-                padding: '4px 8px'
+                '--padding-start': '8px',
+                '--padding-end': '8px',
+                fontSize: '12px',
+                textTransform: 'none'
               }}
               aria-label="Ver Política de Privacidad"
             >
               Política de Privacidad
-            </button>
+            </IonButton>
             <span style={{ color: 'var(--ion-color-medium)' }}>|</span>
-            <button 
+            <IonButton 
+              fill="clear"
+              size="small"
               onClick={() => history.push('/legal/terms-conditions')}
               style={{ 
-                background: 'none', 
-                border: 'none', 
-                color: 'var(--ion-color-primary)',
-                textDecoration: 'underline',
-                cursor: 'pointer',
-                padding: '4px 8px'
+                '--padding-start': '8px',
+                '--padding-end': '8px',
+                fontSize: '12px',
+                textTransform: 'none'
               }}
               aria-label="Ver Términos y Condiciones"
             >
               Términos y Condiciones
-            </button>
+            </IonButton>
             <span style={{ color: 'var(--ion-color-medium)' }}>|</span>
-            <button 
+            <IonButton 
+              fill="clear"
+              size="small"
               onClick={() => history.push('/legal/legal-declaration')}
               style={{ 
-                background: 'none', 
-                border: 'none', 
-                color: 'var(--ion-color-primary)',
-                textDecoration: 'underline',
-                cursor: 'pointer',
-                padding: '4px 8px'
+                '--padding-start': '8px',
+                '--padding-end': '8px',
+                fontSize: '12px',
+                textTransform: 'none'
               }}
               aria-label="Ver Declaración Legal"
             >
               Declaración Legal
-            </button>
+            </IonButton>
           </div>
         </div>
       </IonContent>
