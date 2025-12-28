@@ -22,11 +22,10 @@ import {
   shieldCheckmark,
   informationCircle,
 } from 'ionicons/icons';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { APP_INFO } from '../constants';
 
 const Menu: React.FC = () => {
-  const history = useHistory();
   const location = useLocation();
 
   interface MenuItem {
@@ -51,10 +50,6 @@ const Menu: React.FC = () => {
     { title: 'Términos y Condiciones', url: '/legal/terms-conditions', icon: document },
     { title: 'Declaración Legal', url: '/legal/legal-declaration', icon: informationCircle },
   ];
-
-  const handleNavigation = (url: string) => {
-    history.push(url);
-  };
 
   return (
     <IonMenu contentId="main" type="overlay">
