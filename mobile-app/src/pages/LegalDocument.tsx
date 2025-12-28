@@ -72,23 +72,38 @@ const LegalDocument: React.FC = () => {
       // Escape any existing HTML to prevent XSS
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
-      // Headers with premium styling
-      .replace(/^### (.*$)/gim, '<h3 style="font-size: 18px; font-weight: 700; margin: 32px 0 16px 0; color: var(--ion-color-dark); letter-spacing: -0.01em; line-height: 1.3;">$1</h3>')
-      .replace(/^## (.*$)/gim, '<h2 style="font-size: 22px; font-weight: 700; margin: 40px 0 20px 0; color: var(--ion-color-dark); letter-spacing: -0.02em; line-height: 1.2;">$2</h2>')
-      .replace(/^# (.*$)/gim, '<h1 style="font-size: 28px; font-weight: 800; margin: 0 0 24px 0; background: linear-gradient(135deg, var(--ion-color-primary) 0%, #5856d6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -0.02em; line-height: 1.2;">$1</h1>')
-      // Bold text
-      .replace(/\*\*(.*?)\*\*/gim, '<strong style="font-weight: 600; color: var(--ion-color-dark);">$1</strong>')
-      // Line breaks and paragraphs
-      .replace(/\n\n/g, '</p><p style="margin: 20px 0; line-height: 1.7; color: var(--ion-color-medium); font-size: 15px;">')
+      // Headers with premium styling - must process from most specific to least
+      .replace(/^#### (.*$)/gim, '<h4 style="font-size: 16px; font-weight: 700; margin: 28px 0 14px 0; color: var(--ion-color-primary); letter-spacing: -0.01em; line-height: 1.3; border-left: 4px solid var(--ion-color-primary); padding-left: 16px;">$1</h4>')
+      .replace(/^### (.*$)/gim, '<h3 style="font-size: 18px; font-weight: 700; margin: 32px 0 16px 0; color: var(--ion-color-dark); letter-spacing: -0.01em; line-height: 1.3; padding-bottom: 8px; border-bottom: 2px solid rgba(0,113,227,0.1);">$1</h3>')
+      .replace(/^## (.*$)/gim, '<h2 style="font-size: 22px; font-weight: 700; margin: 44px 0 20px 0; color: var(--ion-color-dark); letter-spacing: -0.02em; line-height: 1.2; padding-bottom: 12px; border-bottom: 3px solid rgba(0,113,227,0.15);">$2</h2>')
+      .replace(/^# (.*$)/gim, '<h1 style="font-size: 28px; font-weight: 800; margin: 0 0 28px 0; background: linear-gradient(135deg, var(--ion-color-primary) 0%, #5856d6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -0.02em; line-height: 1.2; padding-bottom: 16px; border-bottom: 4px solid rgba(0,113,227,0.2);">$1</h1>')
+      // Bold text with subtle highlight
+      .replace(/\*\*(.*?)\*\*/gim, '<strong style="font-weight: 700; color: var(--ion-color-dark); background: linear-gradient(180deg, transparent 0%, transparent 60%, rgba(0,113,227,0.08) 60%, rgba(0,113,227,0.08) 100%); padding: 2px 0;">$1</strong>')
+      // Line breaks and paragraphs with enhanced styling
+      .replace(/\n\n/g, '</p><p style="margin: 20px 0; line-height: 1.8; color: var(--ion-color-medium); font-size: 15px; text-align: justify;">')
       .replace(/\n/g, '<br>');
 
-    // Handle lists with premium styling
+    // Handle unordered lists with premium styling
     html = html.replace(/((?:^- .*$\n?)+)/gim, (match) => {
       const items = match.split('\n')
         .filter(line => line.trim())
-        .map(line => line.replace(/^- (.*)$/, '<li style="margin: 12px 0; line-height: 1.7; color: var(--ion-color-medium); font-size: 15px; padding-left: 8px;">$1</li>'))
+        .map(line => line.replace(/^- (.*)$/, '<li style="margin: 14px 0; line-height: 1.8; color: var(--ion-color-medium); font-size: 15px; padding-left: 12px; position: relative;">$1</li>'))
         .join('');
-      return `<ul style="margin: 24px 0; padding-left: 28px; list-style-type: disc;">${items}</ul>`;
+      return `<ul style="margin: 28px 0; padding-left: 32px; list-style-type: none;"><style>ul li::before { content: "•"; color: var(--ion-color-primary); font-weight: bold; font-size: 20px; position: absolute; left: -20px; }</style>${items}</ul>`;
+    });
+
+    // Handle numbered lists
+    html = html.replace(/((?:^\d+\. .*$\n?)+)/gim, (match) => {
+      const items = match.split('\n')
+        .filter(line => line.trim())
+        .map(line => line.replace(/^\d+\. (.*)$/, '<li style="margin: 14px 0; line-height: 1.8; color: var(--ion-color-medium); font-size: 15px; padding-left: 12px;">$1</li>'))
+        .join('');
+      return `<ol style="margin: 28px 0; padding-left: 32px; counter-reset: item; list-style-type: none;"><style>ol li::before { content: counter(item) ". "; counter-increment: item; color: var(--ion-color-primary); font-weight: 700; font-size: 16px; }</style>${items}</ol>`;
+    });
+
+    // Add decorative elements for key sections (indicated by **text** at start of line)
+    html = html.replace(/^<strong style="[^"]*">([^<]+)<\/strong>:/gim, (match, text) => {
+      return `<div style="display: flex; align-items: center; gap: 12px; margin: 24px 0 12px 0;"><div style="width: 4px; height: 24px; background: linear-gradient(180deg, var(--ion-color-primary) 0%, #5856d6 100%); border-radius: 2px;"></div><strong style="font-weight: 700; color: var(--ion-color-dark); font-size: 16px; letter-spacing: -0.01em;">${text}:</strong></div>`;
     });
 
     return html;
@@ -215,18 +230,44 @@ const LegalDocument: React.FC = () => {
           
           {!loading && !error && content && (
             <div style={{
-              background: 'rgba(255,255,255,0.98)',
-              borderRadius: '20px',
-              padding: '32px 24px',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.04), 0 0 1px rgba(0,0,0,0.05)',
-              border: '1px solid rgba(0,0,0,0.05)'
+              background: 'linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(250,250,252,0.98) 100%)',
+              borderRadius: '24px',
+              padding: '40px 28px',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.06), 0 2px 8px rgba(0,0,0,0.04), 0 0 1px rgba(0,0,0,0.04)',
+              border: '1px solid rgba(0,0,0,0.06)',
+              position: 'relative',
+              overflow: 'hidden'
             }}>
+              {/* Decorative corner accents */}
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                right: 0,
+                width: '120px',
+                height: '120px',
+                background: 'linear-gradient(225deg, rgba(0,113,227,0.04) 0%, transparent 100%)',
+                borderRadius: '0 0 0 120px',
+                pointerEvents: 'none'
+              }}></div>
+              <div style={{
+                position: 'absolute',
+                bottom: 0,
+                left: 0,
+                width: '120px',
+                height: '120px',
+                background: 'linear-gradient(45deg, rgba(88,86,214,0.04) 0%, transparent 100%)',
+                borderRadius: '0 120px 0 0',
+                pointerEvents: 'none'
+              }}></div>
+              
               <div 
                 style={{ 
                   fontSize: '15px',
-                  lineHeight: '1.7',
+                  lineHeight: '1.8',
                   color: 'var(--ion-color-medium)',
-                  letterSpacing: '-0.01em'
+                  letterSpacing: '-0.01em',
+                  position: 'relative',
+                  zIndex: 1
                 }}
                 dangerouslySetInnerHTML={{ 
                   __html: `<div>${formatMarkdown(content)}</div>` 
