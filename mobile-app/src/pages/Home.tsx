@@ -243,70 +243,119 @@ const Home: React.FC = () => {
 
         {/* Legal Footer */}
         <div style={{ 
-          padding: '24px 16px 100px 16px',
+          padding: '32px 16px 100px 16px',
           textAlign: 'center',
-          borderTop: '1px solid var(--ion-color-light-shade)'
+          background: 'linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(var(--ion-color-light-rgb, 245,245,247),0.8) 50%, rgba(255,255,255,0.95) 100%)',
+          borderTop: '1px solid rgba(0,0,0,0.05)'
         }}>
-          <div style={{ 
-            fontSize: '12px', 
-            color: 'var(--ion-color-medium)',
-            marginBottom: '12px',
-            fontWeight: '500'
-          }}>
-            LotoLink © 2024
-          </div>
-          <div style={{ 
-            display: 'flex', 
-            justifyContent: 'center', 
-            alignItems: 'center',
-            flexWrap: 'wrap',
-            gap: '4px',
-            fontSize: '12px'
-          }}>
-            <IonButton 
-              fill="clear"
-              size="small"
-              onClick={() => history.push('/legal/privacy-policy')}
-              style={{ 
-                '--padding-start': '8px',
-                '--padding-end': '8px',
+          <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+            {/* Brand Badge */}
+            <div style={{ marginBottom: '24px' }}>
+              <div style={{
+                display: 'inline-block',
+                padding: '8px 16px',
+                borderRadius: '20px',
+                background: 'rgba(var(--ion-color-primary-rgb, 0,113,227), 0.08)',
+                border: '1px solid rgba(var(--ion-color-primary-rgb, 0,113,227), 0.12)'
+              }}>
+                <span style={{
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  background: 'linear-gradient(135deg, var(--ion-color-primary, #0071e3) 0%, #5856d6 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  letterSpacing: '-0.01em'
+                }}>
+                  LotoLink
+                </span>
+              </div>
+            </div>
+            
+            {/* Legal Links */}
+            <div style={{ 
+              display: 'flex', 
+              flexWrap: 'wrap',
+              justifyContent: 'center', 
+              alignItems: 'center',
+              gap: '4px',
+              marginBottom: '24px'
+            }}>
+              <IonButton 
+                fill="clear"
+                size="small"
+                onClick={() => history.push('/legal/privacy-policy')}
+                style={{ 
+                  '--padding-start': '12px',
+                  '--padding-end': '12px',
+                  '--border-radius': '8px',
+                  fontSize: '12px',
+                  fontWeight: '500',
+                  textTransform: 'none',
+                  letterSpacing: '-0.01em',
+                  '--color': 'var(--ion-color-medium)',
+                  '--background-hover': 'rgba(var(--ion-color-primary-rgb), 0.08)',
+                  '--color-hover': 'var(--ion-color-primary)'
+                }}
+                aria-label="Ver Política de Privacidad"
+              >
+                Política de Privacidad
+              </IonButton>
+              <span style={{ color: 'var(--ion-color-light-shade)', fontSize: '12px' }}>•</span>
+              <IonButton 
+                fill="clear"
+                size="small"
+                onClick={() => history.push('/legal/terms-conditions')}
+                style={{ 
+                  '--padding-start': '12px',
+                  '--padding-end': '12px',
+                  '--border-radius': '8px',
+                  fontSize: '12px',
+                  fontWeight: '500',
+                  textTransform: 'none',
+                  letterSpacing: '-0.01em',
+                  '--color': 'var(--ion-color-medium)',
+                  '--background-hover': 'rgba(var(--ion-color-primary-rgb), 0.08)',
+                  '--color-hover': 'var(--ion-color-primary)'
+                }}
+                aria-label="Ver Términos y Condiciones"
+              >
+                Términos y Condiciones
+              </IonButton>
+              <span style={{ color: 'var(--ion-color-light-shade)', fontSize: '12px' }}>•</span>
+              <IonButton 
+                fill="clear"
+                size="small"
+                onClick={() => history.push('/legal/legal-declaration')}
+                style={{ 
+                  '--padding-start': '12px',
+                  '--padding-end': '12px',
+                  '--border-radius': '8px',
+                  fontSize: '12px',
+                  fontWeight: '500',
+                  textTransform: 'none',
+                  letterSpacing: '-0.01em',
+                  '--color': 'var(--ion-color-medium)',
+                  '--background-hover': 'rgba(var(--ion-color-primary-rgb), 0.08)',
+                  '--color-hover': 'var(--ion-color-primary)'
+                }}
+                aria-label="Ver Declaración Legal"
+              >
+                Declaración Legal
+              </IonButton>
+            </div>
+            
+            {/* Copyright */}
+            <div>
+              <p style={{
                 fontSize: '12px',
-                textTransform: 'none'
-              }}
-              aria-label="Ver Política de Privacidad"
-            >
-              Política de Privacidad
-            </IonButton>
-            <span style={{ color: 'var(--ion-color-medium)' }}>|</span>
-            <IonButton 
-              fill="clear"
-              size="small"
-              onClick={() => history.push('/legal/terms-conditions')}
-              style={{ 
-                '--padding-start': '8px',
-                '--padding-end': '8px',
-                fontSize: '12px',
-                textTransform: 'none'
-              }}
-              aria-label="Ver Términos y Condiciones"
-            >
-              Términos y Condiciones
-            </IonButton>
-            <span style={{ color: 'var(--ion-color-medium)' }}>|</span>
-            <IonButton 
-              fill="clear"
-              size="small"
-              onClick={() => history.push('/legal/legal-declaration')}
-              style={{ 
-                '--padding-start': '8px',
-                '--padding-end': '8px',
-                fontSize: '12px',
-                textTransform: 'none'
-              }}
-              aria-label="Ver Declaración Legal"
-            >
-              Declaración Legal
-            </IonButton>
+                color: 'var(--ion-color-medium-shade)',
+                letterSpacing: '-0.01em',
+                fontWeight: '500',
+                margin: 0
+              }}>
+                © 2024 LotoLink. Todos los derechos reservados.
+              </p>
+            </div>
           </div>
         </div>
       </IonContent>
