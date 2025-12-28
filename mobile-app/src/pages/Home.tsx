@@ -13,14 +13,18 @@ import {
   IonRefresher,
   IonRefresherContent,
   IonSkeletonText,
+  IonButtons,
+  IonMenuButton,
   RefresherEventDetail
 } from '@ionic/react';
 import { trophy, storefront, ticket, trendingUp } from 'ionicons/icons';
 import { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import './Home.css';
 
 const Home: React.FC = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const history = useHistory();
 
   const handleRefresh = async (event: CustomEvent<RefresherEventDetail>) => {
     setIsRefreshing(true);
@@ -34,6 +38,9 @@ const Home: React.FC = () => {
     <IonPage>
       <IonHeader className="ion-no-border">
         <IonToolbar className="premium-header">
+          <IonButtons slot="start">
+            <IonMenuButton />
+          </IonButtons>
           <IonTitle>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <span style={{ fontSize: '24px' }} role="img" aria-label="Icono de lotería">🎰</span>
@@ -232,6 +239,75 @@ const Home: React.FC = () => {
               </IonCard>
             </>
           )}
+        </div>
+
+        {/* Legal Footer */}
+        <div style={{ 
+          padding: '24px 16px 100px 16px',
+          textAlign: 'center',
+          borderTop: '1px solid var(--ion-color-light-shade)'
+        }}>
+          <div style={{ 
+            fontSize: '12px', 
+            color: 'var(--ion-color-medium)',
+            marginBottom: '12px',
+            fontWeight: '500'
+          }}>
+            LotoLink © 2024
+          </div>
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'center', 
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: '8px',
+            fontSize: '12px'
+          }}>
+            <button 
+              onClick={() => history.push('/legal/privacy-policy')}
+              style={{ 
+                background: 'none', 
+                border: 'none', 
+                color: 'var(--ion-color-primary)',
+                textDecoration: 'underline',
+                cursor: 'pointer',
+                padding: '4px 8px'
+              }}
+              aria-label="Ver Política de Privacidad"
+            >
+              Política de Privacidad
+            </button>
+            <span style={{ color: 'var(--ion-color-medium)' }}>|</span>
+            <button 
+              onClick={() => history.push('/legal/terms-conditions')}
+              style={{ 
+                background: 'none', 
+                border: 'none', 
+                color: 'var(--ion-color-primary)',
+                textDecoration: 'underline',
+                cursor: 'pointer',
+                padding: '4px 8px'
+              }}
+              aria-label="Ver Términos y Condiciones"
+            >
+              Términos y Condiciones
+            </button>
+            <span style={{ color: 'var(--ion-color-medium)' }}>|</span>
+            <button 
+              onClick={() => history.push('/legal/legal-declaration')}
+              style={{ 
+                background: 'none', 
+                border: 'none', 
+                color: 'var(--ion-color-primary)',
+                textDecoration: 'underline',
+                cursor: 'pointer',
+                padding: '4px 8px'
+              }}
+              aria-label="Ver Declaración Legal"
+            >
+              Declaración Legal
+            </button>
+          </div>
         </div>
       </IonContent>
     </IonPage>

@@ -8,7 +8,9 @@ import {
   IonCardHeader,
   IonCardTitle,
   IonSearchbar,
-  IonIcon
+  IonIcon,
+  IonButtons,
+  IonMenuButton
 } from '@ionic/react';
 import { time } from 'ionicons/icons';
 import { useState } from 'react';
@@ -41,6 +43,9 @@ const Lotteries: React.FC = () => {
     <IonPage>
       <IonHeader className="ion-no-border">
         <IonToolbar className="premium-header">
+          <IonButtons slot="start">
+            <IonMenuButton />
+          </IonButtons>
           <IonTitle style={{ fontWeight: '700' }}>Loterías</IonTitle>
         </IonToolbar>
         <IonToolbar>

@@ -14,7 +14,9 @@ import {
   IonToggle,
   IonAvatar,
   IonToast,
-  IonAlert
+  IonAlert,
+  IonButtons,
+  IonMenuButton
 } from '@ionic/react';
 import { 
   person, 
@@ -27,6 +29,8 @@ import {
   logOut,
   chevronForward,
   wallet,
+  shieldCheckmark,
+  document,
 } from 'ionicons/icons';
 import { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
@@ -164,6 +168,9 @@ const Profile: React.FC = () => {
     <IonPage>
       <IonHeader className="ion-no-border">
         <IonToolbar className="premium-header">
+          <IonButtons slot="start">
+            <IonMenuButton />
+          </IonButtons>
           <IonTitle style={{ fontWeight: '700' }}>Perfil</IonTitle>
         </IonToolbar>
       </IonHeader>
@@ -331,16 +338,52 @@ const Profile: React.FC = () => {
                 <IonLabel>Preguntas Frecuentes</IonLabel>
                 <IonIcon icon={chevronForward} slot="end" color="medium" />
               </IonItem>
-              
-              <IonItem button detail={false}>
-                <IonIcon icon={informationCircle} slot="start" color="primary" />
+            </IonList>
+          </IonCard>
+
+          {/* Legal Section */}
+          <h3 style={{ fontSize: '16px', fontWeight: '700', marginTop: '24px', marginBottom: '12px', marginLeft: '4px' }}>
+            Información Legal
+          </h3>
+          
+          <IonCard className="premium-card">
+            <IonList lines="full">
+              <IonItem 
+                button 
+                detail={false}
+                onClick={() => {
+                  Haptics.impact({ style: ImpactStyle.Light });
+                  history.push('/legal/terms-conditions');
+                }}
+              >
+                <IonIcon icon={document} slot="start" color="primary" />
                 <IonLabel>Términos y Condiciones</IonLabel>
                 <IonIcon icon={chevronForward} slot="end" color="medium" />
               </IonItem>
               
-              <IonItem button detail={false}>
-                <IonIcon icon={informationCircle} slot="start" color="primary" />
+              <IonItem 
+                button 
+                detail={false}
+                onClick={() => {
+                  Haptics.impact({ style: ImpactStyle.Light });
+                  history.push('/legal/privacy-policy');
+                }}
+              >
+                <IonIcon icon={shieldCheckmark} slot="start" color="primary" />
                 <IonLabel>Política de Privacidad</IonLabel>
+                <IonIcon icon={chevronForward} slot="end" color="medium" />
+              </IonItem>
+
+              <IonItem 
+                button 
+                detail={false}
+                onClick={() => {
+                  Haptics.impact({ style: ImpactStyle.Light });
+                  history.push('/legal/legal-declaration');
+                }}
+              >
+                <IonIcon icon={document} slot="start" color="primary" />
+                <IonLabel>Declaración Legal</IonLabel>
                 <IonIcon icon={chevronForward} slot="end" color="medium" />
               </IonItem>
             </IonList>
