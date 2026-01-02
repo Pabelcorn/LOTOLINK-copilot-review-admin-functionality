@@ -59,6 +59,48 @@ export class BancaEntity {
   @Column('varchar', { nullable: true, name: 'card_processing_account_id' })
   cardProcessingAccountId?: string;
 
+  @Column('uuid', { nullable: true, name: 'owner_id' })
+  @Index()
+  ownerId?: string;
+
+  @Column('varchar', { length: 20, nullable: true, name: 'branch_code' })
+  branchCode?: string;
+
+  @Column('decimal', { precision: 10, scale: 8, nullable: true })
+  latitude?: number;
+
+  @Column('decimal', { precision: 11, scale: 8, nullable: true })
+  longitude?: number;
+
+  @Column('varchar', { length: 100, nullable: true })
+  @Index()
+  city?: string;
+
+  @Column('varchar', { length: 100, nullable: true })
+  region?: string;
+
+  @Column('varchar', { length: 2, default: 'DO' })
+  @Index()
+  country!: string;
+
+  @Column('varchar', { length: 50, default: 'America/Santo_Domingo' })
+  timezone!: string;
+
+  @Column('jsonb', { nullable: true, name: 'operating_hours' })
+  operatingHours?: Record<string, any>;
+
+  @Column('boolean', { default: false, name: 'is_main_branch' })
+  isMainBranch!: boolean;
+
+  @Column('boolean', { default: true, name: 'accepts_cash' })
+  acceptsCash!: boolean;
+
+  @Column('boolean', { default: true, name: 'accepts_card' })
+  acceptsCard!: boolean;
+
+  @Column('boolean', { default: false, name: 'accepts_transfer' })
+  acceptsTransfer!: boolean;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt!: Date;
 
