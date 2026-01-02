@@ -41,6 +41,20 @@ export interface BancaProps {
   commissionPercentage?: number;
   commissionStripeAccountId?: string;
   cardProcessingAccountId?: string;
+  // Owner and branch information
+  ownerId?: string;
+  branchCode?: string;
+  latitude?: number;
+  longitude?: number;
+  city?: string;
+  region?: string;
+  country?: string;
+  timezone?: string;
+  operatingHours?: Record<string, any>;
+  isMainBranch?: boolean;
+  acceptsCash?: boolean;
+  acceptsCard?: boolean;
+  acceptsTransfer?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -64,6 +78,19 @@ export class Banca {
   private _commissionPercentage?: number;
   private _commissionStripeAccountId?: string;
   private _cardProcessingAccountId?: string;
+  private _ownerId?: string;
+  private _branchCode?: string;
+  private _latitude?: number;
+  private _longitude?: number;
+  private _city?: string;
+  private _region?: string;
+  private _country?: string;
+  private _timezone?: string;
+  private _operatingHours?: Record<string, any>;
+  private _isMainBranch?: boolean;
+  private _acceptsCash?: boolean;
+  private _acceptsCard?: boolean;
+  private _acceptsTransfer?: boolean;
   readonly createdAt: Date;
   private _updatedAt: Date;
 
@@ -86,6 +113,19 @@ export class Banca {
     this._commissionPercentage = props.commissionPercentage;
     this._commissionStripeAccountId = props.commissionStripeAccountId;
     this._cardProcessingAccountId = props.cardProcessingAccountId;
+    this._ownerId = props.ownerId;
+    this._branchCode = props.branchCode;
+    this._latitude = props.latitude;
+    this._longitude = props.longitude;
+    this._city = props.city;
+    this._region = props.region;
+    this._country = props.country;
+    this._timezone = props.timezone;
+    this._operatingHours = props.operatingHours;
+    this._isMainBranch = props.isMainBranch;
+    this._acceptsCash = props.acceptsCash;
+    this._acceptsCard = props.acceptsCard;
+    this._acceptsTransfer = props.acceptsTransfer;
     this.createdAt = props.createdAt || new Date();
     this._updatedAt = props.updatedAt || new Date();
   }
@@ -148,6 +188,58 @@ export class Banca {
 
   get cardProcessingAccountId(): string | undefined {
     return this._cardProcessingAccountId;
+  }
+
+  get ownerId(): string | undefined {
+    return this._ownerId;
+  }
+
+  get branchCode(): string | undefined {
+    return this._branchCode;
+  }
+
+  get latitude(): number | undefined {
+    return this._latitude;
+  }
+
+  get longitude(): number | undefined {
+    return this._longitude;
+  }
+
+  get city(): string | undefined {
+    return this._city;
+  }
+
+  get region(): string | undefined {
+    return this._region;
+  }
+
+  get country(): string | undefined {
+    return this._country;
+  }
+
+  get timezone(): string | undefined {
+    return this._timezone;
+  }
+
+  get operatingHours(): Record<string, any> | undefined {
+    return this._operatingHours;
+  }
+
+  get isMainBranch(): boolean | undefined {
+    return this._isMainBranch;
+  }
+
+  get acceptsCash(): boolean | undefined {
+    return this._acceptsCash;
+  }
+
+  get acceptsCard(): boolean | undefined {
+    return this._acceptsCard;
+  }
+
+  get acceptsTransfer(): boolean | undefined {
+    return this._acceptsTransfer;
   }
 
   updateEndpoint(endpoint: string): void {
@@ -234,6 +326,19 @@ export class Banca {
       commissionPercentage: this._commissionPercentage,
       commissionStripeAccountId: this._commissionStripeAccountId,
       cardProcessingAccountId: this._cardProcessingAccountId,
+      ownerId: this._ownerId,
+      branchCode: this._branchCode,
+      latitude: this._latitude,
+      longitude: this._longitude,
+      city: this._city,
+      region: this._region,
+      country: this._country,
+      timezone: this._timezone,
+      operatingHours: this._operatingHours,
+      isMainBranch: this._isMainBranch,
+      acceptsCash: this._acceptsCash,
+      acceptsCard: this._acceptsCard,
+      acceptsTransfer: this._acceptsTransfer,
       createdAt: this.createdAt,
       updatedAt: this._updatedAt,
     };

@@ -21,6 +21,13 @@ export interface PlayProps {
   playIdBanca?: string;
   ticketCode?: string;
   bancaId?: string;
+  lotteryDrawId?: string;
+  betTypeId?: string;
+  drawDate?: Date;
+  prizeMultiplier?: number;
+  potentialPrize?: number;
+  actualPrize?: number;
+  isWinner?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -39,6 +46,13 @@ export class Play {
   private _playIdBanca?: string;
   private _ticketCode?: string;
   private _bancaId?: string;
+  private _lotteryDrawId?: string;
+  private _betTypeId?: string;
+  private _drawDate?: Date;
+  private _prizeMultiplier?: number;
+  private _potentialPrize?: number;
+  private _actualPrize?: number;
+  private _isWinner?: boolean;
   readonly createdAt: Date;
   private _updatedAt: Date;
 
@@ -56,6 +70,13 @@ export class Play {
     this._playIdBanca = props.playIdBanca;
     this._ticketCode = props.ticketCode;
     this._bancaId = props.bancaId;
+    this._lotteryDrawId = props.lotteryDrawId;
+    this._betTypeId = props.betTypeId;
+    this._drawDate = props.drawDate;
+    this._prizeMultiplier = props.prizeMultiplier;
+    this._potentialPrize = props.potentialPrize;
+    this._actualPrize = props.actualPrize;
+    this._isWinner = props.isWinner || false;
     this.createdAt = props.createdAt || new Date();
     this._updatedAt = props.updatedAt || new Date();
   }
@@ -74,6 +95,34 @@ export class Play {
 
   get bancaId(): string | undefined {
     return this._bancaId;
+  }
+
+  get lotteryDrawId(): string | undefined {
+    return this._lotteryDrawId;
+  }
+
+  get betTypeId(): string | undefined {
+    return this._betTypeId;
+  }
+
+  get drawDate(): Date | undefined {
+    return this._drawDate;
+  }
+
+  get prizeMultiplier(): number | undefined {
+    return this._prizeMultiplier;
+  }
+
+  get potentialPrize(): number | undefined {
+    return this._potentialPrize;
+  }
+
+  get actualPrize(): number | undefined {
+    return this._actualPrize;
+  }
+
+  get isWinner(): boolean {
+    return this._isWinner || false;
   }
 
   get updatedAt(): Date {
@@ -119,6 +168,27 @@ export class Play {
     this._updatedAt = new Date();
   }
 
+  setPrizeInfo(
+    lotteryDrawId: string,
+    betTypeId: string,
+    drawDate: Date,
+    prizeMultiplier: number,
+    potentialPrize: number
+  ): void {
+    this._lotteryDrawId = lotteryDrawId;
+    this._betTypeId = betTypeId;
+    this._drawDate = drawDate;
+    this._prizeMultiplier = prizeMultiplier;
+    this._potentialPrize = potentialPrize;
+    this._updatedAt = new Date();
+  }
+
+  markAsWinner(actualPrize: number): void {
+    this._isWinner = true;
+    this._actualPrize = actualPrize;
+    this._updatedAt = new Date();
+  }
+
   toJSON() {
     return {
       id: this.id,
@@ -134,6 +204,13 @@ export class Play {
       playIdBanca: this._playIdBanca,
       ticketCode: this._ticketCode,
       bancaId: this._bancaId,
+      lotteryDrawId: this._lotteryDrawId,
+      betTypeId: this._betTypeId,
+      drawDate: this._drawDate,
+      prizeMultiplier: this._prizeMultiplier,
+      potentialPrize: this._potentialPrize,
+      actualPrize: this._actualPrize,
+      isWinner: this._isWinner,
       createdAt: this.createdAt,
       updatedAt: this._updatedAt,
     };

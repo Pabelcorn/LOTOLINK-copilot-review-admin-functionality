@@ -1,4 +1,5 @@
-import { Entity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn, Index } from 'typeorm';
+import { Entity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn, Index, ManyToOne, JoinColumn } from 'typeorm';
+import { LotteryDrawEntity } from './lottery-draw.db-entity';
 
 @Entity('plays')
 export class PlayEntity {
@@ -48,6 +49,35 @@ export class PlayEntity {
   @Column('varchar', { name: 'banca_id', nullable: true })
   @Index()
   bancaId?: string;
+
+  @Column('uuid', { nullable: true, name: 'lottery_draw_id' })
+  @Index()
+  lotteryDrawId?: string;
+
+  @ManyToOne(() => LotteryDrawEntity)
+  @JoinColumn({ name: 'lottery_draw_id' })
+  lotteryDraw?: LotteryDrawEntity;
+
+  @Column('varchar', { length: 50, nullable: true, name: 'bet_type_id' })
+  @Index()
+  betTypeId?: string;
+
+  @Column('date', { nullable: true, name: 'draw_date' })
+  @Index()
+  drawDate?: Date;
+
+  @Column('decimal', { precision: 10, scale: 2, nullable: true, name: 'prize_multiplier' })
+  prizeMultiplier?: number;
+
+  @Column('decimal', { precision: 15, scale: 2, nullable: true, name: 'potential_prize' })
+  potentialPrize?: number;
+
+  @Column('decimal', { precision: 15, scale: 2, nullable: true, name: 'actual_prize' })
+  actualPrize?: number;
+
+  @Column('boolean', { default: false, name: 'is_winner' })
+  @Index()
+  isWinner!: boolean;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt!: Date;
