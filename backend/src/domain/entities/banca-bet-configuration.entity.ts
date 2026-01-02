@@ -1,5 +1,8 @@
 import { v4 as uuidv4 } from 'uuid';
 
+// Constants
+const FLOATING_POINT_PRECISION = 0.01;
+
 export interface BancaBetConfigurationProps {
   id?: string;
   bancaId: string;
@@ -180,7 +183,7 @@ export class BancaBetConfiguration {
     }
     // Check if amount is a multiple of increment
     const remainder = (amount - this._minBetAmount) % this._betIncrement;
-    return Math.abs(remainder) < 0.01; // Allow for floating point precision
+    return Math.abs(remainder) < FLOATING_POINT_PRECISION; // Allow for floating point precision
   }
 
   /**

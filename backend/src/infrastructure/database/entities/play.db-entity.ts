@@ -1,4 +1,5 @@
-import { Entity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn, Index } from 'typeorm';
+import { Entity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn, Index, ManyToOne, JoinColumn } from 'typeorm';
+import { LotteryDrawEntity } from './lottery-draw.db-entity';
 
 @Entity('plays')
 export class PlayEntity {
@@ -52,6 +53,10 @@ export class PlayEntity {
   @Column('uuid', { nullable: true, name: 'lottery_draw_id' })
   @Index()
   lotteryDrawId?: string;
+
+  @ManyToOne(() => LotteryDrawEntity)
+  @JoinColumn({ name: 'lottery_draw_id' })
+  lotteryDraw?: LotteryDrawEntity;
 
   @Column('varchar', { length: 50, nullable: true, name: 'bet_type_id' })
   @Index()

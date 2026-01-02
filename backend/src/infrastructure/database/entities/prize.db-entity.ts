@@ -2,7 +2,9 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateCol
 import { PlayEntity } from './play.db-entity';
 import { BancaEntity } from './banca.db-entity';
 import { UserEntity } from './user.db-entity';
+import { LotteryEntity } from './lottery.db-entity';
 import { LotteryDrawEntity } from './lottery-draw.db-entity';
+import { BetTypeEntity } from './bet-type.db-entity';
 
 @Entity('prizes')
 export class PrizeEntity {
@@ -36,6 +38,10 @@ export class PrizeEntity {
   @Index()
   lotteryId!: string;
 
+  @ManyToOne(() => LotteryEntity)
+  @JoinColumn({ name: 'lottery_id' })
+  lottery?: LotteryEntity;
+
   @Column('uuid', { nullable: true, name: 'lottery_draw_id' })
   lotteryDrawId?: string;
 
@@ -49,6 +55,10 @@ export class PrizeEntity {
 
   @Column('varchar', { length: 50, name: 'bet_type_id' })
   betTypeId!: string;
+
+  @ManyToOne(() => BetTypeEntity)
+  @JoinColumn({ name: 'bet_type_id' })
+  betType?: BetTypeEntity;
 
   @Column('text', { array: true, name: 'winning_numbers' })
   winningNumbers!: string[];

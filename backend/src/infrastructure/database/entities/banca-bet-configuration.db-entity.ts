@@ -54,9 +54,9 @@ export class BancaBetConfigurationEntity {
   @Index()
   isEnabled!: boolean;
 
-  @Column('timestamp with time zone', { default: () => 'CURRENT_TIMESTAMP', name: 'valid_from' })
+  @Column('timestamp with time zone', { name: 'valid_from', nullable: true })
   @Index()
-  validFrom!: Date;
+  validFrom?: Date;
 
   @Column('timestamp with time zone', { nullable: true, name: 'valid_until' })
   @Index()
