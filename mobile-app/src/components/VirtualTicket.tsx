@@ -1,42 +1,7 @@
 import React from 'react';
 import { IonCard, IonCardContent, IonIcon } from '@ionic/react';
 import { person, checkmarkCircle, location, call } from 'ionicons/icons';
-
-interface TicketBet {
-  type: string;
-  numbers: string[];
-  amount: number;
-}
-
-interface TicketData {
-  id: string;
-  ticketCode: string;
-  barcode: string;
-  bets: TicketBet[];
-  totalAmount: number;
-  status: string;
-  createdAt: string;
-  validUntil: string;
-  
-  // Sorteo info
-  sorteoName: string;
-  sorteoNumber: string;
-  sorteoTime: string;
-  lotteryName: string;
-  
-  // Banca info
-  bancaName: string;
-  bancaLogo?: string;
-  
-  // Sucursal info
-  sucursalName: string;
-  sucursalCode: string;
-  sucursalAddress?: string;
-  sucursalPhone?: string;
-  
-  // Operador
-  operatorId?: string;
-}
+import type { TicketData } from '../types/ticket.types';
 
 interface VirtualTicketProps {
   ticket: TicketData;
@@ -204,11 +169,14 @@ const VirtualTicket: React.FC<VirtualTicketProps> = ({ ticket, showBarcode = tru
             background: '#fafafa',
             borderRadius: '8px'
           }}>
-            <div style={{ 
-              fontFamily: "'Libre Barcode 128', cursive",
-              fontSize: '48px',
-              letterSpacing: '2px'
-            }}>
+            <div 
+              style={{ 
+                fontFamily: "'Libre Barcode 128', cursive",
+                fontSize: '48px',
+                letterSpacing: '2px'
+              }}
+              aria-label={`Código de barras: ${ticket.barcode}`}
+            >
               {ticket.barcode}
             </div>
             <div style={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>

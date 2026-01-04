@@ -4,42 +4,10 @@
  */
 
 import apiClient from './api';
+import { TicketData, TicketBet, TICKET_VALIDITY_MS } from '../types/ticket.types';
 
-export interface TicketBet {
-  type: string;
-  numbers: string[];
-  amount: number;
-}
-
-export interface TicketData {
-  id: string;
-  ticketCode: string;
-  barcode: string;
-  bets: TicketBet[];
-  totalAmount: number;
-  status: string;
-  createdAt: string;
-  validUntil: string;
-  
-  // Sorteo info
-  sorteoName: string;
-  sorteoNumber: string;
-  sorteoTime: string;
-  lotteryName: string;
-  
-  // Banca info
-  bancaName: string;
-  bancaLogo?: string;
-  
-  // Sucursal info
-  sucursalName: string;
-  sucursalCode: string;
-  sucursalAddress?: string;
-  sucursalPhone?: string;
-  
-  // Operador
-  operatorId?: string;
-}
+// Re-export types for convenience
+export type { TicketData, TicketBet } from '../types/ticket.types';
 
 export interface TicketsFilter {
   status?: 'all' | 'pending' | 'confirmed' | 'won' | 'lost';
@@ -51,6 +19,52 @@ export interface TicketsResponse {
   tickets: TicketData[];
   total: number;
   hasMore: boolean;
+}
+
+// Interface for raw play data from API
+interface RawPlayData {
+  id?: string;
+  play_id?: string;
+  betType?: string;
+  play_type?: string;
+  numbers?: string[];
+  amount?: number;
+  total_amount?: number;
+  status?: string;
+  createdAt?: string;
+  created_at?: string;
+  validUntil?: string;
+  valid_until?: string;
+  sorteoName?: string;
+  sorteo_name?: string;
+  sorteoNumber?: string;
+  sorteo_number?: string;
+  sorteoTime?: string;
+  sorteo_time?: string;
+  draw_time?: string;
+  lotteryName?: string;
+  lottery_name?: string;
+  lotteryId?: string;
+  lottery_id?: string;
+  ticketCode?: string;
+  ticket_code?: string;
+  playIdBanca?: string;
+  banca_play_id?: string;
+  barcode?: string;
+  bancaName?: string;
+  banca_name?: string;
+  bancaLogo?: string;
+  banca_logo?: string;
+  sucursalName?: string;
+  sucursal_name?: string;
+  sucursalCode?: string;
+  sucursal_code?: string;
+  sucursalAddress?: string;
+  sucursal_address?: string;
+  sucursalPhone?: string;
+  sucursal_phone?: string;
+  operatorUserId?: string;
+  operator_user_id?: string;
 }
 
 /**
@@ -99,7 +113,7 @@ export const getTicketById = async (ticketId: string): Promise<TicketData> => {
 /**
  * Transform a play object from the API to a TicketData object
  */
-function transformPlayToTicket(play: any): TicketData {
+function transformPlayToTicket(play: RawPlayData): TicketData {
   // Extract bet information
   const bets: TicketBet[] = [{
     type: play.betType || play.play_type || 'QN',
@@ -110,7 +124,7 @@ function transformPlayToTicket(play: any): TicketData {
   // Format dates
   const createdAt = play.createdAt || play.created_at || new Date().toISOString();
   const validUntil = play.validUntil || play.valid_until || 
-    new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString(); // 60 days default
+    new Date(Date.now() + TICKET_VALIDITY_MS).toISOString();
   
   return {
     id: play.id || play.play_id,

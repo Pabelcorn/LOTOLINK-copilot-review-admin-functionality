@@ -95,9 +95,10 @@ const Play: React.FC = () => {
       // - Update cart count in app state
       setTimeout(() => {
         // Create mock ticket data for demonstration
+        const ticketId = crypto.randomUUID ? crypto.randomUUID() : `ticket-${Date.now()}`;
         const mockTicket: TicketData = {
-          id: `ticket-${Date.now()}`,
-          ticketCode: `TKT-${Math.random().toString(36).substr(2, 9).toUpperCase()}`,
+          id: ticketId,
+          ticketCode: `TKT-${ticketId.substring(0, 8).toUpperCase()}`,
           barcode: String(Date.now()).padStart(14, '0').slice(0, 14),
           bets: [{
             type: selectedGameType?.name.toUpperCase().substring(0, 2) || 'QN',
