@@ -79,6 +79,39 @@ export class PlayEntity {
   @Index()
   isWinner!: boolean;
 
+  @Column('uuid', { nullable: true, name: 'sucursal_id' })
+  @Index()
+  sucursalId?: string;
+
+  @Column('varchar', { length: 50, nullable: true, name: 'sorteo_number' })
+  @Index()
+  sorteoNumber?: string;
+
+  @Column('time', { nullable: true, name: 'sorteo_time' })
+  sorteoTime?: string;
+
+  @Column('varchar', { length: 100, nullable: true, name: 'sorteo_name' })
+  @Index()
+  sorteoName?: string;
+
+  @Column('varchar', { length: 100, nullable: true })
+  @Index()
+  barcode?: string;
+
+  @Column('date', { nullable: true, name: 'valid_until' })
+  @Index()
+  validUntil?: Date;
+
+  @Column('varchar', { length: 50, nullable: true, name: 'operator_user_id' })
+  @Index()
+  operatorUserId?: string;
+
+  @Column('varchar', { length: 20, nullable: true })
+  modality?: string;
+
+  @Column('timestamp with time zone', { nullable: true, name: 'receipt_printed_at' })
+  receiptPrintedAt?: Date;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt!: Date;
 

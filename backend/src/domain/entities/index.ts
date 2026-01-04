@@ -7,3 +7,4 @@ export * from './lottery-draw.entity';
 export * from './bet-type.entity';
 export * from './banca-bet-configuration.entity';
 export * from './prize.entity';
+export * from './sucursal.entity';

@@ -60,6 +60,22 @@ export class TypeOrmPlayRepository implements PlayRepository {
     entity.playIdBanca = play.playIdBanca;
     entity.ticketCode = play.ticketCode;
     entity.bancaId = play.bancaId;
+    entity.lotteryDrawId = play.lotteryDrawId;
+    entity.betTypeId = play.betTypeId;
+    entity.drawDate = play.drawDate;
+    entity.prizeMultiplier = play.prizeMultiplier;
+    entity.potentialPrize = play.potentialPrize;
+    entity.actualPrize = play.actualPrize;
+    entity.isWinner = play.isWinner;
+    entity.sucursalId = play.sucursalId;
+    entity.sorteoNumber = play.sorteoNumber;
+    entity.sorteoTime = play.sorteoTime;
+    entity.sorteoName = play.sorteoName;
+    entity.barcode = play.barcode;
+    entity.validUntil = play.validUntil;
+    entity.operatorUserId = play.operatorUserId;
+    entity.modality = play.modality;
+    entity.receiptPrintedAt = play.receiptPrintedAt;
     entity.createdAt = play.createdAt;
     entity.updatedAt = play.updatedAt;
     return entity;
@@ -86,6 +102,22 @@ export class TypeOrmPlayRepository implements PlayRepository {
       playIdBanca: entity.playIdBanca,
       ticketCode: entity.ticketCode,
       bancaId: entity.bancaId,
+      lotteryDrawId: entity.lotteryDrawId,
+      betTypeId: entity.betTypeId,
+      drawDate: entity.drawDate,
+      prizeMultiplier: entity.prizeMultiplier !== null && entity.prizeMultiplier !== undefined ? Number(entity.prizeMultiplier) : undefined,
+      potentialPrize: entity.potentialPrize !== null && entity.potentialPrize !== undefined ? Number(entity.potentialPrize) : undefined,
+      actualPrize: entity.actualPrize !== null && entity.actualPrize !== undefined ? Number(entity.actualPrize) : undefined,
+      isWinner: entity.isWinner,
+      sucursalId: entity.sucursalId,
+      sorteoNumber: entity.sorteoNumber,
+      sorteoTime: entity.sorteoTime,
+      sorteoName: entity.sorteoName,
+      barcode: entity.barcode,
+      validUntil: entity.validUntil,
+      operatorUserId: entity.operatorUserId,
+      modality: entity.modality,
+      receiptPrintedAt: entity.receiptPrintedAt,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
     });

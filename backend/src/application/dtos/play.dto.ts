@@ -71,6 +71,15 @@ export class GetPlayDto {
   playIdBanca?: string;
   ticketCode?: string;
   bancaId?: string;
+  sucursalId?: string;
+  sorteoNumber?: string;
+  sorteoTime?: string;
+  sorteoName?: string;
+  barcode?: string;
+  validUntil?: Date;
+  operatorUserId?: string;
+  modality?: string;
+  receiptPrintedAt?: Date;
   createdAt!: Date;
   updatedAt!: Date;
 }

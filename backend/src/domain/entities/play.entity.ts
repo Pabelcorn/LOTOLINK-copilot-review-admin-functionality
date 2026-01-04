@@ -28,6 +28,15 @@ export interface PlayProps {
   potentialPrize?: number;
   actualPrize?: number;
   isWinner?: boolean;
+  sucursalId?: string;
+  sorteoNumber?: string;
+  sorteoTime?: string;
+  sorteoName?: string;
+  barcode?: string;
+  validUntil?: Date;
+  operatorUserId?: string;
+  modality?: string;
+  receiptPrintedAt?: Date;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -53,6 +62,15 @@ export class Play {
   private _potentialPrize?: number;
   private _actualPrize?: number;
   private _isWinner?: boolean;
+  private _sucursalId?: string;
+  private _sorteoNumber?: string;
+  private _sorteoTime?: string;
+  private _sorteoName?: string;
+  private _barcode?: string;
+  private _validUntil?: Date;
+  private _operatorUserId?: string;
+  private _modality?: string;
+  private _receiptPrintedAt?: Date;
   readonly createdAt: Date;
   private _updatedAt: Date;
 
@@ -77,6 +95,15 @@ export class Play {
     this._potentialPrize = props.potentialPrize;
     this._actualPrize = props.actualPrize;
     this._isWinner = props.isWinner || false;
+    this._sucursalId = props.sucursalId;
+    this._sorteoNumber = props.sorteoNumber;
+    this._sorteoTime = props.sorteoTime;
+    this._sorteoName = props.sorteoName;
+    this._barcode = props.barcode;
+    this._validUntil = props.validUntil;
+    this._operatorUserId = props.operatorUserId;
+    this._modality = props.modality;
+    this._receiptPrintedAt = props.receiptPrintedAt;
     this.createdAt = props.createdAt || new Date();
     this._updatedAt = props.updatedAt || new Date();
   }
@@ -123,6 +150,42 @@ export class Play {
 
   get isWinner(): boolean {
     return this._isWinner || false;
+  }
+
+  get sucursalId(): string | undefined {
+    return this._sucursalId;
+  }
+
+  get sorteoNumber(): string | undefined {
+    return this._sorteoNumber;
+  }
+
+  get sorteoTime(): string | undefined {
+    return this._sorteoTime;
+  }
+
+  get sorteoName(): string | undefined {
+    return this._sorteoName;
+  }
+
+  get barcode(): string | undefined {
+    return this._barcode;
+  }
+
+  get validUntil(): Date | undefined {
+    return this._validUntil;
+  }
+
+  get operatorUserId(): string | undefined {
+    return this._operatorUserId;
+  }
+
+  get modality(): string | undefined {
+    return this._modality;
+  }
+
+  get receiptPrintedAt(): Date | undefined {
+    return this._receiptPrintedAt;
   }
 
   get updatedAt(): Date {
@@ -211,6 +274,15 @@ export class Play {
       potentialPrize: this._potentialPrize,
       actualPrize: this._actualPrize,
       isWinner: this._isWinner,
+      sucursalId: this._sucursalId,
+      sorteoNumber: this._sorteoNumber,
+      sorteoTime: this._sorteoTime,
+      sorteoName: this._sorteoName,
+      barcode: this._barcode,
+      validUntil: this._validUntil,
+      operatorUserId: this._operatorUserId,
+      modality: this._modality,
+      receiptPrintedAt: this._receiptPrintedAt,
       createdAt: this.createdAt,
       updatedAt: this._updatedAt,
     };
