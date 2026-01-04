@@ -38,6 +38,13 @@ export class TypeOrmSucursalRepository implements SucursalRepository {
     return entity ? this.toDomain(entity) : null;
   }
 
+  async findByCode(code: string): Promise<Sucursal | null> {
+    const entity = await this.sucursalRepository.findOne({ 
+      where: { code } 
+    });
+    return entity ? this.toDomain(entity) : null;
+  }
+
   async update(sucursal: Sucursal): Promise<Sucursal> {
     const entity = this.toEntity(sucursal);
     await this.sucursalRepository.update(sucursal.id, entity);

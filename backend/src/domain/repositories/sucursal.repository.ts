@@ -5,6 +5,7 @@ export interface SucursalRepository {
   findById(id: string): Promise<Sucursal | null>;
   findByBancaId(bancaId: string): Promise<Sucursal[]>;
   findByBancaIdAndCode(bancaId: string, code: string): Promise<Sucursal | null>;
+  findByCode(code: string): Promise<Sucursal | null>;
   update(sucursal: Sucursal): Promise<Sucursal>;
   delete(id: string): Promise<void>;
 }

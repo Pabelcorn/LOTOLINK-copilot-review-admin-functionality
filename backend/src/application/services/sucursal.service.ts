@@ -61,6 +61,10 @@ export class SucursalService {
     return this.toResponseDto(sucursal);
   }
 
+  async findByCode(code: string): Promise<Sucursal | null> {
+    return await this.sucursalRepository.findByCode(code);
+  }
+
   async updateSucursal(id: string, dto: UpdateSucursalDto): Promise<SucursalResponseDto> {
     const sucursal = await this.sucursalRepository.findById(id);
     if (!sucursal) {

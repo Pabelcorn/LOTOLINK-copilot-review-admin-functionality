@@ -231,6 +231,11 @@ export class Play {
     this._updatedAt = new Date();
   }
 
+  assignSucursal(sucursalId: string): void {
+    this._sucursalId = sucursalId;
+    this._updatedAt = new Date();
+  }
+
   setPrizeInfo(
     lotteryDrawId: string,
     betTypeId: string,

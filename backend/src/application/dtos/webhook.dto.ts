@@ -16,6 +16,10 @@ export class WebhookConfirmationDto {
   @IsOptional()
   @IsString()
   reason?: string;
+
+  @IsOptional()
+  @IsString()
+  sucursalCode?: string;
 }
 
 export class WebhookResponseDto {
