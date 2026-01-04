@@ -243,32 +243,4 @@ export class PlayService {
 
     return dto;
   }
-
-  private toGetPlayDto(play: Play): GetPlayDto {
-    return {
-      playId: play.id,
-      requestId: play.requestId,
-      userId: play.userId,
-      lotteryId: play.lotteryId,
-      numbers: play.numbers,
-      betType: play.betType,
-      amount: play.amount,
-      currency: play.currency,
-      status: play.status,
-      playIdBanca: play.playIdBanca,
-      ticketCode: play.ticketCode,
-      bancaId: play.bancaId,
-      sucursalId: play.sucursalId,
-      sorteoNumber: play.sorteoNumber,
-      sorteoTime: play.sorteoTime,
-      sorteoName: play.sorteoName,
-      barcode: play.barcode,
-      validUntil: play.validUntil,
-      operatorUserId: play.operatorUserId,
-      modality: play.modality,
-      receiptPrintedAt: play.receiptPrintedAt,
-      createdAt: play.createdAt,
-      updatedAt: play.updatedAt,
-    };
-  }
 }
