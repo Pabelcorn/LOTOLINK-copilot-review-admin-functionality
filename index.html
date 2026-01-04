@@ -6736,6 +6736,26 @@
                     <div className="text-center mb-4">
                       <div className="font-mono text-lg font-bold text-blue-600">#{confirmedTicket.id}</div>
                       <div className="text-sm text-gray-500 dark:text-gray-400">{confirmedTicket.bank}</div>
+                      {confirmedTicket.sucursal && (
+                        <div className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                          📍 Sucursal: {confirmedTicket.sucursal}
+                        </div>
+                      )}
+                      {confirmedTicket.sorteoName && (
+                        <div className="text-xs text-blue-500 dark:text-blue-400 mt-1 font-semibold">
+                          🎯 {confirmedTicket.sorteoName} {confirmedTicket.sorteoNumber && `#${confirmedTicket.sorteoNumber}`}
+                        </div>
+                      )}
+                      {confirmedTicket.sorteoTime && (
+                        <div className="text-xs text-gray-500 dark:text-gray-400">
+                          ⏰ Sorteo: {confirmedTicket.sorteoTime}
+                        </div>
+                      )}
+                      {confirmedTicket.barcode && (
+                        <div className="text-xs text-gray-400 dark:text-gray-500 mt-2 font-mono">
+                          🔖 {confirmedTicket.barcode}
+                        </div>
+                      )}
                     </div>
                     
                     {/* Plays */}
@@ -6788,6 +6808,24 @@
                             hour: '2-digit', 
                             minute: '2-digit' 
                           })}</span>
+                        </div>
+                      )}
+                      {confirmedTicket.operatorUserId && (
+                        <div className="flex justify-between text-xs mt-2 pt-2 border-t dark:border-slate-600">
+                          <span className="text-gray-500 dark:text-gray-500">Operador:</span>
+                          <span className="text-gray-600 dark:text-gray-400 font-mono">{confirmedTicket.operatorUserId}</span>
+                        </div>
+                      )}
+                      {confirmedTicket.validUntil && (
+                        <div className="flex justify-between text-xs mt-1">
+                          <span className="text-gray-500 dark:text-gray-500">Válido hasta:</span>
+                          <span className="text-gray-600 dark:text-gray-400 font-semibold">
+                            {new Date(confirmedTicket.validUntil).toLocaleDateString('es-DO', { 
+                              year: 'numeric',
+                              month: 'short', 
+                              day: 'numeric'
+                            })}
+                          </span>
                         </div>
                       )}
                     </div>
