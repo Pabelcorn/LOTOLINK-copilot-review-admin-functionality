@@ -53,11 +53,11 @@ export class SucursalController {
   }
 
   @Delete('sucursales/:id')
-  @HttpCode(HttpStatus.OK)
-  async deactivateSucursal(
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async deleteSucursal(
     @Param('id') id: string,
-  ): Promise<SucursalResponseDto> {
-    return this.sucursalService.deactivateSucursal(id);
+  ): Promise<void> {
+    await this.sucursalService.deactivateSucursal(id);
   }
 
   @Patch('sucursales/:id/ticket-config')
@@ -74,13 +74,5 @@ export class SucursalController {
     @Param('id') id: string,
   ): Promise<SucursalResponseDto> {
     return this.sucursalService.activateSucursal(id);
-  }
-
-  @Post('sucursales/:id/deactivate')
-  @HttpCode(HttpStatus.OK)
-  async deactivateSucursalAlt(
-    @Param('id') id: string,
-  ): Promise<SucursalResponseDto> {
-    return this.sucursalService.deactivateSucursal(id);
   }
 }
