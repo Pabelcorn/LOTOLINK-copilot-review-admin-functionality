@@ -12,12 +12,15 @@ import {
   IonBackButton,
   IonButtons,
   IonToast,
-  IonSpinner
+  IonSpinner,
+  IonModal
 } from '@ionic/react';
-import { shuffle, cart } from 'ionicons/icons';
+import { shuffle, cart, close } from 'ionicons/icons';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Haptics, ImpactStyle, NotificationType } from '@capacitor/haptics';
+import VirtualTicket from '../components/VirtualTicket';
+import { TicketData } from '../services/tickets.service';
 
 interface GameType {
   id: string;
@@ -41,6 +44,8 @@ const Play: React.FC = () => {
   const [amount] = useState(10);
   const [showToast, setShowToast] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showTicketModal, setShowTicketModal] = useState(false);
+  const [confirmedTicket, setConfirmedTicket] = useState<TicketData | null>(null);
 
   const hapticFeedback = async (style: ImpactStyle = ImpactStyle.Light) => {
     try {
@@ -89,7 +94,34 @@ const Play: React.FC = () => {
       // - Handle errors and show appropriate messages
       // - Update cart count in app state
       setTimeout(() => {
-        setShowToast(true);
+        // Create mock ticket data for demonstration
+        const mockTicket: TicketData = {
+          id: `ticket-${Date.now()}`,
+          ticketCode: `TKT-${Math.random().toString(36).substr(2, 9).toUpperCase()}`,
+          barcode: String(Date.now()).padStart(14, '0').slice(0, 14),
+          bets: [{
+            type: selectedGameType?.name.toUpperCase().substring(0, 2) || 'QN',
+            numbers: selectedNumbers.map(n => n.toString().padStart(2, '0')),
+            amount: amount
+          }],
+          totalAmount: amount,
+          status: 'confirmed',
+          createdAt: new Date().toISOString(),
+          validUntil: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString(),
+          sorteoName: 'Lotería Real',
+          sorteoNumber: '18331',
+          sorteoTime: '1:00 PM',
+          lotteryName: lotteryId.toUpperCase(),
+          bancaName: 'LOTEKA',
+          sucursalName: 'Principal',
+          sucursalCode: '4000-01',
+          sucursalAddress: 'Av. Duarte #123, Santo Domingo',
+          sucursalPhone: '809-555-1234',
+          operatorId: '020611062'
+        };
+        
+        setConfirmedTicket(mockTicket);
+        setShowTicketModal(true);
         setSelectedNumbers([]);
         setIsLoading(false);
       }, 500);
@@ -309,6 +341,51 @@ const Play: React.FC = () => {
           position="top"
           color="success"
         />
+
+        {/* Virtual Ticket Modal */}
+        <IonModal
+          isOpen={showTicketModal}
+          onDidDismiss={() => setShowTicketModal(false)}
+        >
+          <IonHeader>
+            <IonToolbar>
+              <IonTitle>¡Jugada Confirmada!</IonTitle>
+              <IonButtons slot="end">
+                <IonButton onClick={() => setShowTicketModal(false)}>
+                  <IonIcon icon={close} />
+                </IonButton>
+              </IonButtons>
+            </IonToolbar>
+          </IonHeader>
+          <IonContent>
+            {confirmedTicket && (
+              <div style={{ paddingBottom: '80px' }}>
+                <VirtualTicket ticket={confirmedTicket} showBarcode={true} compact={false} />
+                <div style={{ padding: '16px', textAlign: 'center' }}>
+                  <IonButton
+                    routerLink="/my-tickets"
+                    expand="block"
+                    style={{ '--border-radius': '12px', marginBottom: '12px' }}
+                    onClick={() => setShowTicketModal(false)}
+                  >
+                    Ver Mis Tickets
+                  </IonButton>
+                  <IonButton
+                    fill="outline"
+                    expand="block"
+                    style={{ '--border-radius': '12px' }}
+                    onClick={() => {
+                      setShowTicketModal(false);
+                      setSelectedGameType(null);
+                    }}
+                  >
+                    Hacer Otra Jugada
+                  </IonButton>
+                </div>
+              </div>
+            )}
+          </IonContent>
+        </IonModal>
       </IonContent>
     </IonPage>
   );

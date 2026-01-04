@@ -47,6 +47,8 @@ import Profile from './pages/Profile';
 import Play from './pages/Play';
 import PaymentMethods from './pages/PaymentMethods';
 import LegalDocument from './pages/LegalDocument';
+import MyTickets from './pages/MyTickets';
+import TicketDetail from './pages/TicketDetail';
 
 /* Components */
 import Menu from './components/Menu';
@@ -139,6 +141,12 @@ const App: React.FC = () => {
               </Route>
               <Route exact path="/payment-methods">
                 <PaymentMethods />
+              </Route>
+              <Route exact path="/my-tickets">
+                <MyTickets />
+              </Route>
+              <Route path="/ticket/:ticketId">
+                <TicketDetail />
               </Route>
               <Route path="/legal/:documentType">
                 <LegalDocument />
