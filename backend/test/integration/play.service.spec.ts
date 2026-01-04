@@ -2,6 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
 import { PlayService } from '../../src/application/services/play.service';
 import { PlayRepository, PLAY_REPOSITORY } from '../../src/domain/repositories/play.repository';
+import { BancaRepository, BANCA_REPOSITORY } from '../../src/domain/repositories/banca.repository';
+import { SucursalRepository, SUCURSAL_REPOSITORY } from '../../src/domain/repositories/sucursal.repository';
 import { EventPublisher, EVENT_PUBLISHER } from '../../src/ports/outgoing/event-publisher.port';
 import { Play, PlayProps } from '../../src/domain/entities/play.entity';
 import { PlayStatus, BetType, Currency } from '../../src/domain/value-objects';
@@ -11,6 +13,8 @@ import { NotFoundException } from '@nestjs/common';
 describe('PlayService', () => {
   let service: PlayService;
   let playRepository: jest.Mocked<PlayRepository>;
+  let bancaRepository: jest.Mocked<BancaRepository>;
+  let sucursalRepository: jest.Mocked<SucursalRepository>;
   let eventPublisher: jest.Mocked<EventPublisher>;
 
   const mockPlayRepository = {
@@ -19,6 +23,26 @@ describe('PlayService', () => {
     findByRequestId: jest.fn(),
     findByUserId: jest.fn(),
     update: jest.fn(),
+  };
+
+  const mockBancaRepository = {
+    findById: jest.fn(),
+    findByName: jest.fn(),
+    findByEmail: jest.fn(),
+    findByStatus: jest.fn(),
+    findAll: jest.fn(),
+    save: jest.fn(),
+    update: jest.fn(),
+  };
+
+  const mockSucursalRepository = {
+    findById: jest.fn(),
+    findByBancaId: jest.fn(),
+    findByBancaIdAndCode: jest.fn(),
+    findByCode: jest.fn(),
+    save: jest.fn(),
+    update: jest.fn(),
+    delete: jest.fn(),
   };
 
   const mockEventPublisher = {
@@ -51,6 +75,14 @@ describe('PlayService', () => {
           useValue: mockPlayRepository,
         },
         {
+          provide: BANCA_REPOSITORY,
+          useValue: mockBancaRepository,
+        },
+        {
+          provide: SUCURSAL_REPOSITORY,
+          useValue: mockSucursalRepository,
+        },
+        {
           provide: EVENT_PUBLISHER,
           useValue: mockEventPublisher,
         },
@@ -59,6 +91,8 @@ describe('PlayService', () => {
 
     service = module.get<PlayService>(PlayService);
     playRepository = module.get(PLAY_REPOSITORY);
+    bancaRepository = module.get(BANCA_REPOSITORY);
+    sucursalRepository = module.get(SUCURSAL_REPOSITORY);
     eventPublisher = module.get(EVENT_PUBLISHER);
   });
 
@@ -113,6 +147,8 @@ describe('PlayService', () => {
       });
 
       playRepository.findById.mockResolvedValue(play);
+      sucursalRepository.findById.mockResolvedValue(null);
+      bancaRepository.findById.mockResolvedValue(null);
 
       const result = await service.getPlayById('play-123');
 
@@ -155,6 +191,8 @@ describe('PlayService', () => {
       ];
 
       playRepository.findByUserId.mockResolvedValue(plays);
+      sucursalRepository.findById.mockResolvedValue(null);
+      bancaRepository.findById.mockResolvedValue(null);
 
       const result = await service.getPlaysByUserId('user_123', 20, 0);
 
