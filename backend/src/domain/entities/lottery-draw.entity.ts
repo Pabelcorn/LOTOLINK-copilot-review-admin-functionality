@@ -159,7 +159,7 @@ export class LotteryDraw {
     }
 
     const [hours, minutes] = this._drawTime.split(':').map(Number);
-    let currentDay = fromDate.getDay() || 7;
+    const currentDay = fromDate.getDay() || 7;
     let daysToAdd = 0;
 
     // Try today first
