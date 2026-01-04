@@ -15,3 +15,4 @@ export * from './banca-blocked-number.db-entity';
 export * from './banca-number-limit.db-entity';
 export * from './banca-daily-sales.db-entity';
 export * from './prize.db-entity';
+export * from './sucursal.db-entity';

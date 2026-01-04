@@ -9,3 +9,4 @@ export * from './lottery.dto';
 export * from './reports.dto';
 export * from './contact.dto';
 export * from './settings.dto';
+export * from './sucursal.dto';
