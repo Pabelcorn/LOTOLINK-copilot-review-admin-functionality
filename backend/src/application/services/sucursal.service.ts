@@ -67,7 +67,8 @@ export class SucursalService {
       throw new NotFoundException(`Sucursal with id ${id} not found`);
     }
 
-    if (dto.address || dto.city || dto.province || dto.phone) {
+    // Only update contact info if at least one field is provided
+    if (dto.address !== undefined || dto.city !== undefined || dto.province !== undefined || dto.phone !== undefined) {
       sucursal.updateContactInfo(dto.address, dto.city, dto.province, dto.phone);
     }
 

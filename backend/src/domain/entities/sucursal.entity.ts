@@ -90,10 +90,10 @@ export class Sucursal {
   }
 
   updateContactInfo(address?: string, city?: string, province?: string, phone?: string): void {
-    if (address) this._address = address;
-    if (city) this._city = city;
-    if (province) this._province = province;
-    if (phone) this._phone = phone;
+    if (address !== undefined && address.trim()) this._address = address;
+    if (city !== undefined && city.trim()) this._city = city;
+    if (province !== undefined && province.trim()) this._province = province;
+    if (phone !== undefined && phone.trim()) this._phone = phone;
     this._updatedAt = new Date();
   }
 

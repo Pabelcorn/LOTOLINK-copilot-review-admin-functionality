@@ -17,7 +17,7 @@ import {
   UpdateTicketConfigDto,
 } from '../../../application/dtos/sucursal.dto';
 
-@Controller()
+@Controller('api')
 export class SucursalController {
   constructor(private readonly sucursalService: SucursalService) {}
 
