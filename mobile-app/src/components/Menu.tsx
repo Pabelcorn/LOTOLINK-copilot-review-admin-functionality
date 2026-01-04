@@ -21,6 +21,7 @@ import {
   document,
   shieldCheckmark,
   informationCircle,
+  ticket,
 } from 'ionicons/icons';
 import { useLocation } from 'react-router-dom';
 import { APP_INFO } from '../constants';
@@ -37,6 +38,7 @@ const Menu: React.FC = () => {
   const mainPages: MenuItem[] = [
     { title: 'Inicio', url: '/home', icon: home },
     { title: 'Loterías', url: '/lotteries', icon: trophy },
+    { title: 'Mis Tickets', url: '/my-tickets', icon: ticket },
     { title: 'Bancas', url: '/bancas', icon: storefront },
     { title: 'Perfil', url: '/profile', icon: personCircle },
   ];
