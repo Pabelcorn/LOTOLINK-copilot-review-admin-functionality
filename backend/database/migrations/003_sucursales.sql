@@ -40,6 +40,7 @@ ALTER TABLE plays ADD COLUMN IF NOT EXISTS receipt_printed_at TIMESTAMP WITH TIM
 
 CREATE INDEX idx_plays_sucursal_id ON plays(sucursal_id);
 CREATE INDEX idx_plays_sorteo_number ON plays(sorteo_number);
+CREATE INDEX idx_plays_sorteo_name ON plays(sorteo_name);
 CREATE INDEX idx_plays_barcode ON plays(barcode);
 CREATE INDEX idx_plays_operator ON plays(operator_user_id);
 CREATE INDEX idx_plays_valid_until ON plays(valid_until);
@@ -47,6 +48,7 @@ CREATE INDEX idx_plays_valid_until ON plays(valid_until);
 COMMENT ON COLUMN plays.sucursal_id IS 'Sucursal donde se emitió el ticket';
 COMMENT ON COLUMN plays.sorteo_number IS 'Número de sorteo (ej: #18331)';
 COMMENT ON COLUMN plays.sorteo_time IS 'Hora del sorteo (ej: 13:00)';
+COMMENT ON COLUMN plays.sorteo_name IS 'Nombre del sorteo (ej: Mega Loto, Loteka)';
 COMMENT ON COLUMN plays.barcode IS 'Código de barras para escaneo';
 COMMENT ON COLUMN plays.valid_until IS 'Fecha límite para cobrar premio';
 COMMENT ON COLUMN plays.operator_user_id IS 'ID del operador/vendedor en la sucursal';

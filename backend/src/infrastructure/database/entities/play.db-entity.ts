@@ -91,6 +91,7 @@ export class PlayEntity {
   sorteoTime?: string;
 
   @Column('varchar', { length: 100, nullable: true, name: 'sorteo_name' })
+  @Index()
   sorteoName?: string;
 
   @Column('varchar', { length: 100, nullable: true })

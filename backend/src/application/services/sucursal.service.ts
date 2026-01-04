@@ -105,15 +105,14 @@ export class SucursalService {
     return this.toResponseDto(updated);
   }
 
-  async deactivateSucursal(id: string): Promise<SucursalResponseDto> {
+  async deactivateSucursal(id: string): Promise<void> {
     const sucursal = await this.sucursalRepository.findById(id);
     if (!sucursal) {
       throw new NotFoundException(`Sucursal with id ${id} not found`);
     }
 
     sucursal.deactivate();
-    const updated = await this.sucursalRepository.update(sucursal);
-    return this.toResponseDto(updated);
+    await this.sucursalRepository.update(sucursal);
   }
 
   private toResponseDto(sucursal: Sucursal): SucursalResponseDto {
