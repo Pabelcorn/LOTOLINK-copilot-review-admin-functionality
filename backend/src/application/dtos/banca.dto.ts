@@ -34,6 +34,26 @@ export class CreateBancaDto {
   @IsOptional()
   @IsString()
   endpoint?: string;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(-90)
+  @Max(90)
+  latitude?: number;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(-180)
+  @Max(180)
+  longitude?: number;
+
+  @IsOptional()
+  @IsString()
+  city?: string;
+
+  @IsOptional()
+  @IsString()
+  region?: string;
 }
 
 export class UpdateBancaDto {
@@ -83,6 +103,26 @@ export class UpdateBancaDto {
   @IsOptional()
   @IsString()
   cardProcessingAccountId?: string;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(-90)
+  @Max(90)
+  latitude?: number;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(-180)
+  @Max(180)
+  longitude?: number;
+
+  @IsOptional()
+  @IsString()
+  city?: string;
+
+  @IsOptional()
+  @IsString()
+  region?: string;
 }
 
 export class ApproveBancaDto {
@@ -111,6 +151,10 @@ export class BancaResponseDto {
   commissionPercentage?: number;
   commissionStripeAccountId?: string;
   cardProcessingAccountId?: string;
+  latitude?: number;
+  longitude?: number;
+  city?: string;
+  region?: string;
   createdAt!: Date;
   updatedAt!: Date;
 }

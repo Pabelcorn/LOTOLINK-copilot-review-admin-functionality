@@ -266,6 +266,14 @@ export class Banca {
     this._updatedAt = new Date();
   }
 
+  updateLocation(latitude?: number, longitude?: number, city?: string, region?: string): void {
+    if (latitude !== undefined) this._latitude = latitude;
+    if (longitude !== undefined) this._longitude = longitude;
+    if (city !== undefined) this._city = city;
+    if (region !== undefined) this._region = region;
+    this._updatedAt = new Date();
+  }
+
   approve(): void {
     this._status = BancaStatus.APPROVED;
     this._updatedAt = new Date();
