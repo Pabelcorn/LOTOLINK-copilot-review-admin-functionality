@@ -820,7 +820,36 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* Leaflet Map Styles */
+        #location-map {
+            height: 300px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            border: 1px solid var(--gray-200);
+        }
+
+        .location-fields-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        @media (max-width: 640px) {
+            .location-fields-grid {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin=""/>
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin=""></script>
 </head>
 <body>
     <!-- Apple-Inspired Admin Panel with Sidebar -->
@@ -931,6 +960,31 @@
                     <div class="form-group">
                         <label for="endpoint">Endpoint API (opcional)</label>
                         <input type="url" id="endpoint" name="endpoint" placeholder="https://api.banca.com/v1">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Ubicación en el Mapa *</label>
+                        <div id="location-map"></div>
+                        <div class="location-fields-grid">
+                            <div>
+                                <label for="latitude">Latitud</label>
+                                <input type="number" id="latitude" name="latitude" step="0.00000001" placeholder="18.4861" required>
+                            </div>
+                            <div>
+                                <label for="longitude">Longitud</label>
+                                <input type="number" id="longitude" name="longitude" step="0.00000001" placeholder="-69.9312" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="city">Ciudad</label>
+                        <input type="text" id="city" name="city" placeholder="Santo Domingo">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="region">Región/Provincia</label>
+                        <input type="text" id="region" name="region" placeholder="Distrito Nacional">
                     </div>
 
                     <div class="button-group">
@@ -1407,6 +1461,71 @@
             }, 5000);
         }
 
+        // ============================================
+        // LEAFLET MAP INITIALIZATION
+        // ============================================
+        let locationMap;
+        let locationMarker;
+
+        function initLocationMap() {
+            // Center on Dominican Republic (Santo Domingo)
+            locationMap = L.map('location-map').setView([18.4861, -69.9312], 10);
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                maxZoom: 19
+            }).addTo(locationMap);
+            
+            // Click on map to select location
+            locationMap.on('click', function(e) {
+                const lat = e.latlng.lat;
+                const lng = e.latlng.lng;
+                
+                document.getElementById('latitude').value = lat.toFixed(8);
+                document.getElementById('longitude').value = lng.toFixed(8);
+                
+                if (locationMarker) {
+                    locationMarker.setLatLng(e.latlng);
+                } else {
+                    locationMarker = L.marker(e.latlng, { draggable: true }).addTo(locationMap);
+                    locationMarker.on('dragend', function(e) {
+                        const pos = e.target.getLatLng();
+                        document.getElementById('latitude').value = pos.lat.toFixed(8);
+                        document.getElementById('longitude').value = pos.lng.toFixed(8);
+                    });
+                }
+            });
+            
+            // Allow manual input to update marker
+            const latInput = document.getElementById('latitude');
+            const lngInput = document.getElementById('longitude');
+            
+            function updateMarkerFromInputs() {
+                const lat = parseFloat(latInput.value);
+                const lng = parseFloat(lngInput.value);
+                
+                if (!isNaN(lat) && !isNaN(lng)) {
+                    const latlng = L.latLng(lat, lng);
+                    
+                    if (locationMarker) {
+                        locationMarker.setLatLng(latlng);
+                    } else {
+                        locationMarker = L.marker(latlng, { draggable: true }).addTo(locationMap);
+                        locationMarker.on('dragend', function(e) {
+                            const pos = e.target.getLatLng();
+                            latInput.value = pos.lat.toFixed(8);
+                            lngInput.value = pos.lng.toFixed(8);
+                        });
+                    }
+                    
+                    locationMap.setView(latlng, 14);
+                }
+            }
+            
+            latInput.addEventListener('change', updateMarkerFromInputs);
+            lngInput.addEventListener('change', updateMarkerFromInputs);
+        }
+
         // Register form submission
         document.getElementById('register-form').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -1419,6 +1538,10 @@
                 phone: document.getElementById('phone').value || undefined,
                 email: document.getElementById('email').value,
                 endpoint: document.getElementById('endpoint').value || undefined,
+                latitude: parseFloat(document.getElementById('latitude').value) || undefined,
+                longitude: parseFloat(document.getElementById('longitude').value) || undefined,
+                city: document.getElementById('city').value || undefined,
+                region: document.getElementById('region').value || undefined,
             };
 
             try {
@@ -1436,6 +1559,12 @@
                 const result = await response.json();
                 showAlert('register-alert', `✅ Banca "${result.name}" registrada exitosamente. Estado: Pendiente de aprobación.`, 'success');
                 document.getElementById('register-form').reset();
+                
+                // Clear map marker
+                if (locationMarker) {
+                    locationMap.removeLayer(locationMarker);
+                    locationMarker = null;
+                }
             } catch (error) {
                 showAlert('register-alert', `❌ Error: ${error.message}`, 'error');
             }
@@ -1939,6 +2068,9 @@
             localStorage.setItem('ll_admin_timestamp', Date.now().toString());
             
             console.log('✅ Admin autenticado:', user.name || user.email);
+            
+            // Initialize location map
+            setTimeout(initLocationMap, 500);
             
             // Check connection
             await checkConnection();
