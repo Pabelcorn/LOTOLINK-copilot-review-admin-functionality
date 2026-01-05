@@ -23,6 +23,23 @@ import { BancaStatus } from '../../../domain/entities/banca.entity';
 export class AdminBancasController {
   constructor(private readonly bancaService: BancaService) {}
 
+  @Get('nearby')
+  async getNearbyBancas(
+    @Query('latitude') latitude: string,
+    @Query('longitude') longitude: string,
+    @Query('radius_km') radiusKm?: string,
+  ): Promise<BancaResponseDto[]> {
+    const lat = parseFloat(latitude);
+    const lon = parseFloat(longitude);
+    const radius = radiusKm ? parseFloat(radiusKm) : 10;
+    
+    if (isNaN(lat) || isNaN(lon)) {
+      throw new Error('Invalid latitude or longitude');
+    }
+    
+    return this.bancaService.findNearby(lat, lon, radius);
+  }
+
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async createBanca(@Body() dto: CreateBancaDto): Promise<BancaResponseDto> {

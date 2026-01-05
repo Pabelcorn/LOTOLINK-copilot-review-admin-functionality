@@ -36,6 +36,10 @@ export class BancaService {
       endpoint: dto.endpoint,
       status: BancaStatus.PENDING,
       isActive: false,
+      latitude: dto.latitude,
+      longitude: dto.longitude,
+      city: dto.city,
+      region: dto.region,
     });
 
     const saved = await this.bancaRepository.save(banca);
@@ -83,6 +87,11 @@ export class BancaService {
         dto.commissionStripeAccountId,
         dto.cardProcessingAccountId
       );
+    }
+
+    // Update location if provided
+    if (dto.latitude !== undefined || dto.longitude !== undefined || dto.city !== undefined || dto.region !== undefined) {
+      banca.updateLocation(dto.latitude, dto.longitude, dto.city, dto.region);
     }
 
     const updated = await this.bancaRepository.update(banca);
@@ -184,8 +193,39 @@ export class BancaService {
       commissionPercentage: banca.commissionPercentage,
       commissionStripeAccountId: banca.commissionStripeAccountId,
       cardProcessingAccountId: banca.cardProcessingAccountId,
+      latitude: banca.latitude,
+      longitude: banca.longitude,
+      city: banca.city,
+      region: banca.region,
       createdAt: banca.createdAt,
       updatedAt: banca.updatedAt,
     };
+  }
+
+  async findNearby(latitude: number, longitude: number, radiusKm: number = 10): Promise<BancaResponseDto[]> {
+    const bancas = await this.bancaRepository.findAll(true); // only active bancas
+    
+    const nearby = bancas.filter(banca => {
+      if (!banca.latitude || !banca.longitude) return false;
+      const distance = this.calculateDistance(latitude, longitude, banca.latitude, banca.longitude);
+      return distance <= radiusKm;
+    });
+    
+    return nearby.map(b => this.toBancaResponseDto(b));
+  }
+
+  private calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
+    const R = 6371; // Earth's radius in km
+    const dLat = this.toRad(lat2 - lat1);
+    const dLon = this.toRad(lon2 - lon1);
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+              Math.cos(this.toRad(lat1)) * Math.cos(this.toRad(lat2)) *
+              Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  }
+
+  private toRad(deg: number): number {
+    return deg * (Math.PI / 180);
   }
 }
