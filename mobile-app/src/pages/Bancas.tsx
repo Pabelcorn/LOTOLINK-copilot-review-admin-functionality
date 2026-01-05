@@ -13,58 +13,120 @@ import {
   IonSegmentButton,
   IonLabel,
   IonButtons,
-  IonMenuButton
+  IonMenuButton,
+  IonSpinner
 } from '@ionic/react';
 import { location, time, call } from 'ionicons/icons';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+import { getCurrentPosition, calculateDistance, formatDistance } from '../services/geolocation.service';
+import { getBancas, Banca as BancaType } from '../services/bancas.service';
 
-interface Banca {
-  id: number;
-  name: string;
-  address: string;
-  hours: string;
-  phone: string;
-  distance?: string;
+// Fix for default marker icons in React-Leaflet
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
+  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+});
+
+// Custom icon for bancas
+const bancaIcon = new L.Icon({
+  iconUrl: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHJ4PSI4IiBmaWxsPSIjMDA3MWUzIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtc2l6ZT0iMjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIwLjM1ZW0iIGZpbGw9IndoaXRlIj7wn4+qPC90ZXh0Pjwvc3ZnPg==',
+  iconSize: [32, 32],
+  iconAnchor: [16, 32],
+  popupAnchor: [0, -32],
+});
+
+// Component to recenter map
+function RecenterMap({ lat, lng }: { lat: number; lng: number }) {
+  const map = useMap();
+  useEffect(() => {
+    map.setView([lat, lng], 14);
+  }, [lat, lng, map]);
+  return null;
 }
 
-const bancas: Banca[] = [
-  { 
-    id: 1, 
-    name: 'Loteka - Av. Duarte', 
-    address: 'Av. Duarte #123, Santo Domingo',
-    hours: 'Abierta hasta las 8:00 PM',
-    phone: '+1 809-555-0101',
-    distance: '0.5 km'
-  },
-  { 
-    id: 2, 
-    name: 'Leidsa - Plaza Central', 
-    address: 'Plaza Central, Local 45',
-    hours: 'Abierta hasta las 8:55 PM',
-    phone: '+1 809-555-0102',
-    distance: '1.2 km'
-  },
-  { 
-    id: 3, 
-    name: 'La Primera - Zona Colonial', 
-    address: 'Calle El Conde #67, Zona Colonial',
-    hours: 'Abierta hasta las 8:00 PM',
-    phone: '+1 809-555-0103',
-    distance: '2.1 km'
-  },
-  { 
-    id: 4, 
-    name: 'Lotería Nacional - Naco', 
-    address: 'Av. Tiradentes, Naco',
-    hours: 'Abierta hasta las 6:00 PM',
-    phone: '+1 809-555-0104',
-    distance: '3.5 km'
-  },
-];
+interface DisplayBanca {
+  id: string;
+  name: string;
+  address: string;
+  hours?: string;
+  phone: string;
+  distance?: string;
+  location?: {
+    latitude: number;
+    longitude: number;
+  };
+}
 
 const Bancas: React.FC = () => {
   const [searchText, setSearchText] = useState('');
   const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
+  const [bancas, setBancas] = useState<DisplayBanca[]>([]);
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    loadBancasAndLocation();
+  }, []);
+
+  const loadBancasAndLocation = async () => {
+    try {
+      setLoading(true);
+      
+      // Get user location
+      try {
+        const position = await getCurrentPosition();
+        setUserLocation({
+          lat: position.coordinates.latitude,
+          lng: position.coordinates.longitude,
+        });
+      } catch (err) {
+        console.log('Could not get user location, using default');
+        setUserLocation({ lat: 18.4861, lng: -69.9312 }); // Default to Santo Domingo
+      }
+      
+      // Get bancas from API
+      const response = await getBancas({ status: 'active' });
+      
+      // Transform to display format and calculate distances
+      const displayBancas: DisplayBanca[] = response.bancas.map((banca: BancaType) => {
+        let distance: string | undefined;
+        
+        if (userLocation && banca.location?.latitude && banca.location?.longitude) {
+          const distKm = calculateDistance(
+            { latitude: userLocation.lat, longitude: userLocation.lng },
+            { latitude: banca.location.latitude, longitude: banca.location.longitude }
+          );
+          distance = formatDistance(distKm);
+        }
+        
+        return {
+          id: banca.id,
+          name: banca.name,
+          address: banca.address || 'Dirección no disponible',
+          phone: banca.phone || 'Teléfono no disponible',
+          hours: banca.hours ? `Abierta hasta las ${banca.hours.close}` : 'Horario no disponible',
+          distance,
+          location: banca.location,
+        };
+      });
+      
+      setBancas(displayBancas);
+      
+    } catch (err) {
+      console.error('Error loading bancas:', err);
+      setError('No se pudo cargar las bancas');
+      // Default to Santo Domingo if location fails
+      setUserLocation({ lat: 18.4861, lng: -69.9312 });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const filteredBancas = bancas.filter(banca =>
     banca.name.toLowerCase().includes(searchText.toLowerCase()) ||
@@ -100,7 +162,18 @@ const Bancas: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        {viewMode === 'list' ? (
+        {loading ? (
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+            <IonSpinner />
+          </div>
+        ) : error ? (
+          <div style={{ padding: '40px', textAlign: 'center' }}>
+            <div style={{ fontSize: '48px', marginBottom: '16px' }}>⚠️</div>
+            <div style={{ fontSize: '16px', fontWeight: '600', color: 'var(--ion-color-danger)' }}>
+              {error}
+            </div>
+          </div>
+        ) : viewMode === 'list' ? (
           <div className="banca-list">
             {filteredBancas.map((banca) => (
               <IonCard key={banca.id} className="banca-card premium-card" button>
@@ -153,17 +226,19 @@ const Bancas: React.FC = () => {
                         <IonIcon icon={location} />
                         {banca.address}
                       </div>
-                      <div style={{ 
-                        display: 'flex', 
-                        alignItems: 'center', 
-                        gap: '4px',
-                        fontSize: '13px', 
-                        color: 'var(--ion-color-success)',
-                        marginBottom: '8px'
-                      }}>
-                        <IonIcon icon={time} />
-                        {banca.hours}
-                      </div>
+                      {banca.hours && (
+                        <div style={{ 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          gap: '4px',
+                          fontSize: '13px', 
+                          color: 'var(--ion-color-success)',
+                          marginBottom: '8px'
+                        }}>
+                          <IonIcon icon={time} />
+                          {banca.hours}
+                        </div>
+                      )}
                       <IonButton
                         size="small"
                         fill="clear"
@@ -200,22 +275,53 @@ const Bancas: React.FC = () => {
             )}
           </div>
         ) : (
-          <div style={{ 
-            height: '100%', 
-            display: 'flex', 
-            alignItems: 'center', 
-            justifyContent: 'center',
-            padding: '40px'
-          }}>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '64px', marginBottom: '16px' }}>🗺️</div>
-              <div style={{ fontSize: '18px', fontWeight: '600', marginBottom: '8px' }}>
-                Vista de Mapa
-              </div>
-              <div style={{ fontSize: '14px', color: 'var(--ion-color-medium)' }}>
-                Integración con mapas nativo próximamente
-              </div>
-            </div>
+          <div style={{ height: '100%', width: '100%' }}>
+            {userLocation && (
+              <MapContainer
+                center={[userLocation.lat, userLocation.lng]}
+                zoom={14}
+                style={{ height: '100%', width: '100%' }}
+              >
+                <TileLayer
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                />
+                
+                <RecenterMap lat={userLocation.lat} lng={userLocation.lng} />
+                
+                {/* User location marker */}
+                <Marker position={[userLocation.lat, userLocation.lng]}>
+                  <Popup>📍 Tu ubicación</Popup>
+                </Marker>
+                
+                {/* Banca markers */}
+                {filteredBancas
+                  .filter(b => b.location?.latitude && b.location?.longitude)
+                  .map(banca => (
+                    <Marker
+                      key={banca.id}
+                      position={[banca.location!.latitude, banca.location!.longitude]}
+                      icon={bancaIcon}
+                    >
+                      <Popup>
+                        <div style={{ minWidth: '200px' }}>
+                          <h4 style={{ margin: '0 0 8px 0' }}>🏪 {banca.name}</h4>
+                          <p style={{ margin: '4px 0', fontSize: '13px' }}>📍 {banca.address}</p>
+                          <p style={{ margin: '4px 0', fontSize: '13px' }}>📞 {banca.phone}</p>
+                          {banca.distance && (
+                            <p style={{ margin: '4px 0', fontSize: '12px', color: '#0071e3' }}>
+                              🚶 {banca.distance}
+                            </p>
+                          )}
+                          <IonButton size="small" expand="block" href={`tel:${banca.phone}`}>
+                            Llamar
+                          </IonButton>
+                        </div>
+                      </Popup>
+                    </Marker>
+                  ))}
+              </MapContainer>
+            )}
           </div>
         )}
       </IonContent>
