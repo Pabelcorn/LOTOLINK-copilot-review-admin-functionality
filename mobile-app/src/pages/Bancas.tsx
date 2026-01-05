@@ -25,6 +25,8 @@ import { getCurrentPosition, calculateDistance, formatDistance } from '../servic
 import { getBancas, Banca as BancaType } from '../services/bancas.service';
 
 // Fix for default marker icons in React-Leaflet
+// This is a known issue with Leaflet when used with bundlers like Webpack/Vite
+// See: https://github.com/PaulLeCam/react-leaflet/issues/453
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
@@ -78,16 +80,20 @@ const Bancas: React.FC = () => {
     try {
       setLoading(true);
       
+      let currentUserLocation: { lat: number; lng: number } | null = null;
+      
       // Get user location
       try {
         const position = await getCurrentPosition();
-        setUserLocation({
+        currentUserLocation = {
           lat: position.coordinates.latitude,
           lng: position.coordinates.longitude,
-        });
+        };
+        setUserLocation(currentUserLocation);
       } catch (err) {
         console.log('Could not get user location, using default');
-        setUserLocation({ lat: 18.4861, lng: -69.9312 }); // Default to Santo Domingo
+        currentUserLocation = { lat: 18.4861, lng: -69.9312 }; // Default to Santo Domingo
+        setUserLocation(currentUserLocation);
       }
       
       // Get bancas from API
@@ -97,9 +103,9 @@ const Bancas: React.FC = () => {
       const displayBancas: DisplayBanca[] = response.bancas.map((banca: BancaType) => {
         let distance: string | undefined;
         
-        if (userLocation && banca.location?.latitude && banca.location?.longitude) {
+        if (currentUserLocation && banca.location?.latitude && banca.location?.longitude) {
           const distKm = calculateDistance(
-            { latitude: userLocation.lat, longitude: userLocation.lng },
+            { latitude: currentUserLocation.lat, longitude: currentUserLocation.lng },
             { latitude: banca.location.latitude, longitude: banca.location.longitude }
           );
           distance = formatDistance(distKm);

@@ -8,6 +8,7 @@ import {
   Query,
   HttpCode,
   HttpStatus,
+  BadRequestException,
 } from '@nestjs/common';
 import { BancaService } from '../../../application/services/banca.service';
 import {
@@ -33,7 +34,7 @@ export class AdminBancasController {
     const radius = radiusKm ? parseFloat(radiusKm) : 10;
     
     if (isNaN(lat) || isNaN(lon)) {
-      throw new Error('Invalid latitude or longitude');
+      throw new BadRequestException('Invalid latitude or longitude');
     }
     
     return this.bancaService.findNearby(lat, lon, radius);
