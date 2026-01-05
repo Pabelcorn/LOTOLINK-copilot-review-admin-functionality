@@ -2,12 +2,14 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
 import { WebhookService } from '../../src/application/services/webhook.service';
 import { PlayService } from '../../src/application/services/play.service';
+import { SucursalService } from '../../src/application/services/sucursal.service';
 import { BadRequestException, UnauthorizedException } from '@nestjs/common';
 import { createHmac } from 'crypto';
 
 describe('WebhookService', () => {
   let service: WebhookService;
   let playService: jest.Mocked<PlayService>;
+  let sucursalService: jest.Mocked<SucursalService>;
   let configService: ConfigService;
 
   const HMAC_SECRET = 'test_hmac_secret';
@@ -15,6 +17,12 @@ describe('WebhookService', () => {
   const mockPlayService = {
     confirmPlayByRequestId: jest.fn(),
     rejectPlayByRequestId: jest.fn(),
+    getPlayByRequestId: jest.fn(),
+    assignSucursal: jest.fn(),
+  };
+
+  const mockSucursalService = {
+    findByCode: jest.fn(),
   };
 
   const mockConfigService = {
@@ -43,6 +51,10 @@ describe('WebhookService', () => {
           useValue: mockPlayService,
         },
         {
+          provide: SucursalService,
+          useValue: mockSucursalService,
+        },
+        {
           provide: ConfigService,
           useValue: mockConfigService,
         },
@@ -51,6 +63,7 @@ describe('WebhookService', () => {
 
     service = module.get<WebhookService>(WebhookService);
     playService = module.get(PlayService);
+    sucursalService = module.get(SucursalService);
     configService = module.get(ConfigService);
   });
 
@@ -69,6 +82,7 @@ describe('WebhookService', () => {
       const timestamp = new Date().toISOString();
       const signature = calculateSignature('POST', '/webhooks/plays/confirmation', timestamp, body);
 
+      mockPlayService.getPlayByRequestId.mockResolvedValue(null);
       mockPlayService.confirmPlayByRequestId.mockResolvedValue(undefined);
 
       const result = await service.processPlayConfirmation(dto, signature, timestamp, body);

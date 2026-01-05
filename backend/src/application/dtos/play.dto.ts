@@ -82,4 +82,30 @@ export class GetPlayDto {
   receiptPrintedAt?: Date;
   createdAt!: Date;
   updatedAt!: Date;
+  
+  // Sucursal data
+  sucursalName?: string;
+  sucursalCode?: string;
+  sucursalAddress?: string;
+  sucursalCity?: string;
+  sucursalProvince?: string;
+  sucursalPhone?: string;
+  sucursalOperatorPrefix?: string;
+  
+  // Banca data
+  bancaName?: string;
+  bancaLogo?: string;
+  bancaEmail?: string;
+  bancaPhone?: string;
+  bancaAddress?: string;
+  
+  // Ticket configuration
+  ticketConfig?: {
+    headerLogo?: string;
+    headerText?: string;
+    footerText?: string;
+    showBarcode: boolean;
+    showQR: boolean;
+    validityDays: number;
+  };
 }

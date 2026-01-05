@@ -1,6 +1,10 @@
 import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import { Play, PlayPayment } from '../../domain/entities/play.entity';
+import { Banca } from '../../domain/entities/banca.entity';
+import { Sucursal } from '../../domain/entities/sucursal.entity';
 import { PlayRepository, PLAY_REPOSITORY } from '../../domain/repositories/play.repository';
+import { BancaRepository, BANCA_REPOSITORY } from '../../domain/repositories/banca.repository';
+import { SucursalRepository, SUCURSAL_REPOSITORY } from '../../domain/repositories/sucursal.repository';
 import { PlayStatus } from '../../domain/value-objects';
 import { CreatePlayDto, PlayResponseDto, GetPlayDto } from '../dtos/play.dto';
 import { EventPublisher, EVENT_PUBLISHER } from '../../ports/outgoing/event-publisher.port';
@@ -11,6 +15,10 @@ export class PlayService {
   constructor(
     @Inject(PLAY_REPOSITORY)
     private readonly playRepository: PlayRepository,
+    @Inject(BANCA_REPOSITORY)
+    private readonly bancaRepository: BancaRepository,
+    @Inject(SUCURSAL_REPOSITORY)
+    private readonly sucursalRepository: SucursalRepository,
     @Inject(EVENT_PUBLISHER)
     private readonly eventPublisher: EventPublisher,
   ) {}
@@ -61,12 +69,22 @@ export class PlayService {
     if (!play) {
       throw new NotFoundException(`Play with id ${playId} not found`);
     }
-    return this.toGetPlayDto(play);
+    
+    const { sucursalData, bancaData } = await this.getPlayRelations(play);
+    return this.toGetPlayDtoWithRelations(play, sucursalData, bancaData);
   }
 
   async getPlaysByUserId(userId: string, limit = 20, offset = 0): Promise<GetPlayDto[]> {
     const plays = await this.playRepository.findByUserId(userId, limit, offset);
-    return plays.map(play => this.toGetPlayDto(play));
+    
+    const playsWithRelations = await Promise.all(
+      plays.map(async (play) => {
+        const { sucursalData, bancaData } = await this.getPlayRelations(play);
+        return this.toGetPlayDtoWithRelations(play, sucursalData, bancaData);
+      })
+    );
+    
+    return playsWithRelations;
   }
 
   async confirmPlay(playId: string, playIdBanca: string, ticketCode: string): Promise<void> {
@@ -125,6 +143,20 @@ export class PlayService {
     );
   }
 
+  async assignSucursal(playId: string, sucursalId: string): Promise<void> {
+    const play = await this.playRepository.findById(playId);
+    if (!play) {
+      throw new NotFoundException(`Play with id ${playId} not found`);
+    }
+    
+    play.assignSucursal(sucursalId);
+    await this.playRepository.update(play);
+  }
+
+  async getPlayByRequestId(requestId: string): Promise<Play | null> {
+    return await this.playRepository.findByRequestId(requestId);
+  }
+
   private toPlayResponse(play: Play): PlayResponseDto {
     const estimatedMs = 30000; // 30 seconds estimation
     const estimatedConfirmation = new Date(Date.now() + estimatedMs).toISOString();
@@ -138,8 +170,31 @@ export class PlayService {
     };
   }
 
-  private toGetPlayDto(play: Play): GetPlayDto {
-    return {
+  private async getPlayRelations(play: Play): Promise<{
+    sucursalData: Sucursal | null;
+    bancaData: Banca | null;
+  }> {
+    let sucursalData = null;
+    let bancaData = null;
+
+    if (play.sucursalId) {
+      sucursalData = await this.sucursalRepository.findById(play.sucursalId);
+      if (sucursalData) {
+        bancaData = await this.bancaRepository.findById(sucursalData.bancaId);
+      }
+    } else if (play.bancaId) {
+      bancaData = await this.bancaRepository.findById(play.bancaId);
+    }
+
+    return { sucursalData, bancaData };
+  }
+
+  private toGetPlayDtoWithRelations(
+    play: Play,
+    sucursal: Sucursal | null,
+    banca: Banca | null
+  ): GetPlayDto {
+    const dto: GetPlayDto = {
       playId: play.id,
       requestId: play.requestId,
       userId: play.userId,
@@ -164,5 +219,28 @@ export class PlayService {
       createdAt: play.createdAt,
       updatedAt: play.updatedAt,
     };
+
+    // Add sucursal data if exists
+    if (sucursal) {
+      dto.sucursalName = sucursal.name;
+      dto.sucursalCode = sucursal.code;
+      dto.sucursalAddress = sucursal.address;
+      dto.sucursalCity = sucursal.city;
+      dto.sucursalProvince = sucursal.province;
+      dto.sucursalPhone = sucursal.phone;
+      dto.sucursalOperatorPrefix = sucursal.operatorPrefix;
+      dto.ticketConfig = sucursal.ticketConfig;
+    }
+
+    // Add banca data if exists
+    if (banca) {
+      dto.bancaName = banca.name;
+      dto.bancaEmail = banca.email;
+      dto.bancaPhone = banca.phone;
+      dto.bancaAddress = banca.address;
+      // dto.bancaLogo = banca.logo; // If the field exists in future
+    }
+
+    return dto;
   }
 }

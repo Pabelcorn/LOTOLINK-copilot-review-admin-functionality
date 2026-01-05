@@ -3,6 +3,7 @@ import { createHmac, timingSafeEqual } from 'crypto';
 import { ConfigService } from '@nestjs/config';
 import { WebhookConfirmationDto, WebhookResponseDto } from '../dtos/webhook.dto';
 import { PlayService } from './play.service';
+import { SucursalService } from './sucursal.service';
 
 @Injectable()
 export class WebhookService {
@@ -11,6 +12,7 @@ export class WebhookService {
 
   constructor(
     private readonly playService: PlayService,
+    private readonly sucursalService: SucursalService,
     private readonly configService: ConfigService,
   ) {
     this.hmacSecret = this.configService.get<string>('HMAC_SECRET', 'default_secret');
@@ -31,6 +33,17 @@ export class WebhookService {
 
     // Process confirmation
     if (dto.status === 'confirmed') {
+      // First, get the play by requestId to get its playId
+      const play = await this.playService.getPlayByRequestId(dto.requestId);
+      
+      // Assign sucursal if provided
+      if (dto.sucursalCode && play) {
+        const sucursal = await this.sucursalService.findByCode(dto.sucursalCode);
+        if (sucursal) {
+          await this.playService.assignSucursal(play.id, sucursal.id);
+        }
+      }
+      
       await this.playService.confirmPlayByRequestId(dto.requestId, dto.playIdBanca, dto.ticketCode);
     } else if (dto.status === 'rejected') {
       await this.playService.rejectPlayByRequestId(dto.requestId, dto.reason);
