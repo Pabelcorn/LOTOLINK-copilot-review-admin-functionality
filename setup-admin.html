@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setup Admin Auth</title>
+</head>
+<body>
+    <h1>Setting up admin authentication...</h1>
+    <script>
+        // Set up admin auth
+        const adminUser = {
+            id: 'admin-1',
+            email: 'admin@lotolink.com',
+            name: 'Administrator',
+            isAdmin: true,
+            accessToken: 'mock-token-for-testing'
+        };
+        
+        localStorage.setItem('ll_user', JSON.stringify(adminUser));
+        localStorage.setItem('ll_admin_auth', 'true');
+        localStorage.setItem('ll_admin_timestamp', Date.now().toString());
+        
+        // Redirect to admin panel
+        setTimeout(() => {
+            window.location.href = '/admin-panel.html';
+        }, 1000);
+    </script>
+</body>
+</html>
