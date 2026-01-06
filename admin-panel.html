@@ -841,6 +841,266 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* ============================================
+           BANCA CONFIGURATION STYLES
+           ============================================ */
+
+        /* Banca Selector */
+        .banca-selector {
+            margin-bottom: 24px;
+            padding: 20px;
+            background: var(--gray-50);
+            border-radius: var(--radius-md);
+        }
+
+        .banca-selector label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--gray-600);
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .banca-selector select {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            background: white;
+            transition: all 0.2s ease;
+        }
+
+        /* Config Sub-tabs */
+        .config-subtabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            border-bottom: 2px solid var(--gray-200);
+            overflow-x: auto;
+        }
+
+        .config-subtab {
+            padding: 12px 20px;
+            border: none;
+            background: none;
+            color: var(--gray-500);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .config-subtab:hover {
+            color: var(--gray-600);
+            background: var(--gray-50);
+        }
+
+        .config-subtab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .config-section {
+            display: none;
+        }
+
+        .config-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* Lottery Grid */
+        .lottery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .lottery-toggle {
+            padding: 20px;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-md);
+            background: white;
+            transition: all 0.2s ease;
+        }
+
+        .lottery-toggle:hover {
+            border-color: var(--primary);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .lottery-toggle-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .lottery-toggle-header h4 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--gray-600);
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 28px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--gray-300);
+            transition: 0.3s;
+            border-radius: 34px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+
+        .toggle-switch input:checked + .toggle-slider {
+            background-color: var(--success);
+        }
+
+        .toggle-switch input:checked + .toggle-slider:before {
+            transform: translateX(22px);
+        }
+
+        /* Pricing Table */
+        .pricing-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .pricing-table th,
+        .pricing-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .pricing-table th {
+            background: var(--gray-50);
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            color: var(--gray-600);
+        }
+
+        .pricing-table input[type="number"],
+        .pricing-table input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+        }
+
+        .pricing-table input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        /* Limits Form */
+        .limits-form {
+            background: var(--gray-50);
+            padding: 20px;
+            border-radius: var(--radius-md);
+            margin-bottom: 20px;
+        }
+
+        .limits-form .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        /* Blocked Form */
+        .blocked-form {
+            background: rgba(255, 59, 48, 0.05);
+            padding: 20px;
+            border-radius: var(--radius-md);
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 59, 48, 0.2);
+        }
+
+        .blocked-form .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        /* Owner Form */
+        .owner-form-section {
+            background: var(--gray-50);
+            padding: 24px;
+            border-radius: var(--radius-md);
+            margin-bottom: 24px;
+        }
+
+        .owner-form-section h3 {
+            color: var(--primary);
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        /* Action Buttons Bar */
+        .action-buttons-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            padding: 16px;
+            background: var(--gray-50);
+            border-radius: var(--radius-md);
+        }
+
+        /* Sales Display */
+        .sales-display {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            background: var(--gray-100);
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+            color: var(--gray-600);
+        }
+
+        .sales-display.high {
+            background: rgba(255, 159, 10, 0.1);
+            color: var(--warning);
+        }
     </style>
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -883,6 +1143,14 @@
                 <button class="sidebar-nav-item" onclick="switchTab('settings')">
                     <span class="sidebar-nav-item-icon">⚙️</span>
                     <span>Configuración</span>
+                </button>
+                <button class="sidebar-nav-item" onclick="switchTab('banca-config')">
+                    <span class="sidebar-nav-item-icon">🎯</span>
+                    <span>Config. Bancas</span>
+                </button>
+                <button class="sidebar-nav-item" onclick="switchTab('owners')">
+                    <span class="sidebar-nav-item-icon">👥</span>
+                    <span>Propietarios</span>
                 </button>
             </nav>
             
@@ -1201,6 +1469,307 @@
                 </div>
             </div>
         </div>
+
+        <!-- Banca Config Tab -->
+        <div id="banca-config-tab" class="tab-content">
+            <div class="card">
+                <h2>🎯 Configuración de Bancas</h2>
+                <p style="color: var(--gray-500); margin-bottom: 24px;">Configure loterías, sorteos, precios y límites para cada banca</p>
+                <div id="banca-config-alert"></div>
+                
+                <!-- Banca Selector -->
+                <div class="banca-selector">
+                    <label for="config-banca-select">Seleccionar Banca</label>
+                    <select id="config-banca-select" onchange="loadBancaConfig(this.value)">
+                        <option value="">-- Seleccionar Banca --</option>
+                    </select>
+                </div>
+
+                <div id="config-content" style="display:none;">
+                    <!-- Config Sub-tabs -->
+                    <div class="config-subtabs">
+                        <button class="config-subtab active" onclick="switchConfigTab('lotteries')">🎰 Loterías</button>
+                        <button class="config-subtab" onclick="switchConfigTab('draws')">🎲 Sorteos</button>
+                        <button class="config-subtab" onclick="switchConfigTab('pricing')">💰 Precios</button>
+                        <button class="config-subtab" onclick="switchConfigTab('limits')">📊 Límites</button>
+                        <button class="config-subtab" onclick="switchConfigTab('blocked')">🚫 Bloqueados</button>
+                    </div>
+
+                    <!-- Lotteries Section -->
+                    <div id="lotteries-section" class="config-section active">
+                        <h3 style="margin-bottom: 16px; color: var(--gray-600);">Loterías Disponibles</h3>
+                        <div id="lotteries-grid" class="lottery-grid">
+                            <!-- Lottery toggles will be loaded here -->
+                        </div>
+                    </div>
+
+                    <!-- Draws Section -->
+                    <div id="draws-section" class="config-section">
+                        <h3 style="margin-bottom: 16px; color: var(--gray-600);">Sorteos por Lotería</h3>
+                        <div id="draws-content">
+                            <!-- Draws tables will be loaded here -->
+                        </div>
+                    </div>
+
+                    <!-- Pricing Section -->
+                    <div id="pricing-section" class="config-section">
+                        <h3 style="margin-bottom: 16px; color: var(--gray-600);">Precios y Multiplicadores</h3>
+                        <div class="action-buttons-bar">
+                            <button class="btn btn-secondary btn-small" onclick="applyDefaultPrices()">
+                                📋 Aplicar Precios Predeterminados
+                            </button>
+                            <button class="btn btn-secondary btn-small" onclick="copyFromAnotherBanca()">
+                                📄 Copiar de Otra Banca
+                            </button>
+                        </div>
+                        <div class="table-container">
+                            <table class="pricing-table" id="pricing-table">
+                                <thead>
+                                    <tr>
+                                        <th>Lotería</th>
+                                        <th>Tipo Apuesta</th>
+                                        <th>Mínimo (RD$)</th>
+                                        <th>Máximo (RD$)</th>
+                                        <th>Incremento</th>
+                                        <th>Multiplicador</th>
+                                        <th>Premio Máx</th>
+                                        <th>Habilitado</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="pricing-tbody">
+                                    <!-- Pricing rows will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="button-group" style="margin-top: 20px;">
+                            <button class="btn btn-primary" onclick="savePricingConfig()">💾 Guardar Precios</button>
+                        </div>
+                    </div>
+
+                    <!-- Limits Section -->
+                    <div id="limits-section" class="config-section">
+                        <h3 style="margin-bottom: 16px; color: var(--gray-600);">Límites por Número</h3>
+                        
+                        <div class="limits-form">
+                            <h4 style="margin-bottom: 12px; color: var(--gray-600);">Agregar Límite</h4>
+                            <form id="add-limit-form">
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label for="limit-lottery">Lotería</label>
+                                        <select id="limit-lottery" required>
+                                            <option value="">Seleccionar...</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="limit-draw">Sorteo</label>
+                                        <select id="limit-draw">
+                                            <option value="">Todos los sorteos</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="limit-type">Tipo Apuesta</label>
+                                        <select id="limit-type" required>
+                                            <option value="">Seleccionar...</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="limit-number">Número</label>
+                                        <input type="text" id="limit-number" placeholder="00" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="limit-amount">Monto Máximo (RD$)</label>
+                                        <input type="number" id="limit-amount" placeholder="10000" min="0" required>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary">➕ Agregar Límite</button>
+                            </form>
+                        </div>
+
+                        <div class="table-container">
+                            <table id="limits-table">
+                                <thead>
+                                    <tr>
+                                        <th>Lotería</th>
+                                        <th>Sorteo</th>
+                                        <th>Tipo</th>
+                                        <th>Número</th>
+                                        <th>Límite (RD$)</th>
+                                        <th>Ventas Hoy</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="limits-tbody">
+                                    <!-- Limits will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Blocked Section -->
+                    <div id="blocked-section" class="config-section">
+                        <h3 style="margin-bottom: 16px; color: var(--gray-600);">Números Bloqueados</h3>
+                        
+                        <div class="blocked-form">
+                            <h4 style="margin-bottom: 12px; color: var(--danger);">Bloquear Número</h4>
+                            <form id="block-number-form">
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label for="block-lottery">Lotería</label>
+                                        <select id="block-lottery">
+                                            <option value="">Todas las loterías</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="block-draw">Sorteo</label>
+                                        <select id="block-draw">
+                                            <option value="">Todos los sorteos</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="block-type">Tipo Apuesta</label>
+                                        <select id="block-type">
+                                            <option value="">Todos los tipos</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="block-number">Número</label>
+                                        <input type="text" id="block-number" placeholder="00" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="block-reason">Razón</label>
+                                        <input type="text" id="block-reason" placeholder="Ej: Exceso de ventas">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="block-until">Bloquear Hasta</label>
+                                        <input type="datetime-local" id="block-until">
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-danger">🚫 Bloquear Número</button>
+                            </form>
+                        </div>
+
+                        <div class="table-container">
+                            <table id="blocked-table">
+                                <thead>
+                                    <tr>
+                                        <th>Número</th>
+                                        <th>Lotería</th>
+                                        <th>Sorteo</th>
+                                        <th>Tipo</th>
+                                        <th>Razón</th>
+                                        <th>Hasta</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="blocked-tbody">
+                                    <!-- Blocked numbers will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Owners Tab -->
+        <div id="owners-tab" class="tab-content">
+            <div class="card">
+                <h2>👥 Gestión de Propietarios</h2>
+                <p style="color: var(--gray-500); margin-bottom: 24px;">Administra los propietarios de bancas y sus datos</p>
+                <div id="owners-alert"></div>
+                
+                <!-- Owner Registration Form -->
+                <div class="owner-form-section">
+                    <h3>📝 Registrar Nuevo Propietario</h3>
+                    <form id="owner-form">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="owner-first-name">Nombre *</label>
+                                <input type="text" id="owner-first-name" required placeholder="Juan">
+                            </div>
+                            <div class="form-group">
+                                <label for="owner-last-name">Apellido *</label>
+                                <input type="text" id="owner-last-name" required placeholder="Pérez">
+                            </div>
+                            <div class="form-group">
+                                <label for="owner-cedula">Cédula *</label>
+                                <input type="text" id="owner-cedula" required placeholder="001-1234567-8">
+                            </div>
+                            <div class="form-group">
+                                <label for="owner-rnc">RNC</label>
+                                <input type="text" id="owner-rnc" placeholder="123-45678-9">
+                            </div>
+                            <div class="form-group">
+                                <label for="owner-email">Email *</label>
+                                <input type="email" id="owner-email" required placeholder="propietario@banca.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="owner-phone">Teléfono *</label>
+                                <input type="tel" id="owner-phone" required placeholder="+1 809-555-1234">
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="owner-business-name">Nombre del Negocio</label>
+                                <input type="text" id="owner-business-name" placeholder="Banca XYZ">
+                            </div>
+                        </div>
+
+                        <h3 style="margin-top: 24px;">💳 Datos Bancarios</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="owner-bank">Banco</label>
+                                <input type="text" id="owner-bank" placeholder="Banco Popular">
+                            </div>
+                            <div class="form-group">
+                                <label for="owner-account-type">Tipo de Cuenta</label>
+                                <select id="owner-account-type">
+                                    <option value="">Seleccionar...</option>
+                                    <option value="checking">Corriente</option>
+                                    <option value="savings">Ahorros</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="owner-account-number">Número de Cuenta</label>
+                                <input type="text" id="owner-account-number" placeholder="1234567890">
+                            </div>
+                            <div class="form-group">
+                                <label for="owner-commission">Comisión Default (%)</label>
+                                <input type="number" id="owner-commission" placeholder="5.0" min="0" max="100" step="0.1">
+                                <small>Comisión predeterminada para sus bancas</small>
+                            </div>
+                        </div>
+
+                        <div class="button-group" style="margin-top: 20px;">
+                            <button type="submit" class="btn btn-primary">💾 Registrar Propietario</button>
+                            <button type="reset" class="btn btn-secondary">🔄 Limpiar</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Owners List -->
+                <div style="margin-top: 32px;">
+                    <h3 style="margin-bottom: 16px; color: var(--gray-600);">Lista de Propietarios</h3>
+                    <div id="owners-loading" class="loading" style="display:none;">Cargando propietarios...</div>
+                    <div class="table-container">
+                        <table id="owners-table">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Cédula</th>
+                                    <th>Email</th>
+                                    <th>Teléfono</th>
+                                    <th>Bancas</th>
+                                    <th>Comisión</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="owners-tbody">
+                                <!-- Owners will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
         
             </div><!-- End content -->
             
@@ -1449,6 +2018,10 @@
                 loadStats();
             } else if (tabName === 'settings') {
                 loadSettings();
+            } else if (tabName === 'banca-config') {
+                loadBancaSelector();
+            } else if (tabName === 'owners') {
+                loadOwners();
             }
         }
 
@@ -1860,6 +2433,408 @@
                 showAlert('edit-banca-alert', `❌ Error: ${error.message}`, 'error');
             }
         });
+
+        // Logout admin
+        // ============================================
+        // BANCA CONFIGURATION FUNCTIONS
+        // ============================================
+        
+        // Load bancas into selector
+        async function loadBancaSelector() {
+            try {
+                const response = await fetch(API_BASE_URL);
+                if (!response.ok) throw new Error('Error al cargar bancas');
+                
+                const bancas = await response.json();
+                const select = document.getElementById('config-banca-select');
+                
+                // Clear and populate
+                select.innerHTML = '<option value="">-- Seleccionar Banca --</option>';
+                bancas.forEach(banca => {
+                    if (banca.status === 'active' || banca.status === 'approved') {
+                        const option = document.createElement('option');
+                        option.value = banca.id;
+                        option.textContent = banca.name;
+                        select.appendChild(option);
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading bancas:', error);
+                showAlert('banca-config-alert', `❌ Error al cargar bancas: ${error.message}`, 'error');
+            }
+        }
+
+        // Switch config sub-tabs
+        function switchConfigTab(tabName) {
+            document.querySelectorAll('.config-subtab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.config-section').forEach(section => section.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(`${tabName}-section`).classList.add('active');
+        }
+
+        // Load banca configuration
+        async function loadBancaConfig(bancaId) {
+            if (!bancaId) {
+                document.getElementById('config-content').style.display = 'none';
+                return;
+            }
+
+            document.getElementById('config-content').style.display = 'block';
+            showAlert('banca-config-alert', '🔄 Cargando configuración...', 'info');
+
+            try {
+                // Load lotteries for this banca
+                await loadLotteriesForBanca(bancaId);
+                
+                // Clear alert
+                document.getElementById('banca-config-alert').innerHTML = '';
+            } catch (error) {
+                console.error('Error loading banca config:', error);
+                showAlert('banca-config-alert', `❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Load lotteries for banca
+        async function loadLotteriesForBanca(bancaId) {
+            const grid = document.getElementById('lotteries-grid');
+            grid.innerHTML = '<div class="loading">Cargando loterías...</div>';
+
+            try {
+                // Mock data for demonstration - replace with actual API call
+                const lotteries = [
+                    { id: '1', name: 'Loteka', shortName: 'LTK', isEnabled: true, commissionOverride: 5, dailyLimit: 100000, perBetMax: 5000 },
+                    { id: '2', name: 'Leidsa', shortName: 'LDS', isEnabled: true, commissionOverride: 4.5, dailyLimit: 80000, perBetMax: 4000 },
+                    { id: '3', name: 'Nacional', shortName: 'NAC', isEnabled: false, commissionOverride: 5, dailyLimit: 0, perBetMax: 0 },
+                    { id: '4', name: 'Real', shortName: 'REL', isEnabled: true, commissionOverride: 5.5, dailyLimit: 120000, perBetMax: 6000 },
+                    { id: '5', name: 'Anguila', shortName: 'ANG', isEnabled: false, commissionOverride: 5, dailyLimit: 0, perBetMax: 0 },
+                    { id: '6', name: 'Primera', shortName: 'PRI', isEnabled: true, commissionOverride: 5, dailyLimit: 90000, perBetMax: 4500 }
+                ];
+
+                grid.innerHTML = lotteries.map(lottery => `
+                    <div class="lottery-toggle">
+                        <div class="lottery-toggle-header">
+                            <h4>${lottery.name} <small style="color: var(--gray-400);">(${lottery.shortName})</small></h4>
+                            <label class="toggle-switch">
+                                <input type="checkbox" ${lottery.isEnabled ? 'checked' : ''} 
+                                       onchange="toggleLottery('${bancaId}', '${lottery.id}', this.checked)">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div style="margin-top: 12px; display: ${lottery.isEnabled ? 'block' : 'none'};" id="lottery-details-${lottery.id}">
+                            <div class="form-group" style="margin-bottom: 8px;">
+                                <label style="font-size: 11px;">Comisión Override (%)</label>
+                                <input type="number" value="${lottery.commissionOverride || ''}" 
+                                       placeholder="5.0" step="0.1" min="0" max="100"
+                                       style="padding: 6px; font-size: 12px;">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 8px;">
+                                <label style="font-size: 11px;">Límite Diario (RD$)</label>
+                                <input type="number" value="${lottery.dailyLimit || ''}" 
+                                       placeholder="100000" min="0"
+                                       style="padding: 6px; font-size: 12px;">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label style="font-size: 11px;">Máximo por Apuesta (RD$)</label>
+                                <input type="number" value="${lottery.perBetMax || ''}" 
+                                       placeholder="5000" min="0"
+                                       style="padding: 6px; font-size: 12px;">
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+
+                // Load draws
+                loadDrawsForBanca(bancaId, lotteries);
+                
+                // Load pricing
+                loadPricingForBanca(bancaId, lotteries);
+                
+            } catch (error) {
+                grid.innerHTML = '<div class="alert alert-error">❌ Error al cargar loterías</div>';
+                throw error;
+            }
+        }
+
+        // Toggle lottery
+        function toggleLottery(bancaId, lotteryId, enabled) {
+            const detailsDiv = document.getElementById(`lottery-details-${lotteryId}`);
+            if (detailsDiv) {
+                detailsDiv.style.display = enabled ? 'block' : 'none';
+            }
+            
+            // In production, save to backend
+            console.log(`Toggle lottery ${lotteryId} for banca ${bancaId}: ${enabled}`);
+        }
+
+        // Load draws for banca
+        function loadDrawsForBanca(bancaId, lotteries) {
+            const container = document.getElementById('draws-content');
+            
+            // Mock draws data
+            const draws = {
+                '1': [
+                    { id: 'd1', name: 'Día', time: '12:00', days: [1,2,3,4,5,6], closeMinutes: 15, enabled: true },
+                    { id: 'd2', name: 'Noche', time: '20:00', days: [1,2,3,4,5,6], closeMinutes: 15, enabled: true }
+                ],
+                '2': [
+                    { id: 'd3', name: 'Mediodía', time: '12:30', days: [1,2,3,4,5,6], closeMinutes: 20, enabled: true },
+                    { id: 'd4', name: 'Tarde', time: '18:00', days: [1,2,3,4,5,6], closeMinutes: 10, enabled: false }
+                ],
+                '4': [
+                    { id: 'd5', name: 'Matutino', time: '10:00', days: [1,2,3,4,5], closeMinutes: 15, enabled: true }
+                ],
+                '6': [
+                    { id: 'd6', name: 'Sorteo Único', time: '21:00', days: [0,1,2,3,4,5,6], closeMinutes: 30, enabled: true }
+                ]
+            };
+
+            const dayNames = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+
+            container.innerHTML = lotteries
+                .filter(lot => lot.isEnabled && draws[lot.id])
+                .map(lottery => `
+                    <div style="margin-bottom: 32px;">
+                        <h4 style="color: var(--primary); margin-bottom: 12px;">${lottery.name}</h4>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th style="width: 80px;">Habilitado</th>
+                                        <th>Sorteo</th>
+                                        <th>Hora</th>
+                                        <th>Días</th>
+                                        <th>Cierre Anticipado (min)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${draws[lottery.id].map(draw => `
+                                        <tr>
+                                            <td style="text-align: center;">
+                                                <input type="checkbox" ${draw.enabled ? 'checked' : ''}
+                                                       onchange="toggleDraw('${bancaId}', '${draw.id}', this.checked)">
+                                            </td>
+                                            <td><strong>${draw.name}</strong></td>
+                                            <td>${draw.time}</td>
+                                            <td>${draw.days.map(d => dayNames[d]).join(', ')}</td>
+                                            <td>
+                                                <input type="number" value="${draw.closeMinutes}" min="0" max="60"
+                                                       style="width: 80px; padding: 4px; border: 1px solid var(--gray-300); border-radius: 4px;">
+                                            </td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                `).join('');
+        }
+
+        // Toggle draw
+        function toggleDraw(bancaId, drawId, enabled) {
+            console.log(`Toggle draw ${drawId} for banca ${bancaId}: ${enabled}`);
+        }
+
+        // Load pricing for banca
+        function loadPricingForBanca(bancaId, lotteries) {
+            const tbody = document.getElementById('pricing-tbody');
+            
+            // Mock pricing data
+            const betTypes = [
+                { id: 'pale', name: 'Pale' },
+                { id: 'tripleta', name: 'Tripleta' },
+                { id: 'pale-quiniela', name: 'Palé Quiniela' }
+            ];
+
+            tbody.innerHTML = lotteries
+                .filter(lot => lot.isEnabled)
+                .flatMap(lottery => betTypes.map(betType => `
+                    <tr>
+                        <td>${lottery.name}</td>
+                        <td>${betType.name}</td>
+                        <td><input type="number" value="10" min="1" style="width: 80px;"></td>
+                        <td><input type="number" value="5000" min="1" style="width: 100px;"></td>
+                        <td><input type="number" value="5" min="1" style="width: 70px;"></td>
+                        <td><input type="number" value="${betType.id === 'pale' ? '50' : betType.id === 'tripleta' ? '500' : '80'}" step="0.1" style="width: 80px;"></td>
+                        <td><input type="number" value="100000" min="0" style="width: 100px;"></td>
+                        <td style="text-align: center;">
+                            <input type="checkbox" checked>
+                        </td>
+                    </tr>
+                `))
+                .join('');
+        }
+
+        // Save lottery config
+        function saveLotteryConfig() {
+            showAlert('banca-config-alert', '✅ Configuración de loterías guardada', 'success');
+        }
+
+        // Save draws config
+        function saveDrawsConfig() {
+            showAlert('banca-config-alert', '✅ Configuración de sorteos guardada', 'success');
+        }
+
+        // Save pricing config
+        function savePricingConfig() {
+            showAlert('banca-config-alert', '✅ Configuración de precios guardada', 'success');
+        }
+
+        // Apply default prices
+        function applyDefaultPrices() {
+            if (confirm('¿Aplicar precios predeterminados? Esto sobrescribirá los valores actuales.')) {
+                showAlert('banca-config-alert', '✅ Precios predeterminados aplicados', 'success');
+            }
+        }
+
+        // Copy from another banca
+        function copyFromAnotherBanca() {
+            const bancaId = prompt('Ingrese el ID de la banca desde la cual copiar:');
+            if (bancaId) {
+                showAlert('banca-config-alert', '✅ Configuración copiada exitosamente', 'success');
+            }
+        }
+
+        // Add number limit
+        document.getElementById('add-limit-form')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = {
+                lotteryId: document.getElementById('limit-lottery').value,
+                drawId: document.getElementById('limit-draw').value,
+                betTypeId: document.getElementById('limit-type').value,
+                number: document.getElementById('limit-number').value,
+                maxAmount: parseFloat(document.getElementById('limit-amount').value)
+            };
+            
+            showAlert('banca-config-alert', '✅ Límite agregado exitosamente', 'success');
+            e.target.reset();
+        });
+
+        // Remove number limit
+        function removeNumberLimit(limitId) {
+            if (confirm('¿Eliminar este límite?')) {
+                showAlert('banca-config-alert', '✅ Límite eliminado', 'success');
+            }
+        }
+
+        // Block number
+        document.getElementById('block-number-form')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = {
+                number: document.getElementById('block-number').value,
+                lotteryId: document.getElementById('block-lottery').value,
+                drawId: document.getElementById('block-draw').value,
+                betTypeId: document.getElementById('block-type').value,
+                reason: document.getElementById('block-reason').value,
+                blockedUntil: document.getElementById('block-until').value
+            };
+            
+            showAlert('banca-config-alert', '✅ Número bloqueado exitosamente', 'success');
+            e.target.reset();
+        });
+
+        // Unblock number
+        function unblockNumber(blockId) {
+            if (confirm('¿Desbloquear este número?')) {
+                showAlert('banca-config-alert', '✅ Número desbloqueado', 'success');
+            }
+        }
+
+        // ============================================
+        // OWNERS MANAGEMENT FUNCTIONS
+        // ============================================
+
+        // Create owner
+        document.getElementById('owner-form')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                firstName: document.getElementById('owner-first-name').value,
+                lastName: document.getElementById('owner-last-name').value,
+                cedula: document.getElementById('owner-cedula').value,
+                rnc: document.getElementById('owner-rnc').value || undefined,
+                email: document.getElementById('owner-email').value,
+                phone: document.getElementById('owner-phone').value,
+                businessName: document.getElementById('owner-business-name').value || undefined,
+                bankName: document.getElementById('owner-bank').value || undefined,
+                accountType: document.getElementById('owner-account-type').value || undefined,
+                accountNumber: document.getElementById('owner-account-number').value || undefined,
+                defaultCommission: parseFloat(document.getElementById('owner-commission').value) || undefined
+            };
+
+            try {
+                // In production, this would POST to /admin/owners
+                showAlert('owners-alert', `✅ Propietario "${formData.firstName} ${formData.lastName}" registrado exitosamente`, 'success');
+                e.target.reset();
+                loadOwners();
+            } catch (error) {
+                showAlert('owners-alert', `❌ Error: ${error.message}`, 'error');
+            }
+        });
+
+        // Load owners
+        async function loadOwners() {
+            const tbody = document.getElementById('owners-tbody');
+            const loading = document.getElementById('owners-loading');
+            
+            loading.style.display = 'block';
+            
+            try {
+                // Mock data - replace with actual API call
+                const owners = [
+                    { 
+                        id: '1', 
+                        firstName: 'Juan', 
+                        lastName: 'Pérez', 
+                        cedula: '001-1234567-8',
+                        email: 'juan@banca.com',
+                        phone: '+1 809-555-1234',
+                        bancasCount: 3,
+                        defaultCommission: 5.0
+                    },
+                    { 
+                        id: '2', 
+                        firstName: 'María', 
+                        lastName: 'González', 
+                        cedula: '001-9876543-2',
+                        email: 'maria@banca.com',
+                        phone: '+1 809-555-5678',
+                        bancasCount: 1,
+                        defaultCommission: 4.5
+                    }
+                ];
+
+                tbody.innerHTML = owners.map(owner => `
+                    <tr>
+                        <td><strong>${owner.firstName} ${owner.lastName}</strong></td>
+                        <td>${owner.cedula}</td>
+                        <td>${owner.email}</td>
+                        <td>${owner.phone}</td>
+                        <td><span class="status-badge status-active">${owner.bancasCount} Banca${owner.bancasCount !== 1 ? 's' : ''}</span></td>
+                        <td>${owner.defaultCommission}%</td>
+                        <td>
+                            <button class="btn btn-primary btn-small" onclick="editOwner('${owner.id}')">✏️ Editar</button>
+                            <button class="btn btn-secondary btn-small" onclick="viewOwnerBancas('${owner.id}')">👁️ Bancas</button>
+                        </td>
+                    </tr>
+                `).join('');
+                
+                loading.style.display = 'none';
+            } catch (error) {
+                loading.style.display = 'none';
+                showAlert('owners-alert', `❌ Error al cargar propietarios: ${error.message}`, 'error');
+            }
+        }
+
+        // Edit owner
+        function editOwner(ownerId) {
+            alert(`Editar propietario ${ownerId} - Funcionalidad pendiente`);
+        }
+
+        // View owner bancas
+        function viewOwnerBancas(ownerId) {
+            alert(`Ver bancas del propietario ${ownerId} - Funcionalidad pendiente`);
+        }
 
         // Logout admin
         // ============================================
