@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Panel Test</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 20px; border: 1px solid #ddd; border-radius: 8px; }
+        h2 { color: #0071e3; }
+    </style>
+</head>
+<body>
+    <h1>🎯 Admin Panel - Configuration Test</h1>
+    
+    <div class="test-section">
+        <h2>✅ New Features Implemented</h2>
+        <ul>
+            <li>✅ Config. Bancas tab added to sidebar</li>
+            <li>✅ Propietarios tab added to sidebar</li>
+            <li>✅ Banca selector with dropdown</li>
+            <li>✅ 5 Configuration sub-tabs: Loterías, Sorteos, Precios, Límites, Bloqueados</li>
+            <li>✅ Lottery grid with toggle switches</li>
+            <li>✅ Draws table grouped by lottery</li>
+            <li>✅ Pricing configuration table</li>
+            <li>✅ Number limits form and table</li>
+            <li>✅ Blocked numbers form and table</li>
+            <li>✅ Owners registration form</li>
+            <li>✅ Owners list table</li>
+        </ul>
+    </div>
+
+    <div class="test-section">
+        <h2>📋 CSS Styles Added</h2>
+        <ul>
+            <li>.banca-selector - Banca dropdown selector</li>
+            <li>.config-subtabs - Sub-navigation tabs</li>
+            <li>.lottery-grid - Grid layout for lotteries</li>
+            <li>.lottery-toggle - Individual lottery card with toggle</li>
+            <li>.toggle-switch - iOS-style toggle switch</li>
+            <li>.pricing-table - Pricing configuration table</li>
+            <li>.limits-form - Number limits form styling</li>
+            <li>.blocked-form - Blocked numbers form styling</li>
+            <li>.owner-form-section - Owner registration form</li>
+        </ul>
+    </div>
+
+    <div class="test-section">
+        <h2>⚙️ JavaScript Functions Implemented</h2>
+        <ul>
+            <li>loadBancaSelector() - Loads bancas into dropdown</li>
+            <li>loadBancaConfig(bancaId) - Loads configuration for selected banca</li>
+            <li>switchConfigTab(tabName) - Switches between sub-tabs</li>
+            <li>loadLotteriesForBanca(bancaId) - Loads lottery grid</li>
+            <li>toggleLottery(bancaId, lotteryId, enabled) - Toggle lottery on/off</li>
+            <li>loadDrawsForBanca(bancaId, lotteries) - Loads draws table</li>
+            <li>toggleDraw(bancaId, drawId, enabled) - Toggle draw on/off</li>
+            <li>loadPricingForBanca(bancaId, lotteries) - Loads pricing table</li>
+            <li>savePricingConfig() - Saves pricing configuration</li>
+            <li>applyDefaultPrices() - Applies default pricing</li>
+            <li>copyFromAnotherBanca() - Copies config from another banca</li>
+            <li>removeNumberLimit(limitId) - Removes number limit</li>
+            <li>unblockNumber(blockId) - Unblocks a number</li>
+            <li>createOwner() - Creates new owner (form submit)</li>
+            <li>loadOwners() - Loads owners list</li>
+            <li>editOwner(ownerId) - Edits owner</li>
+            <li>viewOwnerBancas(ownerId) - Views owner's bancas</li>
+        </ul>
+    </div>
+
+    <div class="test-section">
+        <h2>🎨 UI Components</h2>
+        <p><strong>Banca Configuration Tab includes:</strong></p>
+        <ul>
+            <li><strong>Loterías Section:</strong> Grid with toggle switches for each lottery (Loteka, Leidsa, Nacional, Real, Anguila, Primera). Each card shows commission override, daily limit, and max per bet fields.</li>
+            <li><strong>Sorteos Section:</strong> Tables grouped by lottery showing draws with checkboxes for enabling/disabling, time, days of week, and early close minutes.</li>
+            <li><strong>Precios Section:</strong> Table with columns for Lottery, Bet Type, Min/Max amounts, Increment, Multiplier, Max Prize, and Enabled checkbox. Includes buttons for "Apply Default Prices" and "Copy from Another Banca".</li>
+            <li><strong>Límites Section:</strong> Form to add number limits with fields for Lottery, Draw, Bet Type, Number, and Max Amount. Table shows current limits with sales data.</li>
+            <li><strong>Bloqueados Section:</strong> Form to block numbers with fields for Lottery, Draw, Bet Type, Number, Reason, and Block Until date. Table shows currently blocked numbers.</li>
+        </ul>
+        
+        <p><strong>Propietarios Tab includes:</strong></p>
+        <ul>
+            <li>Registration form with personal data (first name, last name, cédula, RNC, email, phone, business name)</li>
+            <li>Banking information section (bank, account type, account number)</li>
+            <li>Default commission percentage field</li>
+            <li>Table listing all owners with their bancas count and actions</li>
+        </ul>
+    </div>
+
+    <div class="test-section">
+        <h2>🔗 Backend Endpoints (Ready to Connect)</h2>
+        <p>The UI is prepared to connect to these endpoints once backend implementation is complete:</p>
+        <ul>
+            <li>GET/POST /admin/bancas/:id/lotteries</li>
+            <li>GET/POST /admin/bancas/:id/draws</li>
+            <li>GET/POST /admin/bancas/:id/bet-configurations</li>
+            <li>GET/POST /admin/bancas/:id/number-limits</li>
+            <li>GET/POST /admin/bancas/:id/blocked-numbers</li>
+            <li>GET/POST /admin/owners</li>
+        </ul>
+    </div>
+
+    <div class="test-section" style="background: #f0f9ff; border-color: #0071e3;">
+        <h2>✨ Implementation Complete</h2>
+        <p>The admin panel UI is now <strong>100% complete</strong> with all requested features:</p>
+        <ul>
+            <li>✅ Configuration tab with sub-tabs</li>
+            <li>✅ Lottery management with toggles and settings</li>
+            <li>✅ Draws configuration by lottery</li>
+            <li>✅ Pricing and multipliers table</li>
+            <li>✅ Number limits management</li>
+            <li>✅ Blocked numbers management</li>
+            <li>✅ Owners registration and management</li>
+            <li>✅ All JavaScript functions implemented</li>
+            <li>✅ All CSS styles applied</li>
+            <li>✅ Apple-inspired design maintained</li>
+        </ul>
+        <p><strong>Status:</strong> Ready for backend integration and testing</p>
+    </div>
+</body>
+</html>
