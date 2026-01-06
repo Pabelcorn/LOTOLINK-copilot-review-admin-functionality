@@ -38,4 +38,4 @@ sudo systemctl reload nginx
 
 ## Más Información
 
-Ver la guía completa de despliegue: [DEPLOYMENT_GUIDE.md](../DEPLOYMENT_GUIDE.md)
+Ver la guía completa de despliegue: [DEPLOYMENT_GUIDE.md](../docs/DEPLOYMENT_GUIDE.md)

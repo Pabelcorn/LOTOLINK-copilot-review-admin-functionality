@@ -297,12 +297,13 @@ mobile-app/
 │
 ├── dist/                      # Built web assets ✅
 ├── BUILD_GUIDE.md            # Build instructions ✅
-├── DEPLOYMENT_GUIDE.md       # Deployment guide ✅
 ├── package.json              # Dependencies ✅
 ├── capacitor.config.ts       # Capacitor config ✅
 ├── vite.config.ts            # Vite config ✅
 ├── vitest.config.ts          # Vitest config ✅
 └── tsconfig.json             # TypeScript config ✅
+
+**Note**: Deployment guides have been moved to `/docs/` in the main repository.
 ```
 
 ## Technology Stack

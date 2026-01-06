@@ -96,5 +96,5 @@ When adding new scripts to this directory:
 ## Related Documentation
 
 - [Build Guide](../BUILD_GUIDE.md)
-- [Deployment Guide](../DEPLOYMENT_GUIDE.md)
+- [Deployment Guide](../../docs/DEPLOYMENT_GUIDE.md)
 - [Workflow Troubleshooting](../../.github/WORKFLOW_TROUBLESHOOTING.md)
