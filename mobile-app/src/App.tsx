@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Redirect, Route } from 'react-router-dom';
+import { Redirect, Route, useHistory } from 'react-router-dom';
 import {
   IonApp,
   IonIcon,
@@ -65,6 +65,20 @@ setupIonicReact({
   hardwareBackButton: true
 });
 
+// Wrapper component to set up navigation handler inside router context
+const NavigationSetup: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const history = useHistory();
+
+  useEffect(() => {
+    // Set up navigation handler for notifications
+    notificationsService.setNavigationHandler((path: string) => {
+      history.push(path);
+    });
+  }, [history]);
+
+  return <>{children}</>;
+};
+
 const App: React.FC = () => {
   useEffect(() => {
     // Initialize mobile-specific features
@@ -112,9 +126,10 @@ const App: React.FC = () => {
   return (
     <IonApp>
       <IonReactRouter>
-        <IonSplitPane contentId="main">
-          <Menu />
-          <IonTabs id="main">
+        <NavigationSetup>
+          <IonSplitPane contentId="main">
+            <Menu />
+            <IonTabs id="main">
             <IonRouterOutlet>
               <Route exact path="/home">
                 <Home />
@@ -174,6 +189,7 @@ const App: React.FC = () => {
             </IonTabBar>
           </IonTabs>
         </IonSplitPane>
+        </NavigationSetup>
       </IonReactRouter>
     </IonApp>
   );

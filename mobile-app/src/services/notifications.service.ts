@@ -3,6 +3,11 @@ import { Preferences } from '@capacitor/preferences';
 
 class NotificationsService {
   private initialized = false;
+  private onNavigate?: (path: string) => void;
+
+  setNavigationHandler(handler: (path: string) => void): void {
+    this.onNavigate = handler;
+  }
 
   async initialize(): Promise<boolean> {
     if (this.initialized) return true;
@@ -117,28 +122,33 @@ class NotificationsService {
 
   private handleNotificationTap(notification: any): void {
     const data = notification.data;
+    let path = '/home';
     
     switch (data?.type) {
       case 'play_confirmed':
       case 'ticket_expiring':
-        window.location.href = `/ticket/${data.ticketCode}`;
+        path = `/ticket/${data.ticketCode}`;
         break;
         
       case 'prize_won':
       case 'prize_paid':
-        window.location.href = '/my-tickets?filter=won';
+        path = '/my-tickets?filter=won';
         break;
         
       case 'draw_result':
-        window.location.href = '/results';
+        path = '/results';
         break;
         
       case 'draw_reminder':
-        window.location.href = '/play';
+        path = '/play';
         break;
-        
-      default:
-        window.location.href = '/home';
+    }
+
+    if (this.onNavigate) {
+      this.onNavigate(path);
+    } else {
+      // Fallback to window.location if no handler is set
+      window.location.href = path;
     }
   }
 
@@ -167,51 +177,90 @@ class NotificationsService {
   }
 
   async getHistory(): Promise<any[]> {
-    const response = await fetch('/api/v1/notifications/history', {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`,
-      },
-    });
-    return response.json();
+    try {
+      const response = await fetch('/api/v1/notifications/history', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch notification history');
+      }
+      return response.json();
+    } catch (error) {
+      console.error('Error fetching notification history:', error);
+      return [];
+    }
   }
 
   async getPreferences(): Promise<any> {
-    const response = await fetch('/api/v1/notifications/preferences', {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`,
-      },
-    });
-    return response.json();
+    try {
+      const response = await fetch('/api/v1/notifications/preferences', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch notification preferences');
+      }
+      return response.json();
+    } catch (error) {
+      console.error('Error fetching notification preferences:', error);
+      return null;
+    }
   }
 
   async updatePreferences(prefs: any): Promise<void> {
-    await fetch('/api/v1/notifications/preferences', {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`,
-      },
-      body: JSON.stringify(prefs),
-    });
+    try {
+      const response = await fetch('/api/v1/notifications/preferences', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+        body: JSON.stringify(prefs),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to update notification preferences');
+      }
+    } catch (error) {
+      console.error('Error updating notification preferences:', error);
+      throw error;
+    }
   }
 
   async markAsRead(notificationId: string): Promise<void> {
-    await fetch(`/api/v1/notifications/${notificationId}/read`, {
-      method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`,
-      },
-    });
+    try {
+      const response = await fetch(`/api/v1/notifications/${notificationId}/read`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Failed to mark notification as read');
+      }
+    } catch (error) {
+      console.error('Error marking notification as read:', error);
+    }
   }
 
   async getUnreadCount(): Promise<number> {
-    const response = await fetch('/api/v1/notifications/unread-count', {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`,
-      },
-    });
-    const data = await response.json();
-    return data.count;
+    try {
+      const response = await fetch('/api/v1/notifications/unread-count', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch unread count');
+      }
+      const data = await response.json();
+      return data.count;
+    } catch (error) {
+      console.error('Error fetching unread count:', error);
+      return 0;
+    }
   }
 }
 

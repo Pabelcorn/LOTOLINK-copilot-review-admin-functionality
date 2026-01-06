@@ -94,7 +94,7 @@ export class NotificationService {
       },
       data: {
         type: payload.type,
-        click_action: 'FLUTTER_NOTIFICATION_CLICK',
+        click_action: 'NOTIFICATION_CLICK',
         ...payload.data,
       },
       android: {
