@@ -49,12 +49,13 @@ import PaymentMethods from './pages/PaymentMethods';
 import LegalDocument from './pages/LegalDocument';
 import MyTickets from './pages/MyTickets';
 import TicketDetail from './pages/TicketDetail';
+import Notifications from './pages/Notifications';
 
 /* Components */
 import Menu from './components/Menu';
 
 /* Services */
-import { setupNotificationListeners } from './services/notifications.service';
+import { notificationsService } from './services/notifications.service';
 
 setupIonicReact({
   mode: 'ios', // Use iOS mode for consistent design
@@ -77,17 +78,8 @@ const App: React.FC = () => {
           // Hide splash screen immediately (native splash is disabled in capacitor.config.ts)
           await SplashScreen.hide();
 
-          // Set up push notification listeners
-          setupNotificationListeners(
-            (notification) => {
-              console.log('Notification received in foreground:', notification);
-              // Handle foreground notification
-            },
-            (notification) => {
-              console.log('Notification clicked:', notification);
-              // Handle notification click - navigate to appropriate screen
-            }
-          );
+          // Initialize push notifications
+          await notificationsService.initialize();
 
           // Handle app state changes
           CapacitorApp.addListener('appStateChange', ({ isActive }) => {
@@ -147,6 +139,9 @@ const App: React.FC = () => {
               </Route>
               <Route path="/ticket/:ticketId">
                 <TicketDetail />
+              </Route>
+              <Route exact path="/notifications">
+                <Notifications />
               </Route>
               <Route path="/legal/:documentType">
                 <LegalDocument />

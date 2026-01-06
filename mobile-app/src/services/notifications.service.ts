@@ -1,191 +1,218 @@
-/**
- * Push Notifications Service
- * Handles push notification registration and handling
- */
-
-import { PushNotifications } from '@capacitor/push-notifications';
-import { FirebaseMessaging } from '@capacitor-firebase/messaging';
+import { Capacitor } from '@capacitor/core';
 import { Preferences } from '@capacitor/preferences';
 
-const FCM_TOKEN_KEY = 'fcm_token';
+class NotificationsService {
+  private initialized = false;
 
-export interface NotificationPayload {
-  title: string;
-  body: string;
-  data?: Record<string, any>;
+  async initialize(): Promise<boolean> {
+    if (this.initialized) return true;
+
+    if (Capacitor.getPlatform() === 'web') {
+      return this.initializeWeb();
+    }
+
+    try {
+      // Dynamic import for Capacitor plugins
+      const { PushNotifications } = await import('@capacitor/push-notifications');
+      
+      let permStatus = await PushNotifications.checkPermissions();
+      
+      if (permStatus.receive === 'prompt') {
+        permStatus = await PushNotifications.requestPermissions();
+      }
+      
+      if (permStatus.receive !== 'granted') {
+        console.log('Push notifications permission denied');
+        return false;
+      }
+
+      await PushNotifications.register();
+
+      PushNotifications.addListener('registration', async (token) => {
+        console.log('Push registration success:', token.value);
+        await this.saveTokenToServer(token.value);
+        await Preferences.set({ key: 'fcm_token', value: token.value });
+      });
+
+      PushNotifications.addListener('registrationError', (error) => {
+        console.error('Push registration error:', error);
+      });
+
+      PushNotifications.addListener('pushNotificationReceived', (notification) => {
+        console.log('Push received in foreground:', notification);
+        this.showLocalNotification(notification);
+      });
+
+      PushNotifications.addListener('pushNotificationActionPerformed', (action) => {
+        console.log('Push action performed:', action);
+        this.handleNotificationTap(action.notification);
+      });
+
+      this.initialized = true;
+      return true;
+      
+    } catch (error) {
+      console.error('Error initializing push notifications:', error);
+      return false;
+    }
+  }
+
+  private async initializeWeb(): Promise<boolean> {
+    if (!('Notification' in window)) {
+      return false;
+    }
+
+    const permission = await Notification.requestPermission();
+    if (permission !== 'granted') {
+      return false;
+    }
+
+    this.initialized = true;
+    return true;
+  }
+
+  private async saveTokenToServer(token: string): Promise<void> {
+    try {
+      const response = await fetch('/api/v1/notifications/devices', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+        body: JSON.stringify({
+          fcmToken: token,
+          deviceType: Capacitor.getPlatform(),
+          deviceName: navigator.userAgent.substring(0, 100),
+          osVersion: navigator.platform,
+          appVersion: '1.0.0',
+        }),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to register device');
+      }
+    } catch (error) {
+      console.error('Error saving FCM token:', error);
+    }
+  }
+
+  private async showLocalNotification(notification: any): Promise<void> {
+    try {
+      const { LocalNotifications } = await import('@capacitor/local-notifications');
+      
+      await LocalNotifications.schedule({
+        notifications: [{
+          id: Date.now(),
+          title: notification.title || 'LotoLink',
+          body: notification.body || '',
+          extra: notification.data,
+          smallIcon: 'ic_notification',
+          iconColor: '#0071e3',
+        }],
+      });
+    } catch (error) {
+      console.error('Error showing local notification:', error);
+    }
+  }
+
+  private handleNotificationTap(notification: any): void {
+    const data = notification.data;
+    
+    switch (data?.type) {
+      case 'play_confirmed':
+      case 'ticket_expiring':
+        window.location.href = `/ticket/${data.ticketCode}`;
+        break;
+        
+      case 'prize_won':
+      case 'prize_paid':
+        window.location.href = '/my-tickets?filter=won';
+        break;
+        
+      case 'draw_result':
+        window.location.href = '/results';
+        break;
+        
+      case 'draw_reminder':
+        window.location.href = '/play';
+        break;
+        
+      default:
+        window.location.href = '/home';
+    }
+  }
+
+  async unregister(): Promise<void> {
+    const { value: token } = await Preferences.get({ key: 'fcm_token' });
+    if (token) {
+      try {
+        await fetch(`/api/v1/notifications/devices/${encodeURIComponent(token)}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+        await Preferences.remove({ key: 'fcm_token' });
+      } catch (error) {
+        console.error('Error unregistering device:', error);
+      }
+    }
+
+    if (Capacitor.getPlatform() !== 'web') {
+      const { PushNotifications } = await import('@capacitor/push-notifications');
+      await PushNotifications.removeAllListeners();
+    }
+    
+    this.initialized = false;
+  }
+
+  async getHistory(): Promise<any[]> {
+    const response = await fetch('/api/v1/notifications/history', {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
+    });
+    return response.json();
+  }
+
+  async getPreferences(): Promise<any> {
+    const response = await fetch('/api/v1/notifications/preferences', {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
+    });
+    return response.json();
+  }
+
+  async updatePreferences(prefs: any): Promise<void> {
+    await fetch('/api/v1/notifications/preferences', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
+      body: JSON.stringify(prefs),
+    });
+  }
+
+  async markAsRead(notificationId: string): Promise<void> {
+    await fetch(`/api/v1/notifications/${notificationId}/read`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
+    });
+  }
+
+  async getUnreadCount(): Promise<number> {
+    const response = await fetch('/api/v1/notifications/unread-count', {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
+    });
+    const data = await response.json();
+    return data.count;
+  }
 }
 
-/**
- * Initialize push notifications
- */
-export const initializePushNotifications = async (): Promise<void> => {
-  try {
-    // Request permissions
-    const permissionResult = await PushNotifications.requestPermissions();
-    
-    if (permissionResult.receive === 'granted') {
-      await PushNotifications.register();
-      
-      // Get FCM token
-      const { token } = await FirebaseMessaging.getToken();
-      
-      // Save token
-      await Preferences.set({
-        key: FCM_TOKEN_KEY,
-        value: token,
-      });
-      
-      console.log('Push notifications initialized. FCM Token:', token);
-    } else {
-      console.warn('Push notification permission denied');
-    }
-  } catch (error) {
-    console.error('Failed to initialize push notifications:', error);
-  }
-};
-
-/**
- * Get FCM token
- */
-export const getFCMToken = async (): Promise<string | null> => {
-  try {
-    const { value } = await Preferences.get({ key: FCM_TOKEN_KEY });
-    return value;
-  } catch (error) {
-    console.error('Failed to get FCM token:', error);
-    return null;
-  }
-};
-
-/**
- * Subscribe to topic
- */
-export const subscribeToTopic = async (topic: string): Promise<void> => {
-  try {
-    await FirebaseMessaging.subscribeToTopic({ topic });
-    console.log(`Subscribed to topic: ${topic}`);
-  } catch (error) {
-    console.error(`Failed to subscribe to topic ${topic}:`, error);
-  }
-};
-
-/**
- * Unsubscribe from topic
- */
-export const unsubscribeFromTopic = async (topic: string): Promise<void> => {
-  try {
-    await FirebaseMessaging.unsubscribeFromTopic({ topic });
-    console.log(`Unsubscribed from topic: ${topic}`);
-  } catch (error) {
-    console.error(`Failed to unsubscribe from topic ${topic}:`, error);
-  }
-};
-
-/**
- * Setup notification listeners
- */
-export const setupNotificationListeners = (
-  onNotificationReceived?: (notification: NotificationPayload) => void,
-  onNotificationClicked?: (notification: NotificationPayload) => void
-): void => {
-  // Notification received while app is in foreground
-  PushNotifications.addListener('pushNotificationReceived', (notification) => {
-    console.log('Push notification received:', notification);
-    
-    if (onNotificationReceived) {
-      onNotificationReceived({
-        title: notification.title || '',
-        body: notification.body || '',
-        data: notification.data,
-      });
-    }
-  });
-
-  // Notification clicked (app opened from notification)
-  PushNotifications.addListener('pushNotificationActionPerformed', (notification) => {
-    console.log('Push notification clicked:', notification);
-    
-    if (onNotificationClicked) {
-      onNotificationClicked({
-        title: notification.notification.title || '',
-        body: notification.notification.body || '',
-        data: notification.notification.data,
-      });
-    }
-  });
-
-  // Token registration
-  PushNotifications.addListener('registration', async (token) => {
-    console.log('Push registration success, token:', token.value);
-    
-    await Preferences.set({
-      key: FCM_TOKEN_KEY,
-      value: token.value,
-    });
-  });
-
-  // Registration error
-  PushNotifications.addListener('registrationError', (error) => {
-    console.error('Push registration error:', error);
-  });
-};
-
-/**
- * Remove all notification listeners
- */
-export const removeNotificationListeners = async (): Promise<void> => {
-  await PushNotifications.removeAllListeners();
-};
-
-/**
- * Check notification permissions
- */
-export const checkNotificationPermissions = async (): Promise<boolean> => {
-  try {
-    const result = await PushNotifications.checkPermissions();
-    return result.receive === 'granted';
-  } catch (error) {
-    console.error('Failed to check notification permissions:', error);
-    return false;
-  }
-};
-
-/**
- * Request notification permissions
- */
-export const requestNotificationPermissions = async (): Promise<boolean> => {
-  try {
-    const result = await PushNotifications.requestPermissions();
-    return result.receive === 'granted';
-  } catch (error) {
-    console.error('Failed to request notification permissions:', error);
-    return false;
-  }
-};
-
-/**
- * Send FCM token to backend
- */
-export const registerTokenWithBackend = async (
-  apiClient: any,
-  userId: string
-): Promise<void> => {
-  try {
-    const token = await getFCMToken();
-    
-    if (!token) {
-      console.warn('No FCM token available');
-      return;
-    }
-    
-    await apiClient.post('/users/register-device', {
-      user_id: userId,
-      device_token: token,
-      platform: 'mobile',
-    });
-    
-    console.log('Device token registered with backend');
-  } catch (error) {
-    console.error('Failed to register device token with backend:', error);
-  }
-};
+export const notificationsService = new NotificationsService();
