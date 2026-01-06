@@ -1488,11 +1488,11 @@
                 <div id="config-content" style="display:none;">
                     <!-- Config Sub-tabs -->
                     <div class="config-subtabs">
-                        <button class="config-subtab active" onclick="switchConfigTab('lotteries')">🎰 Loterías</button>
-                        <button class="config-subtab" onclick="switchConfigTab('draws')">🎲 Sorteos</button>
-                        <button class="config-subtab" onclick="switchConfigTab('pricing')">💰 Precios</button>
-                        <button class="config-subtab" onclick="switchConfigTab('limits')">📊 Límites</button>
-                        <button class="config-subtab" onclick="switchConfigTab('blocked')">🚫 Bloqueados</button>
+                        <button class="config-subtab active" onclick="switchConfigTab('lotteries', event)">🎰 Loterías</button>
+                        <button class="config-subtab" onclick="switchConfigTab('draws', event)">🎲 Sorteos</button>
+                        <button class="config-subtab" onclick="switchConfigTab('pricing', event)">💰 Precios</button>
+                        <button class="config-subtab" onclick="switchConfigTab('limits', event)">📊 Límites</button>
+                        <button class="config-subtab" onclick="switchConfigTab('blocked', event)">🚫 Bloqueados</button>
                     </div>
 
                     <!-- Lotteries Section -->
@@ -2465,11 +2465,13 @@
         }
 
         // Switch config sub-tabs
-        function switchConfigTab(tabName) {
+        function switchConfigTab(tabName, event) {
             document.querySelectorAll('.config-subtab').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.config-section').forEach(section => section.classList.remove('active'));
             
-            event.target.classList.add('active');
+            if (event && event.target) {
+                event.target.classList.add('active');
+            }
             document.getElementById(`${tabName}-section`).classList.add('active');
         }
 
@@ -2696,19 +2698,22 @@
         }
 
         // Add number limit
-        document.getElementById('add-limit-form')?.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const formData = {
-                lotteryId: document.getElementById('limit-lottery').value,
-                drawId: document.getElementById('limit-draw').value,
-                betTypeId: document.getElementById('limit-type').value,
-                number: document.getElementById('limit-number').value,
-                maxAmount: parseFloat(document.getElementById('limit-amount').value)
-            };
-            
-            showAlert('banca-config-alert', '✅ Límite agregado exitosamente', 'success');
-            e.target.reset();
-        });
+        const addLimitForm = document.getElementById('add-limit-form');
+        if (addLimitForm) {
+            addLimitForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const formData = {
+                    lotteryId: document.getElementById('limit-lottery').value,
+                    drawId: document.getElementById('limit-draw').value,
+                    betTypeId: document.getElementById('limit-type').value,
+                    number: document.getElementById('limit-number').value,
+                    maxAmount: parseFloat(document.getElementById('limit-amount').value)
+                };
+                
+                showAlert('banca-config-alert', '✅ Límite agregado exitosamente', 'success');
+                e.target.reset();
+            });
+        }
 
         // Remove number limit
         function removeNumberLimit(limitId) {
@@ -2718,20 +2723,23 @@
         }
 
         // Block number
-        document.getElementById('block-number-form')?.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const formData = {
-                number: document.getElementById('block-number').value,
-                lotteryId: document.getElementById('block-lottery').value,
-                drawId: document.getElementById('block-draw').value,
-                betTypeId: document.getElementById('block-type').value,
-                reason: document.getElementById('block-reason').value,
-                blockedUntil: document.getElementById('block-until').value
-            };
-            
-            showAlert('banca-config-alert', '✅ Número bloqueado exitosamente', 'success');
-            e.target.reset();
-        });
+        const blockNumberForm = document.getElementById('block-number-form');
+        if (blockNumberForm) {
+            blockNumberForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const formData = {
+                    number: document.getElementById('block-number').value,
+                    lotteryId: document.getElementById('block-lottery').value,
+                    drawId: document.getElementById('block-draw').value,
+                    betTypeId: document.getElementById('block-type').value,
+                    reason: document.getElementById('block-reason').value,
+                    blockedUntil: document.getElementById('block-until').value
+                };
+                
+                showAlert('banca-config-alert', '✅ Número bloqueado exitosamente', 'success');
+                e.target.reset();
+            });
+        }
 
         // Unblock number
         function unblockNumber(blockId) {
@@ -2745,32 +2753,35 @@
         // ============================================
 
         // Create owner
-        document.getElementById('owner-form')?.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const formData = {
-                firstName: document.getElementById('owner-first-name').value,
-                lastName: document.getElementById('owner-last-name').value,
-                cedula: document.getElementById('owner-cedula').value,
-                rnc: document.getElementById('owner-rnc').value || undefined,
-                email: document.getElementById('owner-email').value,
-                phone: document.getElementById('owner-phone').value,
-                businessName: document.getElementById('owner-business-name').value || undefined,
-                bankName: document.getElementById('owner-bank').value || undefined,
-                accountType: document.getElementById('owner-account-type').value || undefined,
-                accountNumber: document.getElementById('owner-account-number').value || undefined,
-                defaultCommission: parseFloat(document.getElementById('owner-commission').value) || undefined
-            };
+        const ownerForm = document.getElementById('owner-form');
+        if (ownerForm) {
+            ownerForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const formData = {
+                    firstName: document.getElementById('owner-first-name').value,
+                    lastName: document.getElementById('owner-last-name').value,
+                    cedula: document.getElementById('owner-cedula').value,
+                    rnc: document.getElementById('owner-rnc').value || undefined,
+                    email: document.getElementById('owner-email').value,
+                    phone: document.getElementById('owner-phone').value,
+                    businessName: document.getElementById('owner-business-name').value || undefined,
+                    bankName: document.getElementById('owner-bank').value || undefined,
+                    accountType: document.getElementById('owner-account-type').value || undefined,
+                    accountNumber: document.getElementById('owner-account-number').value || undefined,
+                    defaultCommission: parseFloat(document.getElementById('owner-commission').value) || undefined
+                };
 
-            try {
-                // In production, this would POST to /admin/owners
-                showAlert('owners-alert', `✅ Propietario "${formData.firstName} ${formData.lastName}" registrado exitosamente`, 'success');
-                e.target.reset();
-                loadOwners();
-            } catch (error) {
-                showAlert('owners-alert', `❌ Error: ${error.message}`, 'error');
-            }
-        });
+                try {
+                    // In production, this would POST to /admin/owners
+                    showAlert('owners-alert', `✅ Propietario "${formData.firstName} ${formData.lastName}" registrado exitosamente`, 'success');
+                    e.target.reset();
+                    loadOwners();
+                } catch (error) {
+                    showAlert('owners-alert', `❌ Error: ${error.message}`, 'error');
+                }
+            });
+        }
 
         // Load owners
         async function loadOwners() {
