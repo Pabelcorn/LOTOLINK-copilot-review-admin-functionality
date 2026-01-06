@@ -3771,6 +3771,8 @@
                     let text = c.textContent.trim();
                     // Remove currency symbols and format for CSV
                     text = text.replace(/RD\$\s*/g, '');
+                    // Escape double quotes by doubling them
+                    text = text.replace(/"/g, '""');
                     return `"${text}"`;
                 }).join(',') + '\n';
             });
