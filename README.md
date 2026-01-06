@@ -2,7 +2,7 @@
 
 Documento listo para enviar a una IA de programación o a tu equipo de desarrollo. Contiene: visión general, componentes, endpoints (spec concretas), esquemas JSON, seguridad, DB mínima (Postgres), secuencias, despliegue, CI/CD, tests, y entregables esperados.
 
-> 🚀 **Guía de Despliegue:** Para desplegar LOTOLINK en producción (VPS, servidor, cloud), consulte [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md)
+> 🚀 **Guía de Despliegue:** Para desplegar LOTOLINK en producción (VPS, servidor, cloud), consulte [docs/DEPLOYMENT_GUIDE.md](docs/DEPLOYMENT_GUIDE.md)
 
 > 📋 **Evaluación Técnica:** Para un análisis detallado de por qué este stack tecnológico es óptimo y profesional, consulte [docs/TECH_EVALUATION.md](docs/TECH_EVALUATION.md)
 
@@ -13,6 +13,27 @@ Documento listo para enviar a una IA de programación o a tu equipo de desarroll
 > 💻 **Ejemplos de Código:** Ejemplos de integración en Node.js, PHP y Java disponibles en [docs/integration-examples/](docs/integration-examples/)
 
 > 🧪 **Guía de Pruebas:** Para probar que el sistema funciona correctamente, consulte [docs/TESTING_GUIDE.md](docs/TESTING_GUIDE.md)
+
+## 📚 Documentación
+
+Toda la documentación del proyecto está organizada en la carpeta `/docs`. Consulte el índice completo en:
+
+**[📖 Índice de Documentación Completo](docs/README.md)**
+
+El índice incluye:
+- 🚀 Guías de inicio rápido
+- 🏦 Panel de administración y acceso
+- 🏪 Integración con bancas
+- 💳 Pagos, Stripe y comisiones
+- 🔒 Seguridad y autenticación
+- 🚀 Deployment y producción
+- 🔄 Workflows y CI/CD
+- 📱 Mobile app
+- 🧪 Testing y QA
+- 🔍 Observabilidad
+- 🏗️ Arquitectura técnica
+
+---
 
 ## 📦 Paquete de Integración para Bancas
 
@@ -53,7 +74,7 @@ Este comando automáticamente:
 
 **2. ¡Ya puedes usar el panel!** 🎉
 
-Si prefieres inicio manual, consulta: [QUICK_START.md](QUICK_START.md)
+Si prefieres inicio manual, consulta: [docs/QUICK_START.md](docs/QUICK_START.md)
 
 ### Características del Panel
 
@@ -67,7 +88,7 @@ Si prefieres inicio manual, consulta: [QUICK_START.md](QUICK_START.md)
 
 ### Documentación Completa
 
-- 📖 [Guía de Inicio Rápido](QUICK_START.md) - Configuración en 5 minutos
+- 📖 [Guía de Inicio Rápido](docs/QUICK_START.md) - Configuración en 5 minutos
 - 📚 [Guía Completa de Acceso](docs/ADMIN_PANEL_ACCESS.md) - Documentación detallada
 - 🔧 [Solución de Problemas](docs/ADMIN_PANEL_ACCESS.md#-solución-de-problemas) - Errores comunes
 
@@ -652,8 +673,8 @@ Ejecuta manualmente los workflows y crea un release en borrador:
 - Ingresa el tag (ej: `v1.0.7`)
 
 **Documentación completa:**
-- 📖 [Guía en Español](WORKFLOW_RELEASE_GUIDE.md)
-- 📖 [English Guide](WORKFLOW_RELEASE_GUIDE_EN.md)
+- 📖 [Guía en Español](docs/WORKFLOW_RELEASE_GUIDE.md)
+- 📖 [English Guide](docs/WORKFLOW_RELEASE_GUIDE_EN.md)
 
 ### ¿Por qué mis workflows no crearon releases?
 

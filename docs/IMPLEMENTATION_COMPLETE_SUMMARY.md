@@ -517,12 +517,12 @@ El backend ya tiene estos DTOs en `banca-configuration.dto.ts`:
 - Ejemplos de código
 - Instrucciones de integración
 
-**demo-config.html**
+**demo/demo-config.html**
 - Demo interactivo sin autenticación
 - Preview de componentes principales
 - Ejemplos visuales
 
-**admin-test.html**
+**demo/admin-test.html**
 - Checklist de implementación
 - Resumen de funcionalidades
 
