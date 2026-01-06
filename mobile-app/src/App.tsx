@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Redirect, Route } from 'react-router-dom';
+import { Redirect, Route, useHistory } from 'react-router-dom';
 import {
   IonApp,
   IonIcon,
@@ -49,12 +49,13 @@ import PaymentMethods from './pages/PaymentMethods';
 import LegalDocument from './pages/LegalDocument';
 import MyTickets from './pages/MyTickets';
 import TicketDetail from './pages/TicketDetail';
+import Notifications from './pages/Notifications';
 
 /* Components */
 import Menu from './components/Menu';
 
 /* Services */
-import { setupNotificationListeners } from './services/notifications.service';
+import { notificationsService } from './services/notifications.service';
 
 setupIonicReact({
   mode: 'ios', // Use iOS mode for consistent design
@@ -63,6 +64,20 @@ setupIonicReact({
   rippleEffect: true,
   hardwareBackButton: true
 });
+
+// Wrapper component to set up navigation handler inside router context
+const NavigationSetup: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const history = useHistory();
+
+  useEffect(() => {
+    // Set up navigation handler for notifications
+    notificationsService.setNavigationHandler((path: string) => {
+      history.push(path);
+    });
+  }, [history]);
+
+  return <>{children}</>;
+};
 
 const App: React.FC = () => {
   useEffect(() => {
@@ -77,17 +92,8 @@ const App: React.FC = () => {
           // Hide splash screen immediately (native splash is disabled in capacitor.config.ts)
           await SplashScreen.hide();
 
-          // Set up push notification listeners
-          setupNotificationListeners(
-            (notification) => {
-              console.log('Notification received in foreground:', notification);
-              // Handle foreground notification
-            },
-            (notification) => {
-              console.log('Notification clicked:', notification);
-              // Handle notification click - navigate to appropriate screen
-            }
-          );
+          // Initialize push notifications
+          await notificationsService.initialize();
 
           // Handle app state changes
           CapacitorApp.addListener('appStateChange', ({ isActive }) => {
@@ -120,9 +126,10 @@ const App: React.FC = () => {
   return (
     <IonApp>
       <IonReactRouter>
-        <IonSplitPane contentId="main">
-          <Menu />
-          <IonTabs id="main">
+        <NavigationSetup>
+          <IonSplitPane contentId="main">
+            <Menu />
+            <IonTabs id="main">
             <IonRouterOutlet>
               <Route exact path="/home">
                 <Home />
@@ -147,6 +154,9 @@ const App: React.FC = () => {
               </Route>
               <Route path="/ticket/:ticketId">
                 <TicketDetail />
+              </Route>
+              <Route exact path="/notifications">
+                <Notifications />
               </Route>
               <Route path="/legal/:documentType">
                 <LegalDocument />
@@ -179,6 +189,7 @@ const App: React.FC = () => {
             </IonTabBar>
           </IonTabs>
         </IonSplitPane>
+        </NavigationSetup>
       </IonReactRouter>
     </IonApp>
   );

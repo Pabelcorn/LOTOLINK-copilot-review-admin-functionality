@@ -16,3 +16,6 @@ export * from './banca-number-limit.db-entity';
 export * from './banca-daily-sales.db-entity';
 export * from './prize.db-entity';
 export * from './sucursal.db-entity';
+export * from './user-device.db-entity';
+export * from './notification-log.db-entity';
+export * from './notification-preference.db-entity';

@@ -10,6 +10,7 @@ import {
   IonMenuToggle,
   IonTitle,
   IonToolbar,
+  IonBadge,
 } from '@ionic/react';
 import {
   home,
@@ -22,12 +23,32 @@ import {
   shieldCheckmark,
   informationCircle,
   ticket,
+  notifications,
 } from 'ionicons/icons';
 import { useLocation } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { APP_INFO } from '../constants';
+import { notificationsService } from '../services/notifications.service';
 
 const Menu: React.FC = () => {
   const location = useLocation();
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    const loadUnreadCount = async () => {
+      try {
+        const count = await notificationsService.getUnreadCount();
+        setUnreadCount(count);
+      } catch (error) {
+        console.error('Error loading unread count:', error);
+      }
+    };
+    
+    loadUnreadCount();
+    // Refresh every 30 seconds
+    const interval = setInterval(loadUnreadCount, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   interface MenuItem {
     title: string;
@@ -39,6 +60,7 @@ const Menu: React.FC = () => {
     { title: 'Inicio', url: '/home', icon: home },
     { title: 'Loterías', url: '/lotteries', icon: trophy },
     { title: 'Mis Tickets', url: '/my-tickets', icon: ticket },
+    { title: 'Notificaciones', url: '/notifications', icon: notifications },
     { title: 'Bancas', url: '/bancas', icon: storefront },
     { title: 'Perfil', url: '/profile', icon: personCircle },
   ];
@@ -82,6 +104,9 @@ const Menu: React.FC = () => {
               >
                 <IonIcon slot="start" icon={page.icon} />
                 <IonLabel>{page.title}</IonLabel>
+                {page.url === '/notifications' && unreadCount > 0 && (
+                  <IonBadge color="danger" slot="end">{unreadCount}</IonBadge>
+                )}
               </IonItem>
             </IonMenuToggle>
           ))}

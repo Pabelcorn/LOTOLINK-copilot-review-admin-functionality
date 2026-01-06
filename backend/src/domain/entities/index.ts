@@ -8,3 +8,5 @@ export * from './bet-type.entity';
 export * from './banca-bet-configuration.entity';
 export * from './prize.entity';
 export * from './sucursal.entity';
+export * from './user-device.entity';
+export * from './notification-preference.entity';
