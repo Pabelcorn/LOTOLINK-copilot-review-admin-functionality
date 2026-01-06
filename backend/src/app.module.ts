@@ -15,6 +15,7 @@ import {
   AdminAuthController,
   AdminBancasController,
   SucursalController,
+  NotificationsController,
 } from './infrastructure/http/controllers';
 import { PaymentMethodsController } from './infrastructure/http/controllers/payment-methods.controller';
 import { ContactController } from './infrastructure/http/controllers/contact.controller';
@@ -23,7 +24,7 @@ import { PublicSettingsController } from './infrastructure/http/controllers/publ
 import { PasswordService } from './infrastructure/security/password.service';
 
 // Services
-import { PlayService, UserService, WebhookService, BancaService, SettingsService, SucursalService } from './application/services';
+import { PlayService, UserService, WebhookService, BancaService, SettingsService, SucursalService, NotificationService } from './application/services';
 import { EmailService } from './infrastructure/email';
 
 // Database entities
@@ -35,6 +36,9 @@ import {
   WebhookEventEntity,
   SettingEntity,
   SucursalEntity,
+  UserDeviceEntity,
+  NotificationLogEntity,
+  NotificationPreferenceEntity,
 } from './infrastructure/database/entities';
 
 // Repositories
@@ -43,10 +47,13 @@ import {
   TypeOrmUserRepository,
   TypeOrmBancaRepository,
   TypeOrmSucursalRepository,
+  TypeOrmUserDeviceRepository,
+  TypeOrmNotificationLogRepository,
+  TypeOrmNotificationPreferenceRepository,
 } from './infrastructure/database/repositories';
 
 // Domain repository tokens
-import { PLAY_REPOSITORY, USER_REPOSITORY, BANCA_REPOSITORY, BancaRepository, SUCURSAL_REPOSITORY } from './domain/repositories';
+import { PLAY_REPOSITORY, USER_REPOSITORY, BANCA_REPOSITORY, BancaRepository, SUCURSAL_REPOSITORY, USER_DEVICE_REPOSITORY, NOTIFICATION_LOG_REPOSITORY, NOTIFICATION_PREF_REPOSITORY } from './domain/repositories';
 
 // Port tokens
 import { EVENT_PUBLISHER, CACHE_PORT, BANCA_ADAPTER } from './ports/outgoing';
@@ -113,7 +120,7 @@ class MockCachePort {
         username: configService.get<string>('DATABASE_USERNAME', 'lotolink'),
         password: configService.get<string>('DATABASE_PASSWORD', 'password'),
         database: configService.get<string>('DATABASE_NAME', 'lotolink_db'),
-        entities: [PlayEntity, UserEntity, BancaEntity, OutgoingRequestEntity, WebhookEventEntity, SettingEntity, SucursalEntity],
+        entities: [PlayEntity, UserEntity, BancaEntity, OutgoingRequestEntity, WebhookEventEntity, SettingEntity, SucursalEntity, UserDeviceEntity, NotificationLogEntity, NotificationPreferenceEntity],
         synchronize: configService.get<string>('NODE_ENV') !== 'production',
         logging: configService.get<string>('NODE_ENV') === 'development',
       }),
@@ -127,6 +134,9 @@ class MockCachePort {
       WebhookEventEntity,
       SettingEntity,
       SucursalEntity,
+      UserDeviceEntity,
+      NotificationLogEntity,
+      NotificationPreferenceEntity,
     ]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -139,7 +149,7 @@ class MockCachePort {
       inject: [ConfigService],
     }),
   ],
-  controllers: [PlaysController, UsersController, WebhooksController, HealthController, AuthController, AdminAuthController, AdminBancasController, PaymentMethodsController, ContactController, SettingsController, PublicSettingsController, SucursalController],
+  controllers: [PlaysController, UsersController, WebhooksController, HealthController, AuthController, AdminAuthController, AdminBancasController, PaymentMethodsController, ContactController, SettingsController, PublicSettingsController, SucursalController, NotificationsController],
   providers: [
     // Global rate limiting guard
     {
@@ -156,6 +166,7 @@ class MockCachePort {
     SettingsService,
     SucursalService,
     PasswordService,
+    NotificationService,
     
     // Workers
     PlayWorker,
@@ -181,6 +192,21 @@ class MockCachePort {
     {
       provide: SUCURSAL_REPOSITORY,
       useClass: TypeOrmSucursalRepository,
+    },
+    
+    {
+      provide: USER_DEVICE_REPOSITORY,
+      useClass: TypeOrmUserDeviceRepository,
+    },
+    
+    {
+      provide: NOTIFICATION_LOG_REPOSITORY,
+      useClass: TypeOrmNotificationLogRepository,
+    },
+    
+    {
+      provide: NOTIFICATION_PREF_REPOSITORY,
+      useClass: TypeOrmNotificationPreferenceRepository,
     },
     
     // Banca Adapter - uses mock by default, switch to ApiBancaAdapter for production
