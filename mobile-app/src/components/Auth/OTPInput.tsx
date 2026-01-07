@@ -1,5 +1,5 @@
 import { useRef, useEffect, KeyboardEvent } from 'react';
-import '../pages/Auth/styles.css';
+import '../../styles/auth.css';
 
 interface OTPInputProps {
   length: number;

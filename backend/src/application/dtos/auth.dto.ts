@@ -45,6 +45,9 @@ export class VerifyOtpDto {
 }
 
 export class VerifyAgeDto {
+  @IsString()
+  userId!: string;
+
   @IsDateString()
   birthDate!: string;
 

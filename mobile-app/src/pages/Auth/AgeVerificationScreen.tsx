@@ -14,7 +14,7 @@ import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import * as authService from '../../services/auth.service';
-import './styles.css';
+import './../../styles/auth.css';
 
 const AgeVerificationScreen: React.FC = () => {
   const history = useHistory();

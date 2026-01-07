@@ -16,7 +16,7 @@ import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import AdminSecretModal from '../../components/Auth/AdminSecretModal';
-import './styles.css';
+import './../../styles/auth.css';
 
 const LoginScreen: React.FC = () => {
   const history = useHistory();
@@ -52,6 +52,8 @@ const LoginScreen: React.FC = () => {
 
   const handleAdminSuccess = (accessToken: string, accessLevel: string) => {
     // Redirect to admin panel
+    // Note: admin-panel.html is a separate static file outside React routing
+    // Using window.location is necessary here as it's not part of the SPA
     window.location.href = '/admin-panel.html';
   };
 

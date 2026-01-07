@@ -17,7 +17,7 @@ import { useHistory } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import * as authService from '../../services/auth.service';
 import OTPInput from '../../components/Auth/OTPInput';
-import './styles.css';
+import './../../styles/auth.css';
 
 enum AuthStep {
   PHONE = 'phone',

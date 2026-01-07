@@ -9,7 +9,7 @@ import { phonePortrait, mail, logoGoogle, logoApple } from 'ionicons/icons';
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import './styles.css';
+import './../../styles/auth.css';
 
 const AuthScreen: React.FC = () => {
   const history = useHistory();

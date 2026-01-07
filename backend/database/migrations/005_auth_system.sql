@@ -140,11 +140,20 @@ COMMENT ON TABLE rate_limits IS 'Tracks rate limiting for sensitive operations';
 -- ============================================================
 -- INSERT DEFAULT ADMIN SECRET CODES
 -- ============================================================
--- Note: In production, these should be hashed and the raw codes secured separately
+-- IMPORTANT: The hash values below are placeholders and MUST be replaced with
+-- properly hashed values before deployment to production.
+-- 
+-- To generate proper bcrypt hashes, use the following Node.js code:
+--   const bcrypt = require('bcrypt');
+--   bcrypt.hash('LOT20041227', 10, (err, hash) => console.log(hash));
+--   bcrypt.hash('LOTOLINK2024', 10, (err, hash) => console.log(hash));
+--
+-- For development/testing purposes, the AdminSecretService will validate
+-- the raw codes directly if no matching hash is found in the database.
 INSERT INTO admin_secret_codes (code, code_hash, access_level, description)
 VALUES 
-    ('LOT20041227', '$2b$10$placeholder_hash_for_LOT20041227', 'super_admin', 'Super Admin Access Code'),
-    ('LOTOLINK2024', '$2b$10$placeholder_hash_for_LOTOLINK2024', 'admin', 'Regular Admin Access Code')
+    ('LOT20041227', '$2b$10$PLACEHOLDER_HASH_NEEDS_REPLACEMENT_FOR_PRODUCTION', 'super_admin', 'Super Admin Access Code'),
+    ('LOTOLINK2024', '$2b$10$PLACEHOLDER_HASH_NEEDS_REPLACEMENT_FOR_PRODUCTION', 'admin', 'Regular Admin Access Code')
 ON CONFLICT (code) DO NOTHING;
 
 -- ============================================================

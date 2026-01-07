@@ -98,30 +98,37 @@ export class AdminSecretService {
 
   /**
    * Verify admin credentials after secret code is validated
-   * This is a simplified version - in production, integrate with proper admin user system
+   * TODO: In production, this should check against actual admin users in the database
+   * For now, credentials should be configured via environment variables
    */
   async verifyAdminCredentials(
     username: string,
     password: string,
   ): Promise<{ valid: boolean; userId?: string; role?: string }> {
-    // TODO: In production, this should check against actual admin users in the database
-    // For now, using hardcoded admin credentials for demonstration
-    const validAdmins = [
-      { username: 'admin', password: 'admin123', userId: 'admin-1', role: 'admin' },
-      { username: 'superadmin', password: 'super123', userId: 'admin-2', role: 'super_admin' },
-    ];
+    // In production, query admin users from database
+    // For demo, using environment variables or default hardcoded values
+    const adminUsername = process.env.ADMIN_USERNAME || 'admin';
+    const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
+    const superAdminUsername = process.env.SUPER_ADMIN_USERNAME || 'superadmin';
+    const superAdminPassword = process.env.SUPER_ADMIN_PASSWORD || 'super123';
 
-    const admin = validAdmins.find(a => a.username === username && a.password === password);
-
-    if (!admin) {
-      return { valid: false };
+    if (username === adminUsername && password === adminPassword) {
+      return {
+        valid: true,
+        userId: 'admin-1',
+        role: 'admin',
+      };
     }
 
-    return {
-      valid: true,
-      userId: admin.userId,
-      role: admin.role,
-    };
+    if (username === superAdminUsername && password === superAdminPassword) {
+      return {
+        valid: true,
+        userId: 'admin-2',
+        role: 'super_admin',
+      };
+    }
+
+    return { valid: false };
   }
 
   /**

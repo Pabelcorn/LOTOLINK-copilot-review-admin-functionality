@@ -7,7 +7,7 @@ import {
 } from '@ionic/react';
 import { useState } from 'react';
 import * as authService from '../../services/auth.service';
-import '../pages/Auth/styles.css';
+import '../../styles/auth.css';
 
 interface AdminSecretModalProps {
   isOpen: boolean;

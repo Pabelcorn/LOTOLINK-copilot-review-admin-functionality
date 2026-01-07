@@ -185,13 +185,12 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   async verifyAge(
     @Body() verifyAgeDto: VerifyAgeDto,
-    @Body('userId') userId: string,
   ): Promise<{ success: boolean; ageVerified: boolean }> {
     if (!verifyAgeDto.acceptTerms || !verifyAgeDto.acceptPrivacy) {
       throw new BadRequestException('You must accept terms and privacy policy');
     }
 
-    const user = await this.userService.getUserById(userId);
+    const user = await this.userService.getUserById(verifyAgeDto.userId);
     if (!user) {
       throw new UnauthorizedException('User not found');
     }
@@ -203,7 +202,7 @@ export class AuthController {
       throw new BadRequestException('You must be 18 years or older to use this platform');
     }
 
-    await this.userService.updateUser(userId, {
+    await this.userService.updateUser(verifyAgeDto.userId, {
       birthDate,
       ageVerified: true,
     });

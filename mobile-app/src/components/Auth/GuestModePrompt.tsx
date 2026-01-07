@@ -4,7 +4,7 @@ import {
   IonText,
 } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
-import '../pages/Auth/styles.css';
+import '../../styles/auth.css';
 
 interface GuestModePromptProps {
   isOpen: boolean;
