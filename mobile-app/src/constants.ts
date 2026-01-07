@@ -76,3 +76,17 @@ export const BREAKPOINTS = {
   TABLET: 1024,
   DESKTOP: 1280,
 } as const;
+
+// Geolocation Configuration
+export const GEOLOCATION = {
+  // Default fallback location (Santo Domingo, Dominican Republic)
+  DEFAULT_LOCATION: {
+    latitude: 18.4861,
+    longitude: -69.9312,
+    name: 'Santo Domingo',
+  },
+  // Default search radius in kilometers
+  DEFAULT_RADIUS_KM: 10,
+  // Maximum search radius in kilometers
+  MAX_RADIUS_KM: 50,
+} as const;

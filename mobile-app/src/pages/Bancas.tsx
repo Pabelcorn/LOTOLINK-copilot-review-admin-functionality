@@ -23,6 +23,7 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { getCurrentPosition, calculateDistance, formatDistance } from '../services/geolocation.service';
 import { getBancas, Banca as BancaType } from '../services/bancas.service';
+import { GEOLOCATION } from '../constants';
 
 // Fix for default marker icons in React-Leaflet
 // This is a known issue with Leaflet when used with bundlers like Webpack/Vite
@@ -58,11 +59,23 @@ interface DisplayBanca {
   hours?: string;
   phone: string;
   distance?: string;
+  distanceKm?: number; // Numeric distance for sorting
   location?: {
     latitude: number;
     longitude: number;
   };
 }
+
+// Helper function to convert between coordinate formats
+const toCoordinates = (latLng: { lat: number; lng: number }) => ({
+  latitude: latLng.lat,
+  longitude: latLng.lng,
+});
+
+// Helper function to check if banca should show "Más cercana" badge
+const shouldShowNearestBadge = (index: number, totalCount: number, hasDistance: boolean): boolean => {
+  return index === 0 && totalCount > 1 && hasDistance;
+};
 
 const Bancas: React.FC = () => {
   const [searchText, setSearchText] = useState('');
@@ -92,7 +105,10 @@ const Bancas: React.FC = () => {
         setUserLocation(currentUserLocation);
       } catch (err) {
         console.log('Could not get user location, using default');
-        currentUserLocation = { lat: 18.4861, lng: -69.9312 }; // Default to Santo Domingo
+        currentUserLocation = { 
+          lat: GEOLOCATION.DEFAULT_LOCATION.latitude, 
+          lng: GEOLOCATION.DEFAULT_LOCATION.longitude 
+        }; // Default to Santo Domingo
         setUserLocation(currentUserLocation);
       }
       
@@ -102,13 +118,14 @@ const Bancas: React.FC = () => {
       // Transform to display format and calculate distances
       const displayBancas: DisplayBanca[] = response.bancas.map((banca: BancaType) => {
         let distance: string | undefined;
+        let distanceKm: number | undefined;
         
         if (currentUserLocation && banca.location?.latitude && banca.location?.longitude) {
-          const distKm = calculateDistance(
-            { latitude: currentUserLocation.lat, longitude: currentUserLocation.lng },
+          distanceKm = calculateDistance(
+            toCoordinates(currentUserLocation),
             { latitude: banca.location.latitude, longitude: banca.location.longitude }
           );
-          distance = formatDistance(distKm);
+          distance = formatDistance(distanceKm);
         }
         
         return {
@@ -118,8 +135,17 @@ const Bancas: React.FC = () => {
           phone: banca.phone || 'Teléfono no disponible',
           hours: banca.hours ? `Abierta hasta las ${banca.hours.close}` : 'Horario no disponible',
           distance,
+          distanceKm, // Store numeric distance for sorting
           location: banca.location,
         };
+      });
+      
+      // Sort bancas by distance (nearest first)
+      displayBancas.sort((a, b) => {
+        if (a.distanceKm === undefined && b.distanceKm === undefined) return 0;
+        if (a.distanceKm === undefined) return 1;
+        if (b.distanceKm === undefined) return -1;
+        return a.distanceKm - b.distanceKm;
       });
       
       setBancas(displayBancas);
@@ -128,7 +154,10 @@ const Bancas: React.FC = () => {
       console.error('Error loading bancas:', err);
       setError('No se pudo cargar las bancas');
       // Default to Santo Domingo if location fails
-      setUserLocation({ lat: 18.4861, lng: -69.9312 });
+      setUserLocation({ 
+        lat: GEOLOCATION.DEFAULT_LOCATION.latitude, 
+        lng: GEOLOCATION.DEFAULT_LOCATION.longitude 
+      });
     } finally {
       setLoading(false);
     }
@@ -181,7 +210,7 @@ const Bancas: React.FC = () => {
           </div>
         ) : viewMode === 'list' ? (
           <div className="banca-list">
-            {filteredBancas.map((banca) => (
+            {filteredBancas.map((banca, index) => (
               <IonCard key={banca.id} className="banca-card premium-card" button>
                 <IonCardContent>
                   <div style={{ display: 'flex', gap: '12px' }}>
@@ -205,21 +234,39 @@ const Bancas: React.FC = () => {
                         marginBottom: '4px',
                         display: 'flex',
                         justifyContent: 'space-between',
-                        alignItems: 'center'
+                        alignItems: 'center',
+                        flexWrap: 'wrap',
+                        gap: '8px'
                       }}>
-                        {banca.name}
-                        {banca.distance && (
-                          <span style={{ 
-                            fontSize: '12px', 
-                            fontWeight: '600',
-                            color: 'var(--ion-color-primary)',
-                            background: 'rgba(0, 113, 227, 0.1)',
-                            padding: '2px 8px',
-                            borderRadius: '12px'
-                          }}>
-                            {banca.distance}
-                          </span>
-                        )}
+                        <span>{banca.name}</span>
+                        <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+                          {shouldShowNearestBadge(index, filteredBancas.length, !!banca.distance) && (
+                            <span style={{ 
+                              fontSize: '11px', 
+                              fontWeight: '600',
+                              color: 'var(--ion-color-success)',
+                              background: 'rgba(52, 199, 89, 0.1)',
+                              padding: '2px 8px',
+                              borderRadius: '12px',
+                              whiteSpace: 'nowrap'
+                            }}>
+                              ⭐ Más cercana
+                            </span>
+                          )}
+                          {banca.distance && (
+                            <span style={{ 
+                              fontSize: '12px', 
+                              fontWeight: '600',
+                              color: 'var(--ion-color-primary)',
+                              background: 'rgba(0, 113, 227, 0.1)',
+                              padding: '2px 8px',
+                              borderRadius: '12px',
+                              whiteSpace: 'nowrap'
+                            }}>
+                              {banca.distance}
+                            </span>
+                          )}
+                        </div>
                       </div>
                       <div style={{ 
                         display: 'flex', 
