@@ -21,6 +21,8 @@ import { useParams } from 'react-router-dom';
 import { Haptics, ImpactStyle, NotificationType } from '@capacitor/haptics';
 import VirtualTicket from '../components/VirtualTicket';
 import { TicketData } from '../services/tickets.service';
+import { useAuth } from '../contexts/AuthContext';
+import GuestModePrompt from '../components/Auth/GuestModePrompt';
 
 interface GameType {
   id: string;
@@ -39,6 +41,7 @@ const gameTypes: GameType[] = [
 
 const Play: React.FC = () => {
   const { lotteryId = 'leidsa' } = useParams<{ lotteryId: string }>();
+  const { isGuest, isAuthenticated } = useAuth();
   const [selectedGameType, setSelectedGameType] = useState<GameType | null>(null);
   const [selectedNumbers, setSelectedNumbers] = useState<number[]>([]);
   const [amount] = useState(10);
@@ -46,6 +49,7 @@ const Play: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showTicketModal, setShowTicketModal] = useState(false);
   const [confirmedTicket, setConfirmedTicket] = useState<TicketData | null>(null);
+  const [showGuestPrompt, setShowGuestPrompt] = useState(false);
 
   const hapticFeedback = async (style: ImpactStyle = ImpactStyle.Light) => {
     try {
@@ -387,6 +391,19 @@ const Play: React.FC = () => {
             )}
           </IonContent>
         </IonModal>
+
+        {/* Guest Mode Prompt */}
+        <GuestModePrompt
+          isOpen={showGuestPrompt}
+          onDismiss={() => setShowGuestPrompt(false)}
+          title="🎫 ¡Excelente selección!"
+          message="Para guardar tu ticket y poder cobrar tus premios, necesitas una cuenta."
+          selectionDetails={{
+            lottery: lotteryId === 'leidsa' ? 'Leidsa' : lotteryId === 'loteka' ? 'Loteka' : 'Lotería Nacional',
+            numbers: selectedNumbers.join(', '),
+            amount: `RD$ ${amount * 10}`,
+          }}
+        />
       </IonContent>
     </IonPage>
   );

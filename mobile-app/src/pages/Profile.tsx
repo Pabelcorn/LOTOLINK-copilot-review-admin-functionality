@@ -48,9 +48,11 @@ import {
   initializePushNotifications
 } from '../services/notifications.service';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
+import { useAuth } from '../contexts/AuthContext';
 
 const Profile: React.FC = () => {
   const history = useHistory();
+  const { logout, user } = useAuth();
   const [biometricAvailable, setBiometricAvailable] = useState(false);
   const [biometricType, setBiometricType] = useState('Biométrico');
   const [biometricEnabled, setBiometricEnabled] = useState(false);
@@ -155,13 +157,19 @@ const Profile: React.FC = () => {
 
   const confirmLogout = async () => {
     await Haptics.impact({ style: ImpactStyle.Heavy });
-    // TODO: Implement logout functionality
-    // - Clear authentication tokens from storage
-    // - Reset user state
-    // - Redirect to login screen
-    // - Invalidate server session
-    setToastMessage('Sesión cerrada correctamente');
-    setShowToast(true);
+    try {
+      await logout();
+      setToastMessage('Sesión cerrada correctamente');
+      setShowToast(true);
+      // Redirect to auth screen after logout
+      setTimeout(() => {
+        history.push('/auth');
+      }, 1000);
+    } catch (error) {
+      console.error('Logout error:', error);
+      setToastMessage('Error al cerrar sesión');
+      setShowToast(true);
+    }
   };
 
   return (
@@ -198,10 +206,10 @@ const Profile: React.FC = () => {
                 </IonAvatar>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: '20px', fontWeight: '700', marginBottom: '4px' }}>
-                    Juan Díaz
+                    {user?.name || 'Usuario'}
                   </div>
                   <div style={{ fontSize: '14px', color: 'var(--ion-color-medium)' }}>
-                    +1 809-555-0123
+                    {user?.phone || '+1 809-555-0123'}
                   </div>
                   <div className="premium-badge" style={{ marginTop: '8px' }}>
                     ✓ Verificado
