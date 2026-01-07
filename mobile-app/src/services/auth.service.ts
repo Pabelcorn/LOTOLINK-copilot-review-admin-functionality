@@ -233,3 +233,94 @@ export const validateAdminSecret = async (
 
   return response.data;
 };
+
+/**
+ * Authenticate with Google
+ */
+export const authenticateWithGoogle = async (
+  idToken: string,
+): Promise<AuthResponse> => {
+  const response = await apiClient.post<AuthResponse>('/auth/google', {
+    idToken,
+  });
+
+  if (response.data.access_token) {
+    await Preferences.set({
+      key: STORAGE_KEYS.JWT_TOKEN,
+      value: response.data.access_token,
+    });
+
+    await Preferences.set({
+      key: STORAGE_KEYS.USER_ID,
+      value: response.data.user.id,
+    });
+  }
+
+  return response.data;
+};
+
+/**
+ * Authenticate with Apple
+ */
+export const authenticateWithApple = async (
+  identityToken: string,
+  authorizationCode?: string,
+  user?: string,
+): Promise<AuthResponse> => {
+  const response = await apiClient.post<AuthResponse>('/auth/apple', {
+    identityToken,
+    authorizationCode,
+    user,
+  });
+
+  if (response.data.access_token) {
+    await Preferences.set({
+      key: STORAGE_KEYS.JWT_TOKEN,
+      value: response.data.access_token,
+    });
+
+    await Preferences.set({
+      key: STORAGE_KEYS.USER_ID,
+      value: response.data.user.id,
+    });
+  }
+
+  return response.data;
+};
+
+/**
+ * Convert guest session to full user account
+ */
+export const convertGuestToUser = async (data: RegisterData): Promise<AuthResponse> => {
+  const currentToken = await getToken();
+  
+  const response = await apiClient.post<AuthResponse>('/auth/guest/convert', data, {
+    headers: {
+      Authorization: `Bearer ${currentToken}`,
+    },
+  });
+
+  // Store new user tokens
+  await Preferences.set({
+    key: STORAGE_KEYS.JWT_TOKEN,
+    value: response.data.access_token,
+  });
+
+  await Preferences.set({
+    key: STORAGE_KEYS.USER_ID,
+    value: response.data.user.id,
+  });
+
+  // Remove guest flag
+  await Preferences.remove({ key: 'll_guest' });
+
+  return response.data;
+};
+
+/**
+ * Check if current session is guest
+ */
+export const isGuest = async (): Promise<boolean> => {
+  const { value } = await Preferences.get({ key: 'll_guest' });
+  return value === 'true';
+};
