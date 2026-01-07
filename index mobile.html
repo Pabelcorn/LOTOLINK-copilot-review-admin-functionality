@@ -4214,6 +4214,8 @@
       const [pendingPlay, setPendingPlay] = useState(null);
       const [ticket, setTicket] = useState(null);
       const [selectedBank, setSelectedBank] = useState(DEFAULT_BANKS[0]);
+      const [availableBancas, setAvailableBancas] = useState(DEFAULT_BANKS); // Bancas from API or default
+      const [loadingBancas, setLoadingBancas] = useState(false);
       const [bancasViewMode, setBancasViewMode] = useState('list'); // 'list' | 'map'
       const [bancasFocusBank, setBancasFocusBank] = useState(null); // Bank to focus on in map view
       const [showPlayModal, setShowPlayModal] = useState(false);
@@ -5060,6 +5062,86 @@
         fetchAppServiceFee();
       }, []); // Run once on mount
 
+      // Load nearby bancas from API with geolocation
+      const loadNearbyBancas = async () => {
+        setLoadingBancas(true);
+        try {
+          // Get user location
+          let latitude = 18.4861; // Default to Santo Domingo
+          let longitude = -69.9312;
+
+          if (navigator.geolocation) {
+            try {
+              const position = await new Promise((resolve, reject) => {
+                navigator.geolocation.getCurrentPosition(resolve, reject, {
+                  timeout: 5000,
+                  maximumAge: 300000, // 5 minutes cache
+                });
+              });
+              latitude = position.coords.latitude;
+              longitude = position.coords.longitude;
+            } catch (err) {
+              console.log('Could not get user location, using default:', err);
+            }
+          }
+
+          // Fetch nearby bancas from API
+          const API_BASE = window.API_BASE_URL || 'http://localhost:3000';
+          const response = await fetch(
+            `${API_BASE}/admin/bancas/nearby?latitude=${latitude}&longitude=${longitude}&radius_km=25`
+          );
+
+          if (response.ok) {
+            const bancas = await response.json();
+            
+            // Transform API bancas to match DEFAULT_BANKS structure
+            const transformedBancas = bancas.map(banca => ({
+              id: banca.id,
+              name: banca.name,
+              address: banca.address || 'Dirección no disponible',
+              coords: banca.latitude && banca.longitude ? [banca.latitude, banca.longitude] : [18.4861, -69.9312],
+              phone: banca.phone,
+              city: banca.city,
+              region: banca.region,
+            }));
+
+            if (transformedBancas.length > 0) {
+              setAvailableBancas(transformedBancas);
+              
+              // If no bank is selected or selected bank is default, select the nearest one
+              if (!selectedBank || selectedBank.id <= 4) {
+                setSelectedBank(transformedBancas[0]);
+                localStorage.setItem('ll_selected_banca', JSON.stringify(transformedBancas[0]));
+              }
+            }
+          } else {
+            console.warn('Failed to fetch bancas, using default banks');
+          }
+        } catch (error) {
+          console.error('Error loading nearby bancas:', error);
+          // Keep using DEFAULT_BANKS
+        } finally {
+          setLoadingBancas(false);
+        }
+      };
+
+      // Load bancas on mount and restore selected banca from localStorage
+      useEffect(() => {
+        // Try to restore selected banca from localStorage
+        const savedBanca = localStorage.getItem('ll_selected_banca');
+        if (savedBanca) {
+          try {
+            const parsed = JSON.parse(savedBanca);
+            setSelectedBank(parsed);
+          } catch (e) {
+            console.error('Failed to parse saved banca:', e);
+          }
+        }
+        
+        // Load nearby bancas
+        loadNearbyBancas();
+      }, []);
+
       const addPlayToCart = (play) => { 
         // Single-banca cart enforcement
         if (!cartBanca) {
@@ -5680,14 +5762,22 @@
                   {/* Branch Selector Dropdown */}
                   {showBranchSelector && (
                     <div className="p-4 bg-blue-50 dark:bg-slate-800 border-b dark:border-slate-700">
-                      <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Selecciona otra sucursal:</div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                        {DEFAULT_BANKS.map(bank => (
+                      <div className="flex justify-between items-center mb-3">
+                        <div className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                          Selecciona otra sucursal:
+                        </div>
+                        {loadingBancas && (
+                          <div className="text-xs text-gray-500">Cargando...</div>
+                        )}
+                      </div>
+                      <div className="grid grid-cols-1 gap-2">
+                        {availableBancas.map(bank => (
                           <button
                             type="button"
                             key={bank.id}
                             onClick={() => {
                               setSelectedBank(bank);
+                              localStorage.setItem('ll_selected_banca', JSON.stringify(bank));
                               setShowBranchSelector(false);
                             }}
                             className={`p-3 rounded-lg text-left transition-all cursor-pointer ${
@@ -5701,9 +5791,21 @@
                             <div className={`text-xs ${selectedBank?.id === bank.id ? 'text-blue-100' : 'text-gray-500 dark:text-gray-400'}`}>
                               📍 {bank.address}
                             </div>
+                            {bank.phone && (
+                              <div className={`text-xs mt-1 ${selectedBank?.id === bank.id ? 'text-blue-100' : 'text-gray-500 dark:text-gray-400'}`}>
+                                📞 {bank.phone}
+                              </div>
+                            )}
                           </button>
                         ))}
                       </div>
+                      <button
+                        type="button"
+                        onClick={loadNearbyBancas}
+                        className="mt-3 w-full py-2 px-4 bg-white dark:bg-slate-700 border border-gray-300 dark:border-slate-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-600 transition-colors"
+                      >
+                        🔄 Actualizar bancas cercanas
+                      </button>
                     </div>
                   )}
                 </div>
