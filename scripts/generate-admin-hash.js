@@ -16,17 +16,14 @@ const crypto = require('crypto');
 
 const BCRYPT_ROUNDS = 12;
 
-// Simple bcrypt implementation using crypto for hashing
+// Bcrypt hash generation function
 async function generateBcryptHash(plainText, rounds) {
-  // We'll use a simple placeholder since bcrypt requires the library
-  // In production, this should use the actual bcrypt library
-  console.log('\n⚠️  NOTA: Este script requiere bcrypt instalado.');
-  console.log('   Ejecuta: npm install bcrypt --save\n');
-  
   try {
     const bcrypt = require('bcrypt');
     return await bcrypt.hash(plainText, rounds);
   } catch (error) {
+    console.log('\n⚠️  NOTA: Este script requiere bcrypt instalado.');
+    console.log('   Ejecuta: npm install bcrypt --save\n');
     console.log('❌ bcrypt no está disponible. Instalando...\n');
     throw new Error('Por favor instala bcrypt primero: npm install bcrypt');
   }
@@ -102,14 +99,17 @@ async function main() {
       console.log('\n3️⃣ SESSION_SECRET:');
       console.log(crypto.randomBytes(32).toString('hex'));
       
-      // Admin hashes
-      console.log('\n4️⃣ Hash para código admin (LOT20041227):');
-      console.log(await bcrypt.hash('LOT20041227', BCRYPT_ROUNDS));
+      // Admin hashes - note: these are example codes, replace with your actual codes
+      console.log('\n4️⃣ Hash de ejemplo para código admin:');
+      console.log('   Genera tu propio hash con: node scripts/generate-admin-hash.js <TU_CODIGO>');
+      console.log(await bcrypt.hash('CODIGO_EJEMPLO_CAMBIAR', BCRYPT_ROUNDS));
       
-      console.log('\n5️⃣ Hash para código admin secundario (LOTOLINK2024):');
-      console.log(await bcrypt.hash('LOTOLINK2024', BCRYPT_ROUNDS));
+      console.log('\n5️⃣ Hash de ejemplo para código admin secundario:');
+      console.log('   Genera tu propio hash con: node scripts/generate-admin-hash.js <TU_CODIGO>');
+      console.log(await bcrypt.hash('CODIGO_EJEMPLO_2_CAMBIAR', BCRYPT_ROUNDS));
       
-      console.log('\n✅ Todos los secretos generados. Cópialos a .env.production\n');
+      console.log('\n✅ Todos los secretos generados. Cópialos a .env.production');
+      console.log('\n⚠️  IMPORTANTE: Los hashes de ejemplo DEBEN ser reemplazados con tus códigos reales\n');
     } catch (error) {
       console.error('\n❌ Error:', error.message);
       console.log('\n💡 Solución: npm install bcrypt\n');

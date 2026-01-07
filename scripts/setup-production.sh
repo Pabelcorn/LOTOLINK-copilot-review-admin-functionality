@@ -57,8 +57,13 @@ echo -e "${BLUE}🔐 Generando secretos de seguridad...${NC}"
 echo ""
 
 # Instalar bcrypt si no está
+echo "Instalando bcrypt para generación de hashes..."
 cd backend
-npm install bcrypt --save 2>/dev/null || true
+if npm install bcrypt --save; then
+    echo -e "${GREEN}✅ bcrypt instalado correctamente${NC}"
+else
+    echo -e "${YELLOW}⚠️  No se pudo instalar bcrypt en backend${NC}"
+fi
 cd ..
 
 # Generar todos los secretos
@@ -73,7 +78,7 @@ echo ""
 echo -e "${BLUE}📦 Instalando dependencias...${NC}"
 
 echo "Backend..."
-cd backend && npm ci --production && cd ..
+cd backend && npm ci && cd ..
 
 echo "Mobile app..."
 cd mobile-app && npm ci && cd ..
