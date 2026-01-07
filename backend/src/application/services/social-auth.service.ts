@@ -78,17 +78,29 @@ export class SocialAuthService {
 
   /**
    * Verify Apple identity token
-   * Note: Apple token verification requires fetching Apple's public keys
-   * and verifying the JWT signature. For MVP, we'll implement a simplified version.
+   * IMPORTANT: This is a simplified MVP implementation.
+   * In production, you MUST implement proper JWT verification:
+   * 1. Fetch Apple's public keys from https://appleid.apple.com/auth/keys
+   * 2. Verify the JWT signature using the public key
+   * 3. Validate all token claims (iss, aud, exp, iat, sub)
+   * 
+   * For production, consider using a library like:
+   * - apple-signin-auth (npm package)
+   * - jsonwebtoken with jwks-rsa
    */
   async verifyAppleToken(identityToken: string): Promise<SocialAuthResult> {
     try {
-      // In production, you would:
-      // 1. Fetch Apple's public keys from https://appleid.apple.com/auth/keys
-      // 2. Verify the JWT signature using the public key
-      // 3. Validate the token claims (iss, aud, exp, etc.)
+      // TODO: PRODUCTION IMPLEMENTATION REQUIRED
+      // This is a development-only implementation
+      // Replace with proper Apple token verification before deploying
       
-      // For MVP, we'll decode the token (without verification - NOT FOR PRODUCTION)
+      if (process.env.NODE_ENV === 'production') {
+        throw new UnauthorizedException(
+          'Apple Sign-In is not configured for production. Please implement proper token verification.'
+        );
+      }
+      
+      // Development-only: decode without verification (NOT SECURE)
       const payload = this.decodeJWT<AppleTokenPayload>(identityToken);
 
       if (!payload) {
@@ -131,13 +143,15 @@ export class SocialAuthService {
   }
 
   /**
-   * Generate a unique phone number placeholder for social auth users
-   * In production, prompt users to add their phone number later
+   * Generate a valid placeholder phone number for social auth users
+   * Format: +1800 + last 7 digits of hash
+   * Note: In production, prompt users to add their real phone number
+   * or make phone number optional for social auth accounts
    */
   generatePlaceholderPhone(providerId: string): string {
-    // Generate a unique placeholder based on provider ID
-    // This is temporary until user adds their real phone
-    const hash = providerId.substring(0, 10).padEnd(10, '0');
-    return `+social${hash}`;
+    // Generate a hash from provider ID
+    const hash = providerId.substring(0, 15).padEnd(15, '0');
+    // Use toll-free number prefix +1800 + 7 digits
+    return `+1800${hash.substring(0, 7)}`;
   }
 }

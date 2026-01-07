@@ -261,9 +261,37 @@
 
 <script>
   // Configuration
-  const API_BASE_URL = 'http://localhost:3000/api/v1';
-  const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID'; // Configure in production
-  const APPLE_CLIENT_ID = 'YOUR_APPLE_CLIENT_ID'; // Configure in production
+  // IMPORTANT: Replace these with your actual OAuth client IDs before deployment
+  // Get credentials from:
+  // - Google: https://console.cloud.google.com
+  // - Apple: https://developer.apple.com
+  const API_BASE_URL = getApiBaseUrl();
+  const GOOGLE_CLIENT_ID = getConfigValue('GOOGLE_CLIENT_ID', 'REPLACE_WITH_YOUR_GOOGLE_CLIENT_ID');
+  const APPLE_CLIENT_ID = getConfigValue('APPLE_CLIENT_ID', 'REPLACE_WITH_YOUR_APPLE_CLIENT_ID');
+  
+  /**
+   * Get API base URL from configuration
+   * Priority: 1. window.CONFIG 2. Environment 3. Default
+   */
+  function getApiBaseUrl() {
+    // Check if configuration is injected
+    if (typeof window.CONFIG !== 'undefined' && window.CONFIG.API_BASE_URL) {
+      return window.CONFIG.API_BASE_URL;
+    }
+    
+    // Fallback to default (for development)
+    return 'http://localhost:3000/api/v1';
+  }
+  
+  /**
+   * Get configuration value safely
+   */
+  function getConfigValue(key, defaultValue) {
+    if (typeof window.CONFIG !== 'undefined' && window.CONFIG[key]) {
+      return window.CONFIG[key];
+    }
+    return defaultValue;
+  }
   
   let currentPhone = '';
   let currentUserId = '';

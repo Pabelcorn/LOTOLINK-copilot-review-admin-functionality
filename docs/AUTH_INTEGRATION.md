@@ -196,23 +196,75 @@ Here's a complete minimal example:
 
 ## Configuration for Production
 
-### 1. Update API Base URL
+### 1. Secure API Configuration
+
+**IMPORTANT:** Do not use hostname detection for API URL selection. Instead, inject configuration:
+
+```html
+<script>
+  // Define configuration before loading auth scripts
+  window.CONFIG = {
+    API_BASE_URL: 'https://api.lotolink.com/api/v1',
+    GOOGLE_CLIENT_ID: 'YOUR_ACTUAL_CLIENT_ID.apps.googleusercontent.com',
+    APPLE_CLIENT_ID: 'YOUR_ACTUAL_APPLE_CLIENT_ID'
+  };
+</script>
+```
+
+**Best Practice:** Load configuration from environment variables during build:
 
 ```javascript
-const API_BASE_URL = window.location.hostname === 'localhost' 
-  ? 'http://localhost:3000/api/v1'
-  : 'https://api.lotolink.com/api/v1';
+// During build process (webpack/vite/etc)
+window.CONFIG = {
+  API_BASE_URL: process.env.VITE_API_BASE_URL,
+  GOOGLE_CLIENT_ID: process.env.VITE_GOOGLE_CLIENT_ID,
+  APPLE_CLIENT_ID: process.env.VITE_APPLE_CLIENT_ID
+};
 ```
 
 ### 2. Set OAuth Client IDs
 
 Get your client IDs from:
 - **Google**: [Google Cloud Console](https://console.cloud.google.com)
-- **Apple**: [Apple Developer](https://developer.apple.com)
+  1. Create a project
+  2. Enable Google+ API
+  3. Create OAuth 2.0 credentials
+  4. Add authorized JavaScript origins
+  5. Copy Client ID
 
-```javascript
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || 'YOUR_GOOGLE_CLIENT_ID';
-const APPLE_CLIENT_ID = process.env.APPLE_CLIENT_ID || 'YOUR_APPLE_CLIENT_ID';
+- **Apple**: [Apple Developer](https://developer.apple.com)
+  1. Register an App ID
+  2. Enable Sign In with Apple
+  3. Create a Service ID
+  4. Configure redirect URLs
+  5. Copy Service ID
+
+**Never commit actual credentials to version control!**
+
+### 3. Environment Variables
+
+Create `.env.production`:
+
+```bash
+VITE_API_BASE_URL=https://api.lotolink.com/api/v1
+VITE_GOOGLE_CLIENT_ID=your_google_client_id.apps.googleusercontent.com
+VITE_APPLE_CLIENT_ID=your.apple.service.id
+```
+
+Create `.env.development`:
+
+```bash
+VITE_API_BASE_URL=http://localhost:3000/api/v1
+VITE_GOOGLE_CLIENT_ID=your_dev_google_client_id.apps.googleusercontent.com
+VITE_APPLE_CLIENT_ID=your.dev.apple.service.id
+```
+
+Add to `.gitignore`:
+
+```
+.env.production
+.env.development
+.env.local
 ```
 
 ### 3. HTTPS Requirements
