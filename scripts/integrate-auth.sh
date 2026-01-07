@@ -1,0 +1,86 @@
+#!/bin/bash
+
+# Integration script to add comprehensive authentication to web and desktop apps
+# This script extracts the auth modal and integrates it into index.html and desktop-app/index.html
+
+echo "🚀 LOTOLINK Authentication Integration Script"
+echo "=============================================="
+echo ""
+echo "This script will integrate the comprehensive authentication system into:"
+echo "  1. Web App (index.html)"
+echo "  2. Desktop App (desktop-app/index.html)"
+echo ""
+echo "Features to be integrated:"
+echo "  ✓ Google OAuth Sign-In"
+echo "  ✓ Apple Sign-In"
+echo "  ✓ Phone/OTP Verification"
+echo "  ✓ Email Registration"
+echo "  ✓ Age Verification (18+)"
+echo "  ✓ Guest Mode"
+echo "  ✓ Admin Access (LOT20041227)"
+echo ""
+echo "⚠️  IMPORTANT: This will modify index.html and desktop-app/index.html"
+echo "    Backup files will be created before modification"
+echo ""
+
+read -p "Continue? (y/N): " -n 1 -r
+echo
+if [[ ! $REPLY =~ ^[Yy]$ ]]
+then
+    echo "Integration cancelled."
+    exit 1
+fi
+
+echo ""
+echo "📋 Step 1: Creating backups..."
+cp index.html index.html.backup
+cp desktop-app/index.html desktop-app/index.html.backup
+echo "✓ Backups created: index.html.backup, desktop-app/index.html.backup"
+
+echo ""
+echo "📋 Step 2: Extracting auth modal components from auth-modal.html..."
+echo "   (Manual integration recommended - see docs/AUTH_INTEGRATION.md)"
+echo ""
+echo "⚠️  MANUAL STEPS REQUIRED:"
+echo ""
+echo "1. Add OAuth SDKs to <head> section:"
+echo "   <!-- Google Sign-In -->"
+echo "   <script src=\"https://accounts.google.com/gsi/client\" async defer></script>"
+echo ""
+echo "   <!-- Apple Sign-In -->"
+echo "   <script src=\"https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js\"></script>"
+echo ""
+echo "2. Copy auth modal HTML from auth-modal.html (lines 51-245)"
+echo "   Place before closing </body> tag"
+echo ""
+echo "3. Copy auth modal styles from auth-modal.html (lines 18-44)"
+echo "   Add to <style> section"
+echo ""
+echo "4. Copy all JavaScript functions from auth-modal.html (lines 265-640)"
+echo "   Add before closing </body> tag"
+echo ""
+echo "5. Update existing authentication triggers:"
+echo "   Replace: setShowAuthModal(true)"
+echo "   With: openAuthModal()"
+echo ""
+echo "6. Set configuration (before auth scripts):"
+echo "   <script>"
+echo "     window.CONFIG = {"
+echo "       API_BASE_URL: 'http://localhost:3000/api/v1',"
+echo "       GOOGLE_CLIENT_ID: 'YOUR_GOOGLE_CLIENT_ID',"
+echo "       APPLE_CLIENT_ID: 'YOUR_APPLE_CLIENT_ID'"
+echo "     };"
+echo "   </script>"
+echo ""
+echo "📚 For detailed integration instructions, see:"
+echo "   docs/AUTH_INTEGRATION.md"
+echo "   docs/AUTHENTICATION_GUIDE.md"
+echo ""
+echo "✅ Integration script complete!"
+echo ""
+echo "Next steps:"
+echo "1. Follow manual integration steps above"
+echo "2. Configure OAuth client IDs"
+echo "3. Test authentication flows"
+echo "4. Deploy backend with migrations"
+echo ""
