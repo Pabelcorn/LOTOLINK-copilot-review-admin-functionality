@@ -1,0 +1,389 @@
+/* Auth Screen Styles - Apple-inspired Design */
+
+.auth-content {
+  --background: #f5f5f7;
+}
+
+.auth-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 24px;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.auth-logo {
+  margin-bottom: 16px;
+  animation: fadeInDown 0.6s ease-out;
+}
+
+.auth-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1d1d1f;
+  margin: 0 0 8px 0;
+  letter-spacing: -0.5px;
+  animation: fadeInUp 0.6s ease-out 0.1s both;
+}
+
+.auth-slogan {
+  font-size: 17px;
+  color: #6e6e73;
+  margin: 0;
+  animation: fadeInUp 0.6s ease-out 0.2s both;
+}
+
+.auth-methods {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 32px;
+  animation: fadeInUp 0.6s ease-out 0.3s both;
+}
+
+.auth-button {
+  --border-radius: 12px;
+  --padding-top: 16px;
+  --padding-bottom: 16px;
+  --padding-start: 24px;
+  --padding-end: 24px;
+  font-size: 17px;
+  font-weight: 600;
+  height: 56px;
+  text-transform: none;
+  letter-spacing: 0;
+  margin: 0;
+}
+
+.auth-button-phone {
+  --background: #1d1d1f;
+  --background-hover: #000;
+  --background-activated: #000;
+  --color: white;
+}
+
+.auth-button-google {
+  --background: white;
+  --background-hover: #f5f5f7;
+  --background-activated: #f5f5f7;
+  --color: #1d1d1f;
+  --border-width: 1px;
+  --border-style: solid;
+  --border-color: #d2d2d7;
+}
+
+.auth-button-apple {
+  --background: #000;
+  --background-hover: #1d1d1f;
+  --background-activated: #1d1d1f;
+  --color: white;
+}
+
+.auth-button-email {
+  --background: #0071e3;
+  --background-hover: #0077ed;
+  --background-activated: #0077ed;
+  --color: white;
+}
+
+.auth-footer {
+  text-align: center;
+  margin-bottom: 24px;
+  animation: fadeInUp 0.6s ease-out 0.4s both;
+}
+
+.auth-footer p {
+  margin: 0 0 16px 0;
+  font-size: 15px;
+}
+
+.auth-link {
+  color: #0071e3;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.auth-link:hover {
+  text-decoration: underline;
+}
+
+.auth-guest-button {
+  --color: #6e6e73;
+  font-size: 15px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.auth-legal {
+  text-align: center;
+  animation: fadeInUp 0.6s ease-out 0.5s both;
+}
+
+/* OTP Input Styles */
+.otp-input-container {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin: 32px 0;
+}
+
+.otp-input {
+  width: 48px;
+  height: 56px;
+  font-size: 24px;
+  font-weight: 600;
+  text-align: center;
+  border: 2px solid #d2d2d7;
+  border-radius: 12px;
+  background: white;
+  color: #1d1d1f;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.otp-input:focus {
+  border-color: #0071e3;
+}
+
+.otp-input.filled {
+  border-color: #34c759;
+}
+
+/* Age Verification Styles */
+.age-verification-container {
+  padding: 24px;
+}
+
+.age-input-group {
+  display: flex;
+  gap: 12px;
+  margin: 24px 0;
+}
+
+.age-input {
+  flex: 1;
+  height: 56px;
+  font-size: 20px;
+  font-weight: 600;
+  text-align: center;
+  border: 2px solid #d2d2d7;
+  border-radius: 12px;
+  background: white;
+  color: #1d1d1f;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.age-input:focus {
+  border-color: #0071e3;
+}
+
+.age-input::placeholder {
+  color: #c7c7cc;
+  font-weight: 400;
+}
+
+.age-separator {
+  display: flex;
+  align-items: center;
+  font-size: 24px;
+  font-weight: 600;
+  color: #6e6e73;
+}
+
+.age-warning {
+  background: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: 12px;
+  padding: 16px;
+  margin: 24px 0;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.age-warning-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.age-warning-text {
+  font-size: 14px;
+  color: #856404;
+  line-height: 1.5;
+}
+
+.age-checkbox-list {
+  margin: 24px 0;
+}
+
+.age-checkbox-item {
+  --padding-start: 0;
+  --inner-padding-end: 0;
+  margin-bottom: 12px;
+}
+
+.age-checkbox-label {
+  font-size: 15px;
+  color: #1d1d1f;
+  line-height: 1.5;
+}
+
+/* Guest Mode Prompt Styles */
+.guest-prompt-content {
+  padding: 24px;
+}
+
+.guest-prompt-icon {
+  font-size: 64px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.guest-prompt-title {
+  font-size: 24px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 12px;
+  color: #1d1d1f;
+}
+
+.guest-prompt-message {
+  font-size: 15px;
+  text-align: center;
+  color: #6e6e73;
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+
+.guest-prompt-selection {
+  background: #f5f5f7;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 24px;
+}
+
+.guest-prompt-selection-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #6e6e73;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.guest-prompt-selection-item {
+  font-size: 15px;
+  color: #1d1d1f;
+  margin-bottom: 4px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.guest-prompt-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Admin Secret Modal Styles */
+.admin-secret-modal {
+  --width: 90%;
+  --max-width: 400px;
+  --border-radius: 16px;
+}
+
+.admin-secret-content {
+  padding: 24px;
+}
+
+.admin-secret-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.admin-secret-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+
+.admin-secret-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1d1d1f;
+  margin: 0;
+}
+
+.admin-secret-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.admin-secret-input {
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --border-radius: 12px;
+  --background: #f5f5f7;
+  font-size: 15px;
+}
+
+.admin-secret-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+/* Animations */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (min-width: 768px) {
+  .auth-container {
+    padding: 48px;
+  }
+
+  .auth-header {
+    margin-bottom: 64px;
+  }
+
+  .auth-title {
+    font-size: 40px;
+  }
+
+  .auth-slogan {
+    font-size: 19px;
+  }
+
+  .auth-button {
+    font-size: 19px;
+    height: 64px;
+  }
+}
