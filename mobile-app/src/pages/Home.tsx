@@ -15,24 +15,84 @@ import {
   IonSkeletonText,
   IonButtons,
   IonMenuButton,
-  RefresherEventDetail
+  RefresherEventDetail,
+  IonChip
 } from '@ionic/react';
-import { trophy, storefront, ticket, trendingUp } from 'ionicons/icons';
-import { useState } from 'react';
+import { trophy, storefront, ticket, trendingUp, location, call } from 'ionicons/icons';
+import { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
+import { useSucursal } from '../contexts/SucursalContext';
+import { calculateDistance, formatDistance, getCurrentPosition } from '../services/geolocation.service';
+import { GEOLOCATION } from '../constants';
 import './Home.css';
 
 const Home: React.FC = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const history = useHistory();
+  const { nearbyBancas, loadNearbyBancas, setSelectedSucursal } = useSucursal();
+  const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);
+
+  useEffect(() => {
+    loadNearbyBancasWithLocation();
+  }, []);
+
+  const loadNearbyBancasWithLocation = async () => {
+    try {
+      const position = await getCurrentPosition();
+      setUserLocation({
+        latitude: position.coordinates.latitude,
+        longitude: position.coordinates.longitude,
+      });
+    } catch (err) {
+      console.log('Could not get user location, using default');
+      setUserLocation({
+        latitude: GEOLOCATION.DEFAULT_LOCATION.latitude,
+        longitude: GEOLOCATION.DEFAULT_LOCATION.longitude,
+      });
+    }
+
+    await loadNearbyBancas();
+  };
 
   const handleRefresh = async (event: CustomEvent<RefresherEventDetail>) => {
     setIsRefreshing(true);
-    // Simulate data refresh
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    await loadNearbyBancasWithLocation();
     setIsRefreshing(false);
     event.detail.complete();
   };
+
+  const handleSelectBanca = async (bancaId: string) => {
+    const banca = nearbyBancas.find(b => b.id === bancaId);
+    if (!banca) return;
+
+    const sucursal = {
+      id: banca.id,
+      bancaId: banca.id,
+      bancaName: banca.name,
+      name: 'Principal',
+      code: '0001',
+      address: banca.address,
+      phone: banca.phone,
+      city: banca.city,
+      province: banca.region,
+    };
+
+    await setSelectedSucursal(sucursal);
+    history.push('/lotteries');
+  };
+
+  // Get top 3 nearest bancas with distances
+  const topNearbyBancas = nearbyBancas.slice(0, 3).map((banca, index) => {
+    let distance: string | undefined;
+    if (userLocation && banca.location?.latitude && banca.location?.longitude) {
+      const distKm = calculateDistance(
+        { latitude: userLocation.latitude, longitude: userLocation.longitude },
+        { latitude: banca.location.latitude, longitude: banca.location.longitude }
+      );
+      distance = formatDistance(distKm);
+    }
+    return { ...banca, distance, isNearest: index === 0 };
+  });
 
   return (
     <IonPage>
@@ -103,6 +163,99 @@ const Home: React.FC = () => {
             </IonCard>
           </div>
         </div>
+
+        {/* Nearby Bancas Section */}
+        {topNearbyBancas.length > 0 && (
+          <div style={{ padding: '24px 16px 0' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+              <h2 style={{ fontSize: '20px', fontWeight: '600', margin: 0 }}>
+                Bancas Cercanas
+              </h2>
+              <IonButton 
+                fill="clear" 
+                size="small" 
+                routerLink="/bancas"
+                style={{ '--color': 'var(--ion-color-primary)' }}
+              >
+                Ver todas
+              </IonButton>
+            </div>
+            {topNearbyBancas.map((banca) => (
+              <IonCard 
+                key={banca.id} 
+                className="premium-card" 
+                button
+                onClick={() => handleSelectBanca(banca.id)}
+                style={{ marginBottom: '12px' }}
+              >
+                <IonCardContent>
+                  <div style={{ display: 'flex', gap: '12px' }}>
+                    <div style={{
+                      width: '48px',
+                      height: '48px',
+                      borderRadius: '12px',
+                      background: 'linear-gradient(135deg, #0071e3 0%, #5856d6 100%)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '24px',
+                      flexShrink: 0
+                    }}>
+                      🏪
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ 
+                        fontSize: '16px', 
+                        fontWeight: '700', 
+                        marginBottom: '4px',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        flexWrap: 'wrap',
+                        gap: '8px'
+                      }}>
+                        <span>{banca.name}</span>
+                        <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+                          {banca.isNearest && (
+                            <IonChip color="success" style={{ margin: 0, height: '24px', fontSize: '11px' }}>
+                              ⭐ Más cercana
+                            </IonChip>
+                          )}
+                          {banca.distance && (
+                            <IonChip color="primary" style={{ margin: 0, height: '24px', fontSize: '11px' }}>
+                              📍 {banca.distance}
+                            </IonChip>
+                          )}
+                        </div>
+                      </div>
+                      <div style={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        gap: '4px',
+                        fontSize: '13px', 
+                        color: 'var(--ion-color-medium)',
+                        marginBottom: '4px'
+                      }}>
+                        <IonIcon icon={location} />
+                        {banca.address}
+                      </div>
+                      <div style={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        gap: '4px',
+                        fontSize: '13px', 
+                        color: 'var(--ion-color-medium)'
+                      }}>
+                        <IonIcon icon={call} />
+                        {banca.phone}
+                      </div>
+                    </div>
+                  </div>
+                </IonCardContent>
+              </IonCard>
+            ))}
+          </div>
+        )}
 
         {/* Results Section */}
         <div style={{ padding: '24px 16px 100px 16px' }}>
