@@ -66,6 +66,17 @@ interface DisplayBanca {
   };
 }
 
+// Helper function to convert between coordinate formats
+const toCoordinates = (latLng: { lat: number; lng: number }) => ({
+  latitude: latLng.lat,
+  longitude: latLng.lng,
+});
+
+// Helper function to check if banca should show "Más cercana" badge
+const shouldShowNearestBadge = (index: number, totalCount: number, hasDistance: boolean): boolean => {
+  return index === 0 && totalCount > 1 && hasDistance;
+};
+
 const Bancas: React.FC = () => {
   const [searchText, setSearchText] = useState('');
   const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
@@ -111,7 +122,7 @@ const Bancas: React.FC = () => {
         
         if (currentUserLocation && banca.location?.latitude && banca.location?.longitude) {
           distanceKm = calculateDistance(
-            { latitude: currentUserLocation.lat, longitude: currentUserLocation.lng },
+            toCoordinates(currentUserLocation),
             { latitude: banca.location.latitude, longitude: banca.location.longitude }
           );
           distance = formatDistance(distanceKm);
@@ -229,7 +240,7 @@ const Bancas: React.FC = () => {
                       }}>
                         <span>{banca.name}</span>
                         <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
-                          {index === 0 && filteredBancas.length > 1 && banca.distance && (
+                          {shouldShowNearestBadge(index, filteredBancas.length, !!banca.distance) && (
                             <span style={{ 
                               fontSize: '11px', 
                               fontWeight: '600',

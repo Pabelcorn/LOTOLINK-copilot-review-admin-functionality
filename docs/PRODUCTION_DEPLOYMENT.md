@@ -31,25 +31,46 @@ Test and demo bancas should be identified and removed or deactivated before prod
 Deactivating test bancas preserves data for reference but prevents them from appearing in production:
 
 ```sql
--- Identify test bancas (adjust WHERE clause based on your naming convention)
-SELECT id, name, email, status, is_active 
+-- STEP 1: Review bancas that will be deactivated
+-- IMPORTANT: Manually review this list before proceeding!
+SELECT id, name, email, status, is_active, created_at
 FROM bancas 
-WHERE name LIKE '%Test%' 
-   OR name LIKE '%Demo%'
-   OR name LIKE '%Prueba%'
-   OR email LIKE '%@test.%'
-   OR email LIKE '%@demo.%';
+WHERE (
+    name LIKE '%Test%' 
+    OR name LIKE '%Demo%'
+    OR name LIKE '%Prueba%'
+    OR email LIKE '%@test.%'
+    OR email LIKE '%@demo.%'
+    OR email LIKE '%@example.%'
+  )
+  AND is_active = true
+ORDER BY created_at DESC;
 
--- Deactivate test bancas
+-- STEP 2: After manual review, deactivate test bancas
+-- NOTE: Adjust WHERE clause based on your naming conventions
 UPDATE bancas 
 SET is_active = false,
     status = 'inactive',
     updated_at = CURRENT_TIMESTAMP
-WHERE name LIKE '%Test%' 
-   OR name LIKE '%Demo%'
-   OR name LIKE '%Prueba%'
-   OR email LIKE '%@test.%'
-   OR email LIKE '%@demo.%';
+WHERE id IN (
+  -- Replace with actual IDs from Step 1 review
+  -- Example: 'banca-id-1', 'banca-id-2'
+  -- DO NOT run without explicit IDs!
+  SELECT id FROM bancas WHERE 1=0  -- Placeholder - replace with real IDs
+);
+
+-- Alternative: More conservative pattern matching
+-- Only matches bancas with "test" or "demo" in name AND test email domain
+UPDATE bancas 
+SET is_active = false,
+    status = 'inactive',
+    updated_at = CURRENT_TIMESTAMP
+WHERE is_active = true
+  AND (
+    (LOWER(name) LIKE '%test%' AND LOWER(email) LIKE '%@test.%')
+    OR (LOWER(name) LIKE '%demo%' AND LOWER(email) LIKE '%@demo.%')
+    OR (LOWER(name) LIKE '%prueba%' AND LOWER(email) LIKE '%@test.%')
+  );
 ```
 
 #### Option 2: Delete Test Bancas
