@@ -17,6 +17,9 @@ export interface UserProps {
   ageVerified?: boolean;
   isGuest?: boolean;
   guestExpiresAt?: Date;
+  emailVerified?: boolean;
+  provider?: string;
+  providerId?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -33,6 +36,9 @@ export class User {
   private _ageVerified: boolean;
   private _isGuest: boolean;
   private _guestExpiresAt?: Date;
+  private _emailVerified: boolean;
+  private _provider?: string;
+  private _providerId?: string;
   readonly createdAt: Date;
   private _updatedAt: Date;
 
@@ -48,6 +54,9 @@ export class User {
     this._ageVerified = props.ageVerified || false;
     this._isGuest = props.isGuest || false;
     this._guestExpiresAt = props.guestExpiresAt;
+    this._emailVerified = props.emailVerified || false;
+    this._provider = props.provider;
+    this._providerId = props.providerId;
     this.createdAt = props.createdAt || new Date();
     this._updatedAt = props.updatedAt || new Date();
   }
@@ -94,6 +103,18 @@ export class User {
 
   get guestExpiresAt(): Date | undefined {
     return this._guestExpiresAt;
+  }
+
+  get emailVerified(): boolean {
+    return this._emailVerified;
+  }
+
+  get provider(): string | undefined {
+    return this._provider;
+  }
+
+  get providerId(): string | undefined {
+    return this._providerId;
   }
 
   get age(): number | undefined {
@@ -179,6 +200,9 @@ export class User {
       ageVerified: this._ageVerified,
       isGuest: this._isGuest,
       guestExpiresAt: this._guestExpiresAt,
+      emailVerified: this._emailVerified,
+      provider: this._provider,
+      providerId: this._providerId,
       createdAt: this.createdAt,
       updatedAt: this._updatedAt,
     };

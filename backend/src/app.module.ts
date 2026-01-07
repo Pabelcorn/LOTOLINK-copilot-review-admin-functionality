@@ -25,6 +25,7 @@ import { PasswordService } from './infrastructure/security/password.service';
 
 // Services
 import { PlayService, UserService, WebhookService, BancaService, SettingsService, SucursalService, NotificationService, OtpService, GuestService, AdminSecretService } from './application/services';
+import { SocialAuthService } from './application/services/social-auth.service';
 import { EmailService } from './infrastructure/email';
 
 // Database entities
@@ -178,6 +179,7 @@ class MockCachePort {
     OtpService,
     GuestService,
     AdminSecretService,
+    SocialAuthService,
     
     // Workers
     PlayWorker,

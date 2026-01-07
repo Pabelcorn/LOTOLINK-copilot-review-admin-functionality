@@ -39,6 +39,17 @@ export class UserEntity {
   @Column('timestamp with time zone', { name: 'guest_expires_at', nullable: true })
   guestExpiresAt?: Date;
 
+  @Column('boolean', { name: 'email_verified', default: false })
+  emailVerified!: boolean;
+
+  @Column('varchar', { nullable: true })
+  @Index()
+  provider?: string;
+
+  @Column('varchar', { name: 'provider_id', nullable: true })
+  @Index()
+  providerId?: string;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt!: Date;
 
