@@ -4,6 +4,8 @@ Documento listo para enviar a una IA de programación o a tu equipo de desarroll
 
 > 🚀 **Guía de Despliegue:** Para desplegar LOTOLINK en producción (VPS, servidor, cloud), consulte [docs/DEPLOYMENT_GUIDE.md](docs/DEPLOYMENT_GUIDE.md)
 
+> 🔄 **Migración a Producción:** Para migrar de datos mock a producción, consulte [docs/PRODUCTION_MIGRATION.md](docs/PRODUCTION_MIGRATION.md)
+
 > 📋 **Evaluación Técnica:** Para un análisis detallado de por qué este stack tecnológico es óptimo y profesional, consulte [docs/TECH_EVALUATION.md](docs/TECH_EVALUATION.md)
 
 > 🏦 **Guía de Integración para Bancas:** Para integrar bancas con Lotolink (API directa o App White-Label), consulte [docs/BANCA_INTEGRATION_GUIDE.md](docs/BANCA_INTEGRATION_GUIDE.md)
