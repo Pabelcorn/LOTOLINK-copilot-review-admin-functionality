@@ -50,9 +50,16 @@ import LegalDocument from './pages/LegalDocument';
 import MyTickets from './pages/MyTickets';
 import TicketDetail from './pages/TicketDetail';
 import Notifications from './pages/Notifications';
+import AuthScreen from './pages/Auth/AuthScreen';
+import LoginScreen from './pages/Auth/LoginScreen';
+import PhoneAuthScreen from './pages/Auth/PhoneAuthScreen';
+import AgeVerificationScreen from './pages/Auth/AgeVerificationScreen';
 
 /* Components */
 import Menu from './components/Menu';
+
+/* Context */
+import { AuthProvider } from './contexts/AuthContext';
 
 /* Services */
 import { notificationsService } from './services/notifications.service';
@@ -125,46 +132,62 @@ const App: React.FC = () => {
 
   return (
     <IonApp>
-      <IonReactRouter>
-        <NavigationSetup>
-          <IonSplitPane contentId="main">
-            <Menu />
-            <IonTabs id="main">
-            <IonRouterOutlet>
-              <Route exact path="/home">
-                <Home />
-              </Route>
-              <Route exact path="/lotteries">
-                <Lotteries />
-              </Route>
-              <Route path="/play/:lotteryId">
-                <Play />
-              </Route>
-              <Route exact path="/bancas">
-                <Bancas />
-              </Route>
-              <Route exact path="/profile">
-                <Profile />
-              </Route>
-              <Route exact path="/payment-methods">
-                <PaymentMethods />
-              </Route>
-              <Route exact path="/my-tickets">
-                <MyTickets />
-              </Route>
-              <Route path="/ticket/:ticketId">
-                <TicketDetail />
-              </Route>
-              <Route exact path="/notifications">
-                <Notifications />
-              </Route>
-              <Route path="/legal/:documentType">
-                <LegalDocument />
-              </Route>
-              <Route exact path="/">
-                <Redirect to="/home" />
-              </Route>
-            </IonRouterOutlet>
+      <AuthProvider>
+        <IonReactRouter>
+          <NavigationSetup>
+            <IonSplitPane contentId="main">
+              <Menu />
+              <IonTabs id="main">
+              <IonRouterOutlet>
+                {/* Auth Routes */}
+                <Route exact path="/auth">
+                  <AuthScreen />
+                </Route>
+                <Route exact path="/auth/login">
+                  <LoginScreen />
+                </Route>
+                <Route exact path="/auth/phone">
+                  <PhoneAuthScreen />
+                </Route>
+                <Route exact path="/auth/verify-age">
+                  <AgeVerificationScreen />
+                </Route>
+                
+                {/* App Routes */}
+                <Route exact path="/home">
+                  <Home />
+                </Route>
+                <Route exact path="/lotteries">
+                  <Lotteries />
+                </Route>
+                <Route path="/play/:lotteryId">
+                  <Play />
+                </Route>
+                <Route exact path="/bancas">
+                  <Bancas />
+                </Route>
+                <Route exact path="/profile">
+                  <Profile />
+                </Route>
+                <Route exact path="/payment-methods">
+                  <PaymentMethods />
+                </Route>
+                <Route exact path="/my-tickets">
+                  <MyTickets />
+                </Route>
+                <Route path="/ticket/:ticketId">
+                  <TicketDetail />
+                </Route>
+                <Route exact path="/notifications">
+                  <Notifications />
+                </Route>
+                <Route path="/legal/:documentType">
+                  <LegalDocument />
+                </Route>
+                <Route exact path="/">
+                  <Redirect to="/auth" />
+                </Route>
+              </IonRouterOutlet>
             <IonTabBar slot="bottom" className="tab-bar-custom">
               <IonTabButton tab="home" href="/home" aria-label="Página de inicio">
                 <IonIcon aria-hidden="true" icon={home} />
@@ -191,6 +214,7 @@ const App: React.FC = () => {
         </IonSplitPane>
         </NavigationSetup>
       </IonReactRouter>
+      </AuthProvider>
     </IonApp>
   );
 };

@@ -24,14 +24,18 @@ import {
   informationCircle,
   ticket,
   notifications,
+  person,
 } from 'ionicons/icons';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useHistory } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { APP_INFO } from '../constants';
 import { notificationsService } from '../services/notifications.service';
+import { useAuth } from '../contexts/AuthContext';
 
 const Menu: React.FC = () => {
   const location = useLocation();
+  const history = useHistory();
+  const { isAuthenticated, isGuest, logout } = useAuth();
   const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
@@ -74,6 +78,19 @@ const Menu: React.FC = () => {
     { title: 'Términos y Condiciones', url: '/legal/terms-conditions', icon: document },
     { title: 'Declaración Legal', url: '/legal/legal-declaration', icon: informationCircle },
   ];
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      history.push('/auth');
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
+
+  const handleLogin = () => {
+    history.push('/auth/login');
+  };
 
   return (
     <IonMenu contentId="main" type="overlay">
@@ -166,6 +183,33 @@ const Menu: React.FC = () => {
             </IonMenuToggle>
           ))}
         </IonList>
+
+        {/* Auth Actions */}
+        {isGuest && (
+          <IonList>
+            <IonMenuToggle autoHide={false}>
+              <IonItem button detail={false} onClick={handleLogin}>
+                <IonIcon slot="start" icon={person} />
+                <IonLabel style={{ fontWeight: '600', color: 'var(--ion-color-primary)' }}>
+                  Iniciar Sesión / Registrarse
+                </IonLabel>
+              </IonItem>
+            </IonMenuToggle>
+          </IonList>
+        )}
+
+        {isAuthenticated && (
+          <IonList>
+            <IonMenuToggle autoHide={false}>
+              <IonItem button detail={false} onClick={handleLogout}>
+                <IonIcon slot="start" icon={person} />
+                <IonLabel style={{ fontWeight: '600', color: 'var(--ion-color-danger)' }}>
+                  Cerrar Sesión
+                </IonLabel>
+              </IonItem>
+            </IonMenuToggle>
+          </IonList>
+        )}
 
         {/* App Info */}
         <div style={{

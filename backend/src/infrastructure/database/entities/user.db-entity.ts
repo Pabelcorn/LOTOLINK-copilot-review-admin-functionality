@@ -26,6 +26,19 @@ export class UserEntity {
   @Column('decimal', { name: 'wallet_balance', precision: 12, scale: 2, default: 0 })
   walletBalance!: number;
 
+  @Column('date', { name: 'birth_date', nullable: true })
+  birthDate?: Date;
+
+  @Column('boolean', { name: 'age_verified', default: false })
+  ageVerified!: boolean;
+
+  @Column('boolean', { name: 'is_guest', default: false })
+  @Index()
+  isGuest!: boolean;
+
+  @Column('timestamp with time zone', { name: 'guest_expires_at', nullable: true })
+  guestExpiresAt?: Date;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt!: Date;
 

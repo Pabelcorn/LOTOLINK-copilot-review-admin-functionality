@@ -10,11 +10,14 @@ import { User } from '../services/auth.service';
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
+  isGuest: boolean;
   isLoading: boolean;
   login: (phone: string, password: string) => Promise<void>;
   register: (name: string, phone: string, password: string, email?: string) => Promise<void>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
+  startGuestMode: (deviceId?: string) => Promise<void>;
+  convertGuestToUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -27,6 +30,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  
+  // Check if user is in guest mode
+  const isGuest = user?.role === 'guest' || false;
 
   // Check authentication status on mount
   useEffect(() => {
@@ -114,14 +120,43 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  const startGuestMode = async (deviceId?: string) => {
+    setIsLoading(true);
+    try {
+      const response = await AuthService.startGuestMode(deviceId);
+      // Create a minimal guest user object
+      setUser({
+        id: 'guest-' + Date.now(),
+        phone: '',
+        name: 'Guest',
+        role: 'guest',
+      });
+      setIsAuthenticated(false); // Guest is not authenticated
+    } catch (error) {
+      console.error('Failed to start guest mode:', error);
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const convertGuestToUser = async () => {
+    // This will be called after successful registration from guest mode
+    // The register function already handles setting the user
+    setIsAuthenticated(true);
+  };
+
   const value: AuthContextType = {
     user,
     isAuthenticated,
+    isGuest,
     isLoading,
     login,
     register,
     logout,
     refreshUser,
+    startGuestMode,
+    convertGuestToUser,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -133,3 +133,103 @@ export const getToken = async (): Promise<string | null> => {
   const { value } = await Preferences.get({ key: STORAGE_KEYS.JWT_TOKEN });
   return value;
 };
+
+/**
+ * Send OTP to phone
+ */
+export const sendOtp = async (phone: string, purpose: string): Promise<{ success: boolean; expiresIn: number }> => {
+  const response = await apiClient.post<{ success: boolean; expiresIn: number }>('/auth/send-otp', {
+    phone,
+    purpose,
+  });
+  return response.data;
+};
+
+/**
+ * Verify OTP code
+ */
+export const verifyOtp = async (phone: string, code: string, purpose: string): Promise<{ success: boolean }> => {
+  const response = await apiClient.post<{ success: boolean }>('/auth/verify-otp', {
+    phone,
+    code,
+    purpose,
+  });
+  return response.data;
+};
+
+/**
+ * Verify age (18+)
+ */
+export const verifyAge = async (
+  userId: string,
+  birthDate: string,
+  acceptTerms: boolean,
+  acceptPrivacy: boolean,
+): Promise<{ success: boolean; ageVerified: boolean }> => {
+  const response = await apiClient.post<{ success: boolean; ageVerified: boolean }>('/auth/verify-age', {
+    userId,
+    birthDate,
+    acceptTerms,
+    acceptPrivacy,
+  });
+  return response.data;
+};
+
+/**
+ * Start guest mode
+ */
+export const startGuestMode = async (deviceId?: string): Promise<{
+  sessionToken: string;
+  accessToken: string;
+  expiresIn: number;
+}> => {
+  const response = await apiClient.post<{
+    sessionToken: string;
+    accessToken: string;
+    expiresIn: number;
+  }>('/auth/guest', {
+    deviceId,
+  });
+
+  // Store guest token
+  await Preferences.set({
+    key: STORAGE_KEYS.JWT_TOKEN,
+    value: response.data.accessToken,
+  });
+
+  return response.data;
+};
+
+/**
+ * Create guest session (alias for startGuestMode)
+ */
+export const createGuestSession = startGuestMode;
+
+/**
+ * Validate admin secret code
+ */
+export const validateAdminSecret = async (
+  secretCode: string,
+  username: string,
+  password: string,
+): Promise<{ success: boolean; accessToken?: string; accessLevel?: string }> => {
+  const response = await apiClient.post<{
+    success: boolean;
+    accessToken?: string;
+    accessLevel?: string;
+  }>('/auth/admin-secret', {
+    secretCode,
+    username,
+    password,
+  });
+
+  if (response.data.accessToken) {
+    // Store admin token
+    await Preferences.set({
+      key: STORAGE_KEYS.JWT_TOKEN,
+      value: response.data.accessToken,
+    });
+  }
+
+  return response.data;
+};

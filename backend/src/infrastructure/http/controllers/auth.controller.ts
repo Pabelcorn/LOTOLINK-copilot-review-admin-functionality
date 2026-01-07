@@ -5,13 +5,28 @@ import {
   HttpCode,
   HttpStatus,
   UnauthorizedException,
+  BadRequestException,
+  Req,
 } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { Request } from 'express';
 import { UserService } from '../../../application/services/user.service';
+import { OtpService } from '../../../application/services/otp.service';
+import { GuestService } from '../../../application/services/guest.service';
+import { AdminSecretService } from '../../../application/services/admin-secret.service';
 import { PasswordService } from '../../security/password.service';
-import { RegisterDto, LoginDto, AuthResponseDto } from '../../../application/dtos/auth.dto';
+import { 
+  RegisterDto, 
+  LoginDto, 
+  AuthResponseDto,
+  SendOtpDto,
+  VerifyOtpDto,
+  VerifyAgeDto,
+  AdminSecretDto,
+  GuestSessionDto,
+} from '../../../application/dtos/auth.dto';
 import { UserRole } from '../../../domain/entities/user.entity';
 
 @Controller('api/v1/auth')
@@ -21,6 +36,9 @@ export class AuthController {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
     private readonly passwordService: PasswordService,
+    private readonly otpService: OtpService,
+    private readonly guestService: GuestService,
+    private readonly adminSecretService: AdminSecretService,
   ) {}
 
   @Throttle({ default: { limit: 5, ttl: 60000 } }) // 5 attempts per minute
@@ -137,5 +155,108 @@ export class AuthController {
     } catch {
       throw new UnauthorizedException('Invalid refresh token');
     }
+  }
+
+  @Throttle({ default: { limit: 3, ttl: 60000 } }) // 3 attempts per minute
+  @Post('send-otp')
+  @HttpCode(HttpStatus.OK)
+  async sendOtp(@Body() sendOtpDto: SendOtpDto): Promise<{ success: boolean; expiresIn: number }> {
+    return await this.otpService.sendOtp(sendOtpDto.phone, sendOtpDto.purpose);
+  }
+
+  @Throttle({ default: { limit: 5, ttl: 60000 } }) // 5 attempts per minute
+  @Post('verify-otp')
+  @HttpCode(HttpStatus.OK)
+  async verifyOtp(@Body() verifyOtpDto: VerifyOtpDto): Promise<{ success: boolean }> {
+    const success = await this.otpService.verifyOtp(
+      verifyOtpDto.phone,
+      verifyOtpDto.code,
+      verifyOtpDto.purpose,
+    );
+
+    if (!success) {
+      throw new UnauthorizedException('Invalid or expired OTP code');
+    }
+
+    return { success };
+  }
+
+  @Post('verify-age')
+  @HttpCode(HttpStatus.OK)
+  async verifyAge(
+    @Body() verifyAgeDto: VerifyAgeDto,
+  ): Promise<{ success: boolean; ageVerified: boolean }> {
+    if (!verifyAgeDto.acceptTerms || !verifyAgeDto.acceptPrivacy) {
+      throw new BadRequestException('You must accept terms and privacy policy');
+    }
+
+    const user = await this.userService.getUserById(verifyAgeDto.userId);
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    const birthDate = new Date(verifyAgeDto.birthDate);
+    const ageVerified = user.verifyAge(birthDate);
+
+    if (!ageVerified) {
+      throw new BadRequestException('You must be 18 years or older to use this platform');
+    }
+
+    await this.userService.updateUser(verifyAgeDto.userId, {
+      birthDate,
+      ageVerified: true,
+    });
+
+    return { success: true, ageVerified: true };
+  }
+
+  @Post('guest')
+  @HttpCode(HttpStatus.CREATED)
+  async createGuestSession(@Body() guestSessionDto: GuestSessionDto): Promise<{
+    sessionToken: string;
+    accessToken: string;
+    expiresIn: number;
+  }> {
+    return await this.guestService.createGuestSession(
+      guestSessionDto.deviceId,
+      guestSessionDto.deviceInfo,
+    );
+  }
+
+  @Throttle({ default: { limit: 3, ttl: 3600000 } }) // 3 attempts per hour
+  @Post('admin-secret')
+  @HttpCode(HttpStatus.OK)
+  async validateAdminSecret(
+    @Body() adminSecretDto: AdminSecretDto,
+    @Req() request: Request,
+  ): Promise<{ success: boolean; accessToken?: string; accessLevel?: string }> {
+    const ipAddress = (request.headers['x-forwarded-for'] as string) || request.ip;
+    const userAgent = request.headers['user-agent'];
+
+    const result = await this.adminSecretService.processAdminAccess({
+      secretCode: adminSecretDto.secretCode,
+      username: adminSecretDto.username,
+      password: adminSecretDto.password,
+      ipAddress,
+      userAgent,
+    });
+
+    if (!result.success) {
+      throw new UnauthorizedException(result.errorMessage || 'Invalid credentials');
+    }
+
+    // Generate admin JWT token
+    const accessToken = this.jwtService.sign({
+      sub: result.userId,
+      role: 'admin',
+      accessLevel: result.accessLevel,
+      isAdmin: true,
+    });
+
+    return {
+      success: true,
+      accessToken,
+      accessLevel: result.accessLevel,
+    };
   }
 }
