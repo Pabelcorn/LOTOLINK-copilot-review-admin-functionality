@@ -52,6 +52,13 @@ export class TypeOrmUserRepository implements UserRepository {
     entity.password = user.password;
     entity.role = user.role;
     entity.walletBalance = user.walletBalance;
+    entity.birthDate = user.birthDate;
+    entity.ageVerified = user.ageVerified;
+    entity.isGuest = user.isGuest;
+    entity.guestExpiresAt = user.guestExpiresAt;
+    entity.emailVerified = user.emailVerified;
+    entity.provider = user.provider;
+    entity.providerId = user.providerId;
     entity.createdAt = user.createdAt;
     entity.updatedAt = user.updatedAt;
     return entity;
@@ -66,6 +73,13 @@ export class TypeOrmUserRepository implements UserRepository {
       password: entity.password,
       role: entity.role as any,
       walletBalance: Number(entity.walletBalance),
+      birthDate: entity.birthDate,
+      ageVerified: entity.ageVerified,
+      isGuest: entity.isGuest,
+      guestExpiresAt: entity.guestExpiresAt,
+      emailVerified: entity.emailVerified,
+      provider: entity.provider,
+      providerId: entity.providerId,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
     });

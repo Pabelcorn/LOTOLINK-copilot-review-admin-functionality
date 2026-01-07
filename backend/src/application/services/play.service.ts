@@ -1,10 +1,11 @@
-import { Injectable, Inject, NotFoundException } from '@nestjs/common';
+import { Injectable, Inject, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { Play, PlayPayment } from '../../domain/entities/play.entity';
 import { Banca } from '../../domain/entities/banca.entity';
 import { Sucursal } from '../../domain/entities/sucursal.entity';
 import { PlayRepository, PLAY_REPOSITORY } from '../../domain/repositories/play.repository';
 import { BancaRepository, BANCA_REPOSITORY } from '../../domain/repositories/banca.repository';
 import { SucursalRepository, SUCURSAL_REPOSITORY } from '../../domain/repositories/sucursal.repository';
+import { UserRepository, USER_REPOSITORY } from '../../domain/repositories/user.repository';
 import { PlayStatus } from '../../domain/value-objects';
 import { CreatePlayDto, PlayResponseDto, GetPlayDto } from '../dtos/play.dto';
 import { EventPublisher, EVENT_PUBLISHER } from '../../ports/outgoing/event-publisher.port';
@@ -19,6 +20,8 @@ export class PlayService {
     private readonly bancaRepository: BancaRepository,
     @Inject(SUCURSAL_REPOSITORY)
     private readonly sucursalRepository: SucursalRepository,
+    @Inject(USER_REPOSITORY)
+    private readonly userRepository: UserRepository,
     @Inject(EVENT_PUBLISHER)
     private readonly eventPublisher: EventPublisher,
   ) {}
@@ -28,6 +31,22 @@ export class PlayService {
     const existingPlay = await this.playRepository.findByRequestId(dto.requestId);
     if (existingPlay) {
       return this.toPlayResponse(existingPlay);
+    }
+
+    // Verify user age before allowing ticket purchase
+    const user = await this.userRepository.findById(dto.userId);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    // Check if user is a guest
+    if (user.isGuest) {
+      throw new ForbiddenException('Guest users must register to save tickets. Please create an account to continue.');
+    }
+
+    // Verify age requirement (18+)
+    if (!user.ageVerified) {
+      throw new ForbiddenException('Age verification required. You must be 18 years or older to purchase lottery tickets.');
     }
 
     const payment: PlayPayment = {

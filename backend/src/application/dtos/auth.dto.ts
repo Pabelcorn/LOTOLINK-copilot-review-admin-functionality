@@ -78,6 +78,51 @@ export class GuestSessionDto {
   deviceInfo?: Record<string, unknown>;
 }
 
+export class GoogleAuthDto {
+  @IsString()
+  idToken!: string;
+
+  @IsOptional()
+  @IsString()
+  accessToken?: string;
+}
+
+export class AppleAuthDto {
+  @IsString()
+  identityToken!: string;
+
+  @IsOptional()
+  @IsString()
+  authorizationCode?: string;
+
+  @IsOptional()
+  @IsString()
+  user?: string; // JSON string with user info on first sign-in
+}
+
+export class SocialAuthRegisterDto {
+  @IsString()
+  provider!: 'google' | 'apple';
+
+  @IsString()
+  providerId!: string;
+
+  @IsString()
+  email!: string;
+
+  @IsOptional()
+  @IsString()
+  name?: string;
+
+  @IsOptional()
+  @IsString()
+  phone?: string;
+
+  @IsOptional()
+  @IsString()
+  photoUrl?: string;
+}
+
 export class AuthResponseDto {
   user!: {
     id: string;

@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auth Modal - LotoLink</title>
+  <!-- This is an embeddable auth modal component for index.html -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  
+  <!-- Google Sign-In -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  
+  <!-- Apple Sign-In -->
+  <script type="text/javascript" src="https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js"></script>
+  
+  <style>
+    .auth-modal-overlay {
+      backdrop-filter: blur(8px);
+      background: rgba(0, 0, 0, 0.5);
+    }
+    
+    .auth-modal-content {
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    
+    .social-btn {
+      transition: all 0.2s ease;
+    }
+    
+    .social-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    .input-field {
+      transition: all 0.2s ease;
+    }
+    
+    .input-field:focus {
+      transform: scale(1.01);
+      box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.1);
+    }
+  </style>
+</head>
+<body>
+
+<!-- Auth Modal Component (to be embedded) -->
+<template id="auth-modal-template">
+  <div id="authModal" class="auth-modal-overlay fixed inset-0 z-50 hidden items-center justify-center p-4">
+    <div class="auth-modal-content bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl">
+      <!-- Close Button -->
+      <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+        <i class="fas fa-times text-xl"></i>
+      </button>
+      
+      <!-- Modal Content -->
+      <div id="authModalContent">
+        <!-- Login/Register Selection -->
+        <div id="authSelection" class="text-center">
+          <img src="./lotolink-logo.png" alt="LotoLink" class="h-16 mx-auto mb-4">
+          <h2 class="text-2xl font-bold mb-2">Bienvenido a LotoLink</h2>
+          <p class="text-gray-600 mb-6">La mejor plataforma de loterías</p>
+          
+          <!-- Social Auth Buttons -->
+          <div class="space-y-3 mb-4">
+            <button onclick="signInWithGoogle()" class="social-btn w-full flex items-center justify-center gap-3 px-4 py-3 border-2 border-gray-200 rounded-full hover:border-blue-500 hover:bg-blue-50">
+              <svg width="20" height="20" viewBox="0 0 20 20">
+                <path d="M19.6 10.23c0-.82-.1-1.42-.25-2.05H10v3.72h5.5c-.15.96-.74 2.31-2.04 3.22v2.45h3.16c1.89-1.73 2.98-4.3 2.98-7.34z" fill="#4285F4"/>
+                <path d="M13.46 15.13c-.83.59-1.96 1-3.46 1-2.64 0-4.88-1.74-5.68-4.15H1.07v2.52C2.72 17.75 6.09 20 10 20c2.7 0 4.96-.89 6.62-2.42l-3.16-2.45z" fill="#34A853"/>
+                <path d="M3.99 10c0-.69.12-1.35.32-1.97V5.51H1.07A9.973 9.973 0 000 10c0 1.61.39 3.14 1.07 4.49l3.24-2.52c-.2-.62-.32-1.28-.32-1.97z" fill="#FBBC05"/>
+                <path d="M10 3.88c1.88 0 3.13.81 3.85 1.48l2.84-2.76C14.96.99 12.7 0 10 0 6.09 0 2.72 2.25 1.07 5.51l3.24 2.52C5.12 5.62 7.36 3.88 10 3.88z" fill="#EA4335"/>
+              </svg>
+              <span class="font-medium">Continuar con Google</span>
+            </button>
+            
+            <button onclick="signInWithApple()" class="social-btn w-full flex items-center justify-center gap-3 px-4 py-3 bg-black text-white rounded-full hover:bg-gray-900">
+              <i class="fab fa-apple text-xl"></i>
+              <span class="font-medium">Continuar con Apple</span>
+            </button>
+          </div>
+          
+          <div class="relative my-6">
+            <div class="absolute inset-0 flex items-center">
+              <div class="w-full border-t border-gray-300"></div>
+            </div>
+            <div class="relative flex justify-center text-sm">
+              <span class="px-2 bg-white text-gray-500">o</span>
+            </div>
+          </div>
+          
+          <!-- Phone/Email Options -->
+          <div class="space-y-3">
+            <button onclick="showPhoneAuth()" class="w-full flex items-center justify-center gap-3 px-4 py-3 bg-blue-600 text-white rounded-full hover:bg-blue-700">
+              <i class="fas fa-mobile-alt"></i>
+              <span class="font-medium">Continuar con Teléfono</span>
+            </button>
+            
+            <button onclick="showEmailAuth()" class="w-full flex items-center justify-center gap-3 px-4 py-3 border-2 border-blue-600 text-blue-600 rounded-full hover:bg-blue-50">
+              <i class="fas fa-envelope"></i>
+              <span class="font-medium">Continuar con Email</span>
+            </button>
+          </div>
+          
+          <div class="mt-6 text-center">
+            <button onclick="continueAsGuest()" class="text-gray-600 hover:text-blue-600 font-medium">
+              Explorar como invitado →
+            </button>
+          </div>
+        </div>
+        
+        <!-- Phone Auth Form -->
+        <div id="phoneAuthForm" class="hidden">
+          <button onclick="showAuthSelection()" class="mb-4 text-gray-600 hover:text-blue-600">
+            <i class="fas fa-arrow-left mr-2"></i> Volver
+          </button>
+          <h2 class="text-2xl font-bold mb-2">Iniciar con Teléfono</h2>
+          <p class="text-gray-600 mb-6">Te enviaremos un código de verificación</p>
+          
+          <form id="phoneForm" onsubmit="sendOTP(event)" class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Número de teléfono</label>
+              <input type="tel" id="phoneNumber" placeholder="+1 (809) 555-1234" 
+                     class="input-field w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none"
+                     required>
+            </div>
+            <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-full font-medium hover:bg-blue-700">
+              Enviar Código
+            </button>
+          </form>
+        </div>
+        
+        <!-- OTP Verification Form -->
+        <div id="otpVerificationForm" class="hidden">
+          <button onclick="showPhoneAuth()" class="mb-4 text-gray-600 hover:text-blue-600">
+            <i class="fas fa-arrow-left mr-2"></i> Volver
+          </button>
+          <h2 class="text-2xl font-bold mb-2">Verificar Código</h2>
+          <p class="text-gray-600 mb-6">Ingresa el código enviado a <span id="sentToPhone" class="font-medium"></span></p>
+          
+          <form id="otpForm" onsubmit="verifyOTP(event)" class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Código de 6 dígitos</label>
+              <input type="text" id="otpCode" placeholder="123456" maxlength="6" 
+                     class="input-field w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none text-center text-2xl font-mono"
+                     required>
+            </div>
+            <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-full font-medium hover:bg-blue-700">
+              Verificar
+            </button>
+            <button type="button" onclick="sendOTP(event, true)" class="w-full text-blue-600 hover:underline">
+              Reenviar código
+            </button>
+          </form>
+        </div>
+        
+        <!-- Email Auth Form -->
+        <div id="emailAuthForm" class="hidden">
+          <button onclick="showAuthSelection()" class="mb-4 text-gray-600 hover:text-blue-600">
+            <i class="fas fa-arrow-left mr-2"></i> Volver
+          </button>
+          <h2 class="text-2xl font-bold mb-2">Registrarse con Email</h2>
+          <p class="text-gray-600 mb-6">Crea tu cuenta en segundos</p>
+          
+          <form id="emailForm" onsubmit="registerWithEmail(event)" class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Nombre completo</label>
+              <input type="text" id="fullName" placeholder="Juan Pérez" 
+                     class="input-field w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none"
+                     required>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+              <input type="email" id="emailAddress" placeholder="tu@email.com" 
+                     class="input-field w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none"
+                     required>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Teléfono</label>
+              <input type="tel" id="emailPhone" placeholder="+1 (809) 555-1234" 
+                     class="input-field w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none"
+                     required>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Contraseña</label>
+              <input type="password" id="password" placeholder="Mínimo 8 caracteres" 
+                     class="input-field w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none"
+                     minlength="8" required>
+            </div>
+            <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-full font-medium hover:bg-blue-700">
+              Crear Cuenta
+            </button>
+          </form>
+        </div>
+        
+        <!-- Age Verification Form -->
+        <div id="ageVerificationForm" class="hidden">
+          <h2 class="text-2xl font-bold mb-2">Verificación de Edad</h2>
+          <p class="text-gray-600 mb-6">Debes tener 18 años o más para usar LotoLink</p>
+          
+          <form id="ageForm" onsubmit="verifyAge(event)" class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Fecha de nacimiento</label>
+              <input type="date" id="birthDate" 
+                     class="input-field w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none"
+                     required>
+            </div>
+            <div class="space-y-2">
+              <label class="flex items-start gap-2">
+                <input type="checkbox" id="acceptTerms" required class="mt-1">
+                <span class="text-sm text-gray-600">Acepto los <a href="#" class="text-blue-600 hover:underline">términos y condiciones</a></span>
+              </label>
+              <label class="flex items-start gap-2">
+                <input type="checkbox" id="acceptPrivacy" required class="mt-1">
+                <span class="text-sm text-gray-600">Acepto la <a href="#" class="text-blue-600 hover:underline">política de privacidad</a></span>
+              </label>
+            </div>
+            <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-full font-medium hover:bg-blue-700">
+              Verificar y Continuar
+            </button>
+          </form>
+        </div>
+        
+        <!-- Admin Secret Form -->
+        <div id="adminSecretForm" class="hidden">
+          <button onclick="showAuthSelection()" class="mb-4 text-gray-600 hover:text-blue-600">
+            <i class="fas fa-arrow-left mr-2"></i> Volver
+          </button>
+          <h2 class="text-2xl font-bold mb-2">Acceso Administrador</h2>
+          <p class="text-gray-600 mb-6">Ingresa tus credenciales de administrador</p>
+          
+          <form id="adminForm" onsubmit="validateAdminAccess(event)" class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Código Secreto</label>
+              <input type="password" id="secretCode" placeholder="LOT20041227" 
+                     class="input-field w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none"
+                     required>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Usuario</label>
+              <input type="text" id="adminUsername" placeholder="admin" 
+                     class="input-field w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none"
+                     required>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Contraseña</label>
+              <input type="password" id="adminPassword" placeholder="••••••••" 
+                     class="input-field w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none"
+                     required>
+            </div>
+            <button type="submit" class="w-full bg-red-600 text-white py-3 rounded-full font-medium hover:bg-red-700">
+              <i class="fas fa-shield-alt mr-2"></i> Acceder
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+  // Configuration
+  // IMPORTANT: Replace these with your actual OAuth client IDs before deployment
+  // Get credentials from:
+  // - Google: https://console.cloud.google.com
+  // - Apple: https://developer.apple.com
+  const API_BASE_URL = getApiBaseUrl();
+  const GOOGLE_CLIENT_ID = getConfigValue('GOOGLE_CLIENT_ID', 'REPLACE_WITH_YOUR_GOOGLE_CLIENT_ID');
+  const APPLE_CLIENT_ID = getConfigValue('APPLE_CLIENT_ID', 'REPLACE_WITH_YOUR_APPLE_CLIENT_ID');
+  
+  /**
+   * Get API base URL from configuration
+   * Priority: 1. window.CONFIG 2. Environment 3. Default
+   */
+  function getApiBaseUrl() {
+    // Check if configuration is injected
+    if (typeof window.CONFIG !== 'undefined' && window.CONFIG.API_BASE_URL) {
+      return window.CONFIG.API_BASE_URL;
+    }
+    
+    // Fallback to default (for development)
+    return 'http://localhost:3000/api/v1';
+  }
+  
+  /**
+   * Get configuration value safely
+   */
+  function getConfigValue(key, defaultValue) {
+    if (typeof window.CONFIG !== 'undefined' && window.CONFIG[key]) {
+      return window.CONFIG[key];
+    }
+    return defaultValue;
+  }
+  
+  let currentPhone = '';
+  let currentUserId = '';
+  
+  // Modal Control
+  function openAuthModal() {
+    document.getElementById('authModal').classList.remove('hidden');
+    document.getElementById('authModal').classList.add('flex');
+    showAuthSelection();
+  }
+  
+  function closeAuthModal() {
+    document.getElementById('authModal').classList.add('hidden');
+    document.getElementById('authModal').classList.remove('flex');
+  }
+  
+  // Navigation
+  function showAuthSelection() {
+    hideAllForms();
+    document.getElementById('authSelection').classList.remove('hidden');
+  }
+  
+  function showPhoneAuth() {
+    hideAllForms();
+    document.getElementById('phoneAuthForm').classList.remove('hidden');
+  }
+  
+  function showEmailAuth() {
+    hideAllForms();
+    document.getElementById('emailAuthForm').classList.remove('hidden');
+  }
+  
+  function showOTPVerification() {
+    hideAllForms();
+    document.getElementById('otpVerificationForm').classList.remove('hidden');
+  }
+  
+  function showAgeVerification() {
+    hideAllForms();
+    document.getElementById('ageVerificationForm').classList.remove('hidden');
+  }
+  
+  function showAdminForm() {
+    hideAllForms();
+    document.getElementById('adminSecretForm').classList.remove('hidden');
+  }
+  
+  function hideAllForms() {
+    document.getElementById('authSelection').classList.add('hidden');
+    document.getElementById('phoneAuthForm').classList.add('hidden');
+    document.getElementById('otpVerificationForm').classList.add('hidden');
+    document.getElementById('emailAuthForm').classList.add('hidden');
+    document.getElementById('ageVerificationForm').classList.add('hidden');
+    document.getElementById('adminSecretForm').classList.add('hidden');
+  }
+  
+  // Guest Mode
+  async function continueAsGuest() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/guest`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          deviceId: generateDeviceId()
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        localStorage.setItem('ll_token', data.accessToken);
+        localStorage.setItem('ll_guest', 'true');
+        closeAuthModal();
+        alert('Continúa explorando. Recuerda registrarte para guardar tus tickets.');
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error al iniciar modo invitado');
+    }
+  }
+  
+  // Phone OTP Auth
+  async function sendOTP(event, resend = false) {
+    if (event) event.preventDefault();
+    
+    const phone = resend ? currentPhone : document.getElementById('phoneNumber').value;
+    currentPhone = phone;
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/send-otp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          phone: phone,
+          purpose: 'login'
+        })
+      });
+      
+      if (response.ok) {
+        document.getElementById('sentToPhone').textContent = phone;
+        showOTPVerification();
+      } else {
+        alert('Error al enviar código');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error de conexión');
+    }
+  }
+  
+  async function verifyOTP(event) {
+    event.preventDefault();
+    
+    const code = document.getElementById('otpCode').value;
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/verify-otp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          phone: currentPhone,
+          code: code,
+          purpose: 'login'
+        })
+      });
+      
+      if (response.ok) {
+        // Try to login/register
+        await loginWithPhone();
+      } else {
+        alert('Código inválido o expirado');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error de verificación');
+    }
+  }
+  
+  async function loginWithPhone() {
+    // Check if user exists, if not, will need to register
+    // For now, simplified flow
+    showAgeVerification();
+  }
+  
+  // Email Registration
+  async function registerWithEmail(event) {
+    event.preventDefault();
+    
+    const name = document.getElementById('fullName').value;
+    const email = document.getElementById('emailAddress').value;
+    const phone = document.getElementById('emailPhone').value;
+    const password = document.getElementById('password').value;
+    
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      alert('Email inválido');
+      return;
+    }
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name,
+          email,
+          phone,
+          password
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        currentUserId = data.user.id;
+        showAgeVerification();
+      } else {
+        alert(data.message || 'Error al registrar');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error de conexión');
+    }
+  }
+  
+  // Age Verification
+  async function verifyAge(event) {
+    event.preventDefault();
+    
+    const birthDate = document.getElementById('birthDate').value;
+    const acceptTerms = document.getElementById('acceptTerms').checked;
+    const acceptPrivacy = document.getElementById('acceptPrivacy').checked;
+    
+    if (!acceptTerms || !acceptPrivacy) {
+      alert('Debes aceptar los términos y condiciones');
+      return;
+    }
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/verify-age`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: currentUserId,
+          birthDate,
+          acceptTerms,
+          acceptPrivacy
+        })
+      });
+      
+      if (response.ok) {
+        localStorage.setItem('ll_age_verified', 'true');
+        closeAuthModal();
+        alert('¡Verificación completada! Ya puedes jugar.');
+        window.location.reload();
+      } else {
+        alert('Debes tener 18 años o más');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error de verificación');
+    }
+  }
+  
+  // Google Sign-In
+  async function signInWithGoogle() {
+    // Initialize Google Sign-In
+    google.accounts.id.initialize({
+      client_id: GOOGLE_CLIENT_ID,
+      callback: handleGoogleCallback
+    });
+    
+    google.accounts.id.prompt();
+  }
+  
+  async function handleGoogleCallback(response) {
+    try {
+      const apiResponse = await fetch(`${API_BASE_URL}/auth/google`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          idToken: response.credential
+        })
+      });
+      
+      const data = await apiResponse.json();
+      
+      if (apiResponse.ok) {
+        localStorage.setItem('ll_token', data.accessToken);
+        localStorage.setItem('ll_user', JSON.stringify(data.user));
+        currentUserId = data.user.id;
+        
+        if (!data.user.ageVerified) {
+          showAgeVerification();
+        } else {
+          closeAuthModal();
+          window.location.reload();
+        }
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error de autenticación con Google');
+    }
+  }
+  
+  // Apple Sign-In
+  async function signInWithApple() {
+    try {
+      AppleID.auth.init({
+        clientId: APPLE_CLIENT_ID,
+        scope: 'name email',
+        redirectURI: window.location.origin,
+        usePopup: true
+      });
+      
+      const data = await AppleID.auth.signIn();
+      
+      const response = await fetch(`${API_BASE_URL}/auth/apple`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          identityToken: data.authorization.id_token,
+          authorizationCode: data.authorization.code,
+          user: data.user ? JSON.stringify(data.user) : undefined
+        })
+      });
+      
+      const result = await response.json();
+      
+      if (response.ok) {
+        localStorage.setItem('ll_token', result.accessToken);
+        localStorage.setItem('ll_user', JSON.stringify(result.user));
+        currentUserId = result.user.id;
+        
+        if (!result.user.ageVerified) {
+          showAgeVerification();
+        } else {
+          closeAuthModal();
+          window.location.reload();
+        }
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error de autenticación con Apple');
+    }
+  }
+  
+  // Admin Access
+  async function validateAdminAccess(event) {
+    event.preventDefault();
+    
+    const secretCode = document.getElementById('secretCode').value;
+    const username = document.getElementById('adminUsername').value;
+    const password = document.getElementById('adminPassword').value;
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/admin-secret`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          secretCode,
+          username,
+          password
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        localStorage.setItem('ll_token', data.accessToken);
+        localStorage.setItem('ll_admin', 'true');
+        localStorage.setItem('ll_access_level', data.accessLevel);
+        closeAuthModal();
+        alert('Acceso de administrador concedido');
+        window.location.href = '/admin-panel.html';
+      } else {
+        alert('Credenciales inválidas');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error de autenticación');
+    }
+  }
+  
+  // Utilities
+  function generateDeviceId() {
+    return 'device_' + Math.random().toString(36).substr(2, 9);
+  }
+  
+  // Initialize on load
+  document.addEventListener('DOMContentLoaded', () => {
+    // Check if user is logged in
+    const token = localStorage.getItem('ll_token');
+    if (!token) {
+      // Show auth modal after a delay
+      setTimeout(openAuthModal, 1000);
+    }
+  });
+  
+  // Secret admin code trigger (press Ctrl+Shift+A)
+  document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+      openAuthModal();
+      showAdminForm();
+    }
+  });
+</script>
+
+</body>
+</html>

@@ -26,8 +26,11 @@ import {
   VerifyAgeDto,
   AdminSecretDto,
   GuestSessionDto,
+  GoogleAuthDto,
+  AppleAuthDto,
 } from '../../../application/dtos/auth.dto';
 import { UserRole } from '../../../domain/entities/user.entity';
+import { SocialAuthService } from '../../../application/services/social-auth.service';
 
 @Controller('api/v1/auth')
 export class AuthController {
@@ -39,6 +42,7 @@ export class AuthController {
     private readonly otpService: OtpService,
     private readonly guestService: GuestService,
     private readonly adminSecretService: AdminSecretService,
+    private readonly socialAuthService: SocialAuthService,
   ) {}
 
   @Throttle({ default: { limit: 5, ttl: 60000 } }) // 5 attempts per minute
@@ -258,5 +262,195 @@ export class AuthController {
       accessToken,
       accessLevel: result.accessLevel,
     };
+  }
+
+  @Throttle({ default: { limit: 10, ttl: 60000 } }) // 10 attempts per minute
+  @Post('google')
+  @HttpCode(HttpStatus.OK)
+  async authenticateWithGoogle(@Body() googleAuthDto: GoogleAuthDto): Promise<AuthResponseDto> {
+    // Verify Google token
+    const socialAuthResult = await this.socialAuthService.verifyGoogleToken(googleAuthDto.idToken);
+
+    // Check if user already exists with this email or Google ID
+    let user = await this.userService.getUserByEmail(socialAuthResult.email);
+
+    if (!user) {
+      // Create new user with Google account
+      const placeholderPhone = this.socialAuthService.generatePlaceholderPhone(socialAuthResult.providerId);
+      
+      user = await this.userService.createUser({
+        email: socialAuthResult.email,
+        phone: placeholderPhone,
+        name: socialAuthResult.name,
+        role: UserRole.USER,
+        emailVerified: socialAuthResult.emailVerified,
+        provider: socialAuthResult.provider,
+        providerId: socialAuthResult.providerId,
+      });
+    }
+
+    // Generate JWT tokens
+    const payload = {
+      sub: user.id,
+      phone: user.phone,
+      email: user.email,
+      role: user.role,
+    };
+
+    const accessToken = this.jwtService.sign(payload);
+    const refreshToken = this.jwtService.sign(payload, {
+      expiresIn: this.configService.get<string>('JWT_REFRESH_EXPIRES_IN', '7d'),
+    });
+
+    return {
+      user: {
+        id: user.id,
+        phone: user.phone,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+        isAdmin: user.isAdmin,
+      },
+      accessToken,
+      refreshToken,
+      expiresIn: 3600,
+    };
+  }
+
+  @Throttle({ default: { limit: 10, ttl: 60000 } }) // 10 attempts per minute
+  @Post('apple')
+  @HttpCode(HttpStatus.OK)
+  async authenticateWithApple(@Body() appleAuthDto: AppleAuthDto): Promise<AuthResponseDto> {
+    // Verify Apple token
+    const socialAuthResult = await this.socialAuthService.verifyAppleToken(appleAuthDto.identityToken);
+
+    // Parse user info if provided (only on first sign-in)
+    let userName: string | undefined;
+    if (appleAuthDto.user) {
+      try {
+        const userInfo = JSON.parse(appleAuthDto.user);
+        userName = userInfo.name ? `${userInfo.name.firstName || ''} ${userInfo.name.lastName || ''}`.trim() : undefined;
+      } catch {
+        // Ignore parse errors
+      }
+    }
+
+    // Check if user already exists with this email or Apple ID
+    let user = await this.userService.getUserByEmail(socialAuthResult.email);
+
+    if (!user) {
+      // Create new user with Apple account
+      const placeholderPhone = this.socialAuthService.generatePlaceholderPhone(socialAuthResult.providerId);
+      
+      user = await this.userService.createUser({
+        email: socialAuthResult.email,
+        phone: placeholderPhone,
+        name: userName || socialAuthResult.name,
+        role: UserRole.USER,
+        emailVerified: socialAuthResult.emailVerified,
+        provider: socialAuthResult.provider,
+        providerId: socialAuthResult.providerId,
+      });
+    }
+
+    // Generate JWT tokens
+    const payload = {
+      sub: user.id,
+      phone: user.phone,
+      email: user.email,
+      role: user.role,
+    };
+
+    const accessToken = this.jwtService.sign(payload);
+    const refreshToken = this.jwtService.sign(payload, {
+      expiresIn: this.configService.get<string>('JWT_REFRESH_EXPIRES_IN', '7d'),
+    });
+
+    return {
+      user: {
+        id: user.id,
+        phone: user.phone,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+        isAdmin: user.isAdmin,
+      },
+      accessToken,
+      refreshToken,
+      expiresIn: 3600,
+    };
+  }
+
+  @Post('guest/convert')
+  @HttpCode(HttpStatus.OK)
+  async convertGuestToUser(
+    @Body() registerDto: RegisterDto,
+    @Req() request: Request,
+  ): Promise<AuthResponseDto> {
+    // Extract guest session token from Authorization header
+    const authHeader = request.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      throw new UnauthorizedException('Guest session token required');
+    }
+
+    const guestToken = authHeader.substring(7);
+    
+    // Verify guest token
+    try {
+      const payload = this.jwtService.verify(guestToken);
+      if (!payload.isGuest || !payload.sessionToken) {
+        throw new UnauthorizedException('Invalid guest session');
+      }
+
+      // Verify guest session exists and is valid
+      const isValid = await this.guestService.isValidGuestSession(payload.sessionToken);
+      if (!isValid) {
+        throw new UnauthorizedException('Guest session expired or invalid');
+      }
+
+      // Hash the password
+      const hashedPassword = await this.passwordService.hashPassword(registerDto.password);
+
+      // Create full user account
+      const user = await this.userService.createUser({
+        phone: registerDto.phone,
+        email: registerDto.email,
+        name: registerDto.name,
+        password: hashedPassword,
+        role: UserRole.USER,
+      });
+
+      // Link guest session to new user
+      await this.guestService.convertGuestToUser(payload.sessionToken, user.id);
+
+      // Generate new JWT tokens for the full user
+      const newPayload = {
+        sub: user.id,
+        phone: user.phone,
+        email: user.email,
+        role: user.role,
+      };
+
+      const accessToken = this.jwtService.sign(newPayload);
+      const refreshToken = this.jwtService.sign(newPayload, {
+        expiresIn: this.configService.get<string>('JWT_REFRESH_EXPIRES_IN', '7d'),
+      });
+
+      return {
+        user: {
+          id: user.id,
+          phone: user.phone,
+          email: user.email,
+          name: user.name,
+          role: user.role,
+          isAdmin: user.isAdmin,
+        },
+        accessToken,
+        refreshToken,
+        expiresIn: 3600,
+      };
+    } catch (error) {
+      throw new UnauthorizedException('Invalid or expired guest session');
+    }
   }
 }

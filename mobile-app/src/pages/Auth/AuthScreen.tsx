@@ -24,14 +24,59 @@ const AuthScreen: React.FC = () => {
     history.push('/auth/email');
   };
 
-  const handleGoogleAuth = () => {
-    // TODO: Implement Google OAuth
-    console.log('Google auth not yet implemented');
+  const handleGoogleAuth = async () => {
+    try {
+      setLoading(true);
+      // Google Sign-In using Capacitor plugin
+      // For native implementation, use @codetrix-studio/capacitor-google-auth
+      // For web, use Google Sign-In JavaScript API
+      
+      // This is a placeholder - actual implementation requires:
+      // 1. Install @codetrix-studio/capacitor-google-auth
+      // 2. Configure OAuth client IDs in capacitor.config.ts
+      // 3. Get ID token from Google
+      // 4. Send to backend
+      
+      console.log('Google OAuth: Opening Google Sign-In...');
+      // const googleUser = await GoogleAuth.signIn();
+      // const { authentication } = googleUser;
+      // await authenticateWithGoogle(authentication.idToken);
+      // history.push('/home');
+      
+      alert('Google Sign-In: Requiere configuración de OAuth Client ID. Ver docs/AUTHENTICATION_GUIDE.md');
+    } catch (error) {
+      console.error('Google auth error:', error);
+      alert('Error al iniciar sesión con Google');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleAppleAuth = () => {
-    // TODO: Implement Apple Sign In
-    console.log('Apple auth not yet implemented');
+  const handleAppleAuth = async () => {
+    try {
+      setLoading(true);
+      // Apple Sign-In using Capacitor plugin
+      // For native implementation, use @capacitor-community/apple-sign-in
+      
+      // This is a placeholder - actual implementation requires:
+      // 1. Install @capacitor-community/apple-sign-in
+      // 2. Configure App ID and Service ID in Apple Developer Console
+      // 3. Get identity token from Apple
+      // 4. Send to backend
+      
+      console.log('Apple Sign-In: Opening Apple authentication...');
+      // const result = await SignInWithApple.authorize();
+      // const { identityToken, authorizationCode } = result.response;
+      // await authenticateWithApple(identityToken, authorizationCode);
+      // history.push('/home');
+      
+      alert('Apple Sign-In: Requiere configuración de Service ID. Ver docs/AUTHENTICATION_GUIDE.md');
+    } catch (error) {
+      console.error('Apple auth error:', error);
+      alert('Error al iniciar sesión con Apple');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleGuestMode = async () => {

@@ -40,6 +40,22 @@ export class UserService {
     return this.userRepository.findByPhone(phone);
   }
 
+  async getUserByEmail(email: string): Promise<User | null> {
+    return this.userRepository.findByEmail(email);
+  }
+
+  async updateUser(userId: string, updates: Partial<User>): Promise<User> {
+    const user = await this.getUserById(userId);
+    
+    // Update the user entity using available methods or create a new one with updates
+    const updatedUser = new User({
+      ...user.toJSON(),
+      ...updates,
+    });
+
+    return this.userRepository.update(updatedUser);
+  }
+
   async chargeWallet(userId: string, dto: ChargeWalletDto): Promise<WalletResponseDto> {
     const user = await this.getUserById(userId);
     
