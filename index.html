@@ -1926,6 +1926,31 @@
     // Location configuration constants
     const DEFAULT_LOCATION = { latitude: 18.4861, longitude: -69.9312 }; // Santo Domingo
     const DEFAULT_SEARCH_RADIUS_KM = 25;
+    const EARTH_RADIUS_KM = 6371; // Earth's radius in kilometers (for Haversine formula)
+
+    // Haversine formula to calculate distance between two coordinates (in km)
+    const calculateDistance = (lat1, lon1, lat2, lon2) => {
+      const R = EARTH_RADIUS_KM;
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = 
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return R * c;
+    };
+
+    // Format distance for display
+    const formatDistance = (distanceKm) => {
+      if (distanceKm < 1) {
+        return `${Math.round(distanceKm * 1000)} m`;
+      } else if (distanceKm < 10) {
+        return `${distanceKm.toFixed(1)} km`;
+      } else {
+        return `${Math.round(distanceKm)} km`;
+      }
+    };
 
     const MOST_PLAYED = {
       Quiniela: ["08", "66", "36", "63", "42"],
@@ -4741,6 +4766,7 @@
       const [selectedBank, setSelectedBank] = useState(DEFAULT_BANKS[0]);
       const [availableBancas, setAvailableBancas] = useState(DEFAULT_BANKS); // Bancas from API or default
       const [loadingBancas, setLoadingBancas] = useState(false);
+      const [userLocation, setUserLocation] = useState(null); // User's GPS location { latitude, longitude }
       const [bancasViewMode, setBancasViewMode] = useState('list'); // 'list' | 'map'
       const [bancasFocusBank, setBancasFocusBank] = useState(null); // Bank to focus on in map view
       const [showPlayModal, setShowPlayModal] = useState(false);
@@ -5605,9 +5631,13 @@
               });
               latitude = position.coords.latitude;
               longitude = position.coords.longitude;
+              setUserLocation({ latitude, longitude }); // Store user location
             } catch (err) {
               console.log('Could not get user location, using default:', err);
+              setUserLocation(DEFAULT_LOCATION); // Store default location
             }
+          } else {
+            setUserLocation(DEFAULT_LOCATION); // Store default location
           }
 
           // Fetch nearby bancas from API
@@ -5619,16 +5649,28 @@
           if (response.ok) {
             const bancas = await response.json();
             
-            // Transform API bancas to match DEFAULT_BANKS structure
-            const transformedBancas = bancas.map(banca => ({
-              id: banca.id,
-              name: banca.name,
-              address: banca.address || 'Dirección no disponible',
-              coords: banca.latitude && banca.longitude ? [banca.latitude, banca.longitude] : [DEFAULT_LOCATION.latitude, DEFAULT_LOCATION.longitude],
-              phone: banca.phone,
-              city: banca.city,
-              region: banca.region,
-            }));
+            // Transform API bancas to match DEFAULT_BANKS structure and add distance
+            const transformedBancas = bancas.map(banca => {
+              const bancaLat = banca.latitude || (banca.coords && banca.coords[0]) || DEFAULT_LOCATION.latitude;
+              const bancaLon = banca.longitude || (banca.coords && banca.coords[1]) || DEFAULT_LOCATION.longitude;
+              const distanceKm = calculateDistance(latitude, longitude, bancaLat, bancaLon);
+              
+              return {
+                id: banca.id,
+                name: banca.name,
+                address: banca.address || 'Dirección no disponible',
+                coords: [bancaLat, bancaLon],
+                phone: banca.phone,
+                city: banca.city,
+                region: banca.region,
+                hours: banca.hours || 'Horario no disponible',
+                distanceKm: distanceKm,
+                distanceStr: formatDistance(distanceKm)
+              };
+            });
+
+            // Sort by distance (nearest first)
+            transformedBancas.sort((a, b) => a.distanceKm - b.distanceKm);
 
             if (transformedBancas.length > 0) {
               setAvailableBancas(transformedBancas);
@@ -5894,23 +5936,44 @@
                         </button>
                       </div>
                       <div className="space-y-3 sm:space-y-4">
-                        {DEFAULT_BANKS.map((b) => (
+                        {availableBancas.slice(0, 3).map((b, index) => (
                           <div key={b.id} className="premium-card p-3 sm:p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0">
                             <div className="flex items-center gap-3 sm:gap-4 w-full sm:w-auto">
                               <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl sm:rounded-2xl flex items-center justify-center text-white text-lg sm:text-xl shadow-lg shadow-blue-500/25 flex-shrink-0">
                                 🏪
                               </div>
                               <div className="flex-1 min-w-0">
-                                <div className="font-semibold text-gray-900 dark:text-white text-sm sm:text-base truncate">{b.name}</div>
-                                <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 flex items-center gap-2">
-                                  <span className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></span>
-                                  <span className="truncate">{b.hours}</span>
+                                <div className="flex items-center gap-2 flex-wrap">
+                                  <div className="font-semibold text-gray-900 dark:text-white text-sm sm:text-base truncate">{b.name}</div>
+                                  {index === 0 && availableBancas.length > 1 && b.distanceStr && (
+                                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 whitespace-nowrap">
+                                      ⭐ Más cercana
+                                    </span>
+                                  )}
+                                  {b.distanceStr && (
+                                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 whitespace-nowrap">
+                                      📍 {b.distanceStr}
+                                    </span>
+                                  )}
                                 </div>
+                                <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 flex items-center gap-2 mt-1">
+                                  <span className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></span>
+                                  <span className="truncate">{b.hours || 'Horario no disponible'}</span>
+                                </div>
+                                {b.address && (
+                                  <div className="text-xs text-gray-400 dark:text-gray-500 mt-0.5 truncate">
+                                    📍 {b.address}
+                                  </div>
+                                )}
                               </div>
                             </div>
                             <div className="flex gap-2 sm:gap-3 w-full sm:w-auto">
                               <button 
-                                onClick={() => openPlayModal(b)} 
+                                onClick={() => {
+                                  setSelectedBank(b);
+                                  localStorage.setItem('ll_selected_banca', JSON.stringify(b));
+                                  setView('loterias');
+                                }}
                                 className="btn-apple-primary flex-1 sm:flex-initial px-4 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm"
                               >
                                 Jugar
