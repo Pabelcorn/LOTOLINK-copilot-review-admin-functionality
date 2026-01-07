@@ -19,3 +19,8 @@ export * from './sucursal.db-entity';
 export * from './user-device.db-entity';
 export * from './notification-log.db-entity';
 export * from './notification-preference.db-entity';
+export * from './otp-code.db-entity';
+export * from './admin-access-log.db-entity';
+export * from './guest-session.db-entity';
+export * from './admin-secret-code.db-entity';
+

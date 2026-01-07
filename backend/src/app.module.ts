@@ -24,7 +24,7 @@ import { PublicSettingsController } from './infrastructure/http/controllers/publ
 import { PasswordService } from './infrastructure/security/password.service';
 
 // Services
-import { PlayService, UserService, WebhookService, BancaService, SettingsService, SucursalService, NotificationService } from './application/services';
+import { PlayService, UserService, WebhookService, BancaService, SettingsService, SucursalService, NotificationService, OtpService, GuestService, AdminSecretService } from './application/services';
 import { EmailService } from './infrastructure/email';
 
 // Database entities
@@ -39,6 +39,10 @@ import {
   UserDeviceEntity,
   NotificationLogEntity,
   NotificationPreferenceEntity,
+  OtpCodeEntity,
+  AdminAccessLogEntity,
+  GuestSessionEntity,
+  AdminSecretCodeEntity,
 } from './infrastructure/database/entities';
 
 // Repositories
@@ -120,7 +124,7 @@ class MockCachePort {
         username: configService.get<string>('DATABASE_USERNAME', 'lotolink'),
         password: configService.get<string>('DATABASE_PASSWORD', 'password'),
         database: configService.get<string>('DATABASE_NAME', 'lotolink_db'),
-        entities: [PlayEntity, UserEntity, BancaEntity, OutgoingRequestEntity, WebhookEventEntity, SettingEntity, SucursalEntity, UserDeviceEntity, NotificationLogEntity, NotificationPreferenceEntity],
+        entities: [PlayEntity, UserEntity, BancaEntity, OutgoingRequestEntity, WebhookEventEntity, SettingEntity, SucursalEntity, UserDeviceEntity, NotificationLogEntity, NotificationPreferenceEntity, OtpCodeEntity, AdminAccessLogEntity, GuestSessionEntity, AdminSecretCodeEntity],
         synchronize: configService.get<string>('NODE_ENV') !== 'production',
         logging: configService.get<string>('NODE_ENV') === 'development',
       }),
@@ -137,6 +141,10 @@ class MockCachePort {
       UserDeviceEntity,
       NotificationLogEntity,
       NotificationPreferenceEntity,
+      OtpCodeEntity,
+      AdminAccessLogEntity,
+      GuestSessionEntity,
+      AdminSecretCodeEntity,
     ]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -167,6 +175,9 @@ class MockCachePort {
     SucursalService,
     PasswordService,
     NotificationService,
+    OtpService,
+    GuestService,
+    AdminSecretService,
     
     // Workers
     PlayWorker,

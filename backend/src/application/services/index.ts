@@ -5,3 +5,6 @@ export * from './banca.service';
 export * from './settings.service';
 export * from './sucursal.service';
 export * from './notification.service';
+export * from './otp.service';
+export * from './guest.service';
+export * from './admin-secret.service';
