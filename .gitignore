@@ -28,6 +28,11 @@ desktop/out/
 .env
 .env.local
 .env.*.local
+.env.production
+
+# Production secrets - NEVER commit
+*.p8
+/tmp/lotolink-secrets.txt
 
 # IDE
 .idea/

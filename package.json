@@ -10,6 +10,10 @@
     "backend:prod": "cd backend && npm run build && npm start",
     "test": "cd backend && npm test",
     "setup": "cd backend && npm install && cp .env.example .env",
+    "setup:prod": "./scripts/setup-production.sh",
+    "generate:secrets": "node scripts/generate-admin-hash.js --all",
+    "generate:hash": "node scripts/generate-admin-hash.js",
+    "verify:config": "echo 'Config verification not yet implemented'",
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",
     "docker:logs": "docker-compose logs -f"
@@ -28,5 +32,8 @@
   },
   "engines": {
     "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0"
   }
 }
