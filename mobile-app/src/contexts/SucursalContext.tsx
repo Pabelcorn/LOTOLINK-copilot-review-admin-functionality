@@ -8,6 +8,10 @@ import { Preferences } from '@capacitor/preferences';
 import { getNearbyBancas, Banca } from '../services/bancas.service';
 import { getCurrentPosition } from '../services/geolocation.service';
 
+// Configuration constants
+const DEFAULT_LOCATION = { latitude: 18.4861, longitude: -69.9312 }; // Santo Domingo
+const DEFAULT_SEARCH_RADIUS_KM = 25;
+
 interface Sucursal {
   id: string;
   bancaId: string;
@@ -80,8 +84,8 @@ export const SucursalProvider: React.FC<SucursalProviderProps> = ({ children }) 
 
     try {
       // Get user location
-      let latitude = 18.4861; // Default to Santo Domingo
-      let longitude = -69.9312;
+      let latitude = DEFAULT_LOCATION.latitude;
+      let longitude = DEFAULT_LOCATION.longitude;
 
       try {
         const position = await getCurrentPosition();
@@ -92,7 +96,7 @@ export const SucursalProvider: React.FC<SucursalProviderProps> = ({ children }) 
       }
 
       // Fetch nearby bancas
-      const response = await getNearbyBancas(latitude, longitude, 25);
+      const response = await getNearbyBancas(latitude, longitude, DEFAULT_SEARCH_RADIUS_KM);
       setNearbyBancas(response.bancas);
 
       // If no sucursal is selected and we have bancas, auto-select the nearest one

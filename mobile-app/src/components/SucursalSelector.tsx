@@ -22,8 +22,10 @@ import {
 import { close, location, call, checkmarkCircle } from 'ionicons/icons';
 import { useState, useEffect } from 'react';
 import { useSucursal } from '../contexts/SucursalContext';
-import { calculateDistance, formatDistance } from '../services/geolocation.service';
-import { getCurrentPosition } from '../services/geolocation.service';
+import { calculateDistance, formatDistance, getCurrentPosition } from '../services/geolocation.service';
+
+// Configuration constants
+const DEFAULT_LOCATION = { latitude: 18.4861, longitude: -69.9312 }; // Santo Domingo
 
 interface SucursalSelectorProps {
   isOpen: boolean;
@@ -51,7 +53,7 @@ const SucursalSelector: React.FC<SucursalSelectorProps> = ({ isOpen, onDismiss }
       });
     } catch (err) {
       console.log('Could not get user location:', err);
-      setUserLocation({ latitude: 18.4861, longitude: -69.9312 }); // Santo Domingo default
+      setUserLocation(DEFAULT_LOCATION);
     }
 
     // Load nearby bancas

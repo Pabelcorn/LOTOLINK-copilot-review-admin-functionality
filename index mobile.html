@@ -1440,6 +1440,10 @@
       { id: 4, name: "Lotería Nacional - Naco", coords: [18.4890, -69.9220], hours: "Abierta hasta las 6:00 PM" }
     ];
 
+    // Location configuration constants
+    const DEFAULT_LOCATION = { latitude: 18.4861, longitude: -69.9312 }; // Santo Domingo
+    const DEFAULT_SEARCH_RADIUS_KM = 25;
+
     const MOST_PLAYED = {
       Quiniela: ["08", "66", "36", "63", "42"],
       Tripleta: [["15", "26", "07"], ["12", "34", "56"]],
@@ -2238,7 +2242,7 @@
               mapContainer.className = '';
               
               // Initialize Leaflet map
-              const centerCoords = focusBank ? focusBank.coords : [18.4861, -69.9312];
+              const centerCoords = focusBank ? focusBank.coords : [DEFAULT_LOCATION.latitude, DEFAULT_LOCATION.longitude];
               const zoomLevel = focusBank ? 16 : 13;
               
               const map = L.map('bancas-map-container').setView(centerCoords, zoomLevel);
@@ -5067,8 +5071,8 @@
         setLoadingBancas(true);
         try {
           // Get user location
-          let latitude = 18.4861; // Default to Santo Domingo
-          let longitude = -69.9312;
+          let latitude = DEFAULT_LOCATION.latitude;
+          let longitude = DEFAULT_LOCATION.longitude;
 
           if (navigator.geolocation) {
             try {
@@ -5088,7 +5092,7 @@
           // Fetch nearby bancas from API
           const API_BASE = window.API_BASE_URL || 'http://localhost:3000';
           const response = await fetch(
-            `${API_BASE}/admin/bancas/nearby?latitude=${latitude}&longitude=${longitude}&radius_km=25`
+            `${API_BASE}/admin/bancas/nearby?latitude=${latitude}&longitude=${longitude}&radius_km=${DEFAULT_SEARCH_RADIUS_KM}`
           );
 
           if (response.ok) {
@@ -5099,7 +5103,7 @@
               id: banca.id,
               name: banca.name,
               address: banca.address || 'Dirección no disponible',
-              coords: banca.latitude && banca.longitude ? [banca.latitude, banca.longitude] : [18.4861, -69.9312],
+              coords: banca.latitude && banca.longitude ? [banca.latitude, banca.longitude] : [DEFAULT_LOCATION.latitude, DEFAULT_LOCATION.longitude],
               phone: banca.phone,
               city: banca.city,
               region: banca.region,
@@ -7357,7 +7361,7 @@
     setInterval(() => {
        const mapContainer = document.getElementById('demo-leaflet-map');
        if (mapContainer && !mapContainer._leaflet_id) {
-          const map = L.map('demo-leaflet-map').setView([18.4861, -69.9312], 13);
+          const map = L.map('demo-leaflet-map').setView([DEFAULT_LOCATION.latitude, DEFAULT_LOCATION.longitude], 13);
           L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(map);
           DEFAULT_BANKS.forEach(b => {
              const m = L.marker(b.coords).addTo(map);
@@ -7931,7 +7935,7 @@
         }
         
         // Create new map
-        bancaSelectionMap = L.map('banca-selection-map').setView([18.4861, -69.9312], 13);
+        bancaSelectionMap = L.map('banca-selection-map').setView([DEFAULT_LOCATION.latitude, DEFAULT_LOCATION.longitude], 13);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { 
           attribution: '© OpenStreetMap' 
         }).addTo(bancaSelectionMap);
