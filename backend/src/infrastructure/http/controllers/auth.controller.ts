@@ -380,4 +380,77 @@ export class AuthController {
       expiresIn: 3600,
     };
   }
+
+  @Post('guest/convert')
+  @HttpCode(HttpStatus.OK)
+  async convertGuestToUser(
+    @Body() registerDto: RegisterDto,
+    @Req() request: Request,
+  ): Promise<AuthResponseDto> {
+    // Extract guest session token from Authorization header
+    const authHeader = request.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      throw new UnauthorizedException('Guest session token required');
+    }
+
+    const guestToken = authHeader.substring(7);
+    
+    // Verify guest token
+    try {
+      const payload = this.jwtService.verify(guestToken);
+      if (!payload.isGuest || !payload.sessionToken) {
+        throw new UnauthorizedException('Invalid guest session');
+      }
+
+      // Verify guest session exists and is valid
+      const isValid = await this.guestService.isValidGuestSession(payload.sessionToken);
+      if (!isValid) {
+        throw new UnauthorizedException('Guest session expired or invalid');
+      }
+
+      // Hash the password
+      const hashedPassword = await this.passwordService.hashPassword(registerDto.password);
+
+      // Create full user account
+      const user = await this.userService.createUser({
+        phone: registerDto.phone,
+        email: registerDto.email,
+        name: registerDto.name,
+        password: hashedPassword,
+        role: UserRole.USER,
+      });
+
+      // Link guest session to new user
+      await this.guestService.convertGuestToUser(payload.sessionToken, user.id);
+
+      // Generate new JWT tokens for the full user
+      const newPayload = {
+        sub: user.id,
+        phone: user.phone,
+        email: user.email,
+        role: user.role,
+      };
+
+      const accessToken = this.jwtService.sign(newPayload);
+      const refreshToken = this.jwtService.sign(newPayload, {
+        expiresIn: this.configService.get<string>('JWT_REFRESH_EXPIRES_IN', '7d'),
+      });
+
+      return {
+        user: {
+          id: user.id,
+          phone: user.phone,
+          email: user.email,
+          name: user.name,
+          role: user.role,
+          isAdmin: user.isAdmin,
+        },
+        accessToken,
+        refreshToken,
+        expiresIn: 3600,
+      };
+    } catch (error) {
+      throw new UnauthorizedException('Invalid or expired guest session');
+    }
+  }
 }
