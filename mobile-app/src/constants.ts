@@ -22,6 +22,8 @@ export const DEFAULTS = {
   LOTTERY_ID: 'leidsa',
   MIN_BET_AMOUNT: 1,
   DEFAULT_BET_AMOUNT: 10,
+  SUCURSAL_NAME: 'Principal',
+  SUCURSAL_CODE: '0001',
 } as const;
 
 // Color Palette
@@ -89,4 +91,6 @@ export const GEOLOCATION = {
   DEFAULT_RADIUS_KM: 10,
   // Maximum search radius in kilometers
   MAX_RADIUS_KM: 50,
+  // Earth's radius in kilometers (for Haversine formula)
+  EARTH_RADIUS_KM: 6371,
 } as const;

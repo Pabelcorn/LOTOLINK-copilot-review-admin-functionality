@@ -19,11 +19,11 @@ import {
   IonChip
 } from '@ionic/react';
 import { trophy, storefront, ticket, trendingUp, location, call } from 'ionicons/icons';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSucursal } from '../contexts/SucursalContext';
 import { calculateDistance, formatDistance, getCurrentPosition } from '../services/geolocation.service';
-import { GEOLOCATION } from '../constants';
+import { GEOLOCATION, DEFAULTS } from '../constants';
 import './Home.css';
 
 const Home: React.FC = () => {
@@ -69,8 +69,8 @@ const Home: React.FC = () => {
       id: banca.id,
       bancaId: banca.id,
       bancaName: banca.name,
-      name: 'Principal',
-      code: '0001',
+      name: DEFAULTS.SUCURSAL_NAME,
+      code: DEFAULTS.SUCURSAL_CODE,
       address: banca.address,
       phone: banca.phone,
       city: banca.city,
@@ -81,18 +81,20 @@ const Home: React.FC = () => {
     history.push('/lotteries');
   };
 
-  // Get top 3 nearest bancas with distances
-  const topNearbyBancas = nearbyBancas.slice(0, 3).map((banca, index) => {
-    let distance: string | undefined;
-    if (userLocation && banca.location?.latitude && banca.location?.longitude) {
-      const distKm = calculateDistance(
-        { latitude: userLocation.latitude, longitude: userLocation.longitude },
-        { latitude: banca.location.latitude, longitude: banca.location.longitude }
-      );
-      distance = formatDistance(distKm);
-    }
-    return { ...banca, distance, isNearest: index === 0 };
-  });
+  // Memoize top 3 nearest bancas with distances to avoid recalculation on every render
+  const topNearbyBancas = useMemo(() => {
+    return nearbyBancas.slice(0, 3).map((banca, index) => {
+      let distance: string | undefined;
+      if (userLocation && banca.location?.latitude && banca.location?.longitude) {
+        const distKm = calculateDistance(
+          { latitude: userLocation.latitude, longitude: userLocation.longitude },
+          { latitude: banca.location.latitude, longitude: banca.location.longitude }
+        );
+        distance = formatDistance(distKm);
+      }
+      return { ...banca, distance, isNearest: index === 0 };
+    });
+  }, [nearbyBancas, userLocation]);
 
   return (
     <IonPage>

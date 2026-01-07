@@ -117,7 +117,16 @@ EOF
 
 # Run cleanup script
 echo "📝 Executing cleanup SQL..."
-PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -p $DB_PORT -U $DB_USER -d $DB_NAME -f /tmp/cleanup_mocks.sql
+# Use .pgpass file or prompt for password instead of PGPASSWORD env var
+if [ -z "$DB_PASSWORD" ]; then
+    # Prompt for password securely
+    echo "Enter database password for user $DB_USER:"
+    psql -h $DB_HOST -p $DB_PORT -U $DB_USER -d $DB_NAME -f /tmp/cleanup_mocks.sql
+else
+    # Use PGPASSWORD only if explicitly set (not recommended for production)
+    echo "⚠️  Using PGPASSWORD environment variable. Consider using .pgpass file for better security."
+    PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -p $DB_PORT -U $DB_USER -d $DB_NAME -f /tmp/cleanup_mocks.sql
+fi
 
 # Clean up temp file
 rm /tmp/cleanup_mocks.sql
