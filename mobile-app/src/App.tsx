@@ -60,6 +60,7 @@ import Menu from './components/Menu';
 
 /* Context */
 import { AuthProvider } from './contexts/AuthContext';
+import { SucursalProvider } from './contexts/SucursalContext';
 
 /* Services */
 import { notificationsService } from './services/notifications.service';
@@ -133,11 +134,12 @@ const App: React.FC = () => {
   return (
     <IonApp>
       <AuthProvider>
-        <IonReactRouter>
-          <NavigationSetup>
-            <IonSplitPane contentId="main">
-              <Menu />
-              <IonTabs id="main">
+        <SucursalProvider>
+          <IonReactRouter>
+            <NavigationSetup>
+              <IonSplitPane contentId="main">
+                <Menu />
+                <IonTabs id="main">
               <IonRouterOutlet>
                 {/* Auth Routes */}
                 <Route exact path="/auth">
@@ -212,8 +214,9 @@ const App: React.FC = () => {
             </IonTabBar>
           </IonTabs>
         </IonSplitPane>
-        </NavigationSetup>
-      </IonReactRouter>
+          </NavigationSetup>
+        </IonReactRouter>
+        </SucursalProvider>
       </AuthProvider>
     </IonApp>
   );

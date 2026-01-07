@@ -16,12 +16,14 @@ import {
   IonModal
 } from '@ionic/react';
 import { shuffle, cart, close } from 'ionicons/icons';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Haptics, ImpactStyle, NotificationType } from '@capacitor/haptics';
 import VirtualTicket from '../components/VirtualTicket';
+import SucursalSelector from '../components/SucursalSelector';
 import { TicketData } from '../services/tickets.service';
 import { useAuth } from '../contexts/AuthContext';
+import { useSucursal } from '../contexts/SucursalContext';
 import GuestModePrompt from '../components/Auth/GuestModePrompt';
 
 interface GameType {
@@ -42,6 +44,7 @@ const gameTypes: GameType[] = [
 const Play: React.FC = () => {
   const { lotteryId = 'leidsa' } = useParams<{ lotteryId: string }>();
   const { isGuest, isAuthenticated } = useAuth();
+  const { selectedSucursal, loadNearbyBancas } = useSucursal();
   const [selectedGameType, setSelectedGameType] = useState<GameType | null>(null);
   const [selectedNumbers, setSelectedNumbers] = useState<number[]>([]);
   const [amount] = useState(10);
@@ -50,6 +53,12 @@ const Play: React.FC = () => {
   const [showTicketModal, setShowTicketModal] = useState(false);
   const [confirmedTicket, setConfirmedTicket] = useState<TicketData | null>(null);
   const [showGuestPrompt, setShowGuestPrompt] = useState(false);
+  const [showSucursalSelector, setShowSucursalSelector] = useState(false);
+
+  // Load nearby bancas on mount
+  useEffect(() => {
+    loadNearbyBancas();
+  }, []);
 
   const hapticFeedback = async (style: ImpactStyle = ImpactStyle.Light) => {
     try {
@@ -117,11 +126,11 @@ const Play: React.FC = () => {
           sorteoNumber: '18331',
           sorteoTime: '1:00 PM',
           lotteryName: lotteryId.toUpperCase(),
-          bancaName: 'LOTEKA',
-          sucursalName: 'Principal',
-          sucursalCode: '4000-01',
-          sucursalAddress: 'Av. Duarte #123, Santo Domingo',
-          sucursalPhone: '809-555-1234',
+          bancaName: selectedSucursal?.bancaName || 'LOTEKA',
+          sucursalName: selectedSucursal?.name || 'Principal',
+          sucursalCode: selectedSucursal?.code || '4000-01',
+          sucursalAddress: selectedSucursal?.address || 'Av. Duarte #123, Santo Domingo',
+          sucursalPhone: selectedSucursal?.phone || '809-555-1234',
           operatorId: '020611062'
         };
         
@@ -152,6 +161,35 @@ const Play: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
+        {/* Sucursal Info Card */}
+        <div style={{ padding: '16px', paddingBottom: '8px' }}>
+          <IonCard className="glass-card" style={{ marginBottom: '8px' }}>
+            <IonCardContent style={{ padding: '12px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  <div style={{ fontSize: '12px', color: 'var(--ion-color-medium)', marginBottom: '4px' }}>
+                    Jugando en
+                  </div>
+                  <div style={{ fontSize: '16px', fontWeight: '600', marginBottom: '2px' }}>
+                    {selectedSucursal?.bancaName || '—'}
+                  </div>
+                  <div style={{ fontSize: '13px', color: 'var(--ion-color-medium)' }}>
+                    📍 {selectedSucursal?.address || 'Sin sucursal seleccionada'}
+                  </div>
+                </div>
+                <IonButton
+                  size="small"
+                  fill="outline"
+                  onClick={() => setShowSucursalSelector(true)}
+                  style={{ '--border-radius': '20px' }}
+                >
+                  Cambiar
+                </IonButton>
+              </div>
+            </IonCardContent>
+          </IonCard>
+        </div>
+
         {/* Game Type Selection */}
         {!selectedGameType ? (
           <div className="game-type-grid">
@@ -403,6 +441,12 @@ const Play: React.FC = () => {
             numbers: selectedNumbers.join(', '),
             amount: `RD$ ${amount * 10}`,
           }}
+        />
+
+        {/* Sucursal Selector Modal */}
+        <SucursalSelector
+          isOpen={showSucursalSelector}
+          onDismiss={() => setShowSucursalSelector(false)}
         />
       </IonContent>
     </IonPage>
