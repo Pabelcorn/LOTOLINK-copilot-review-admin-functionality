@@ -99,7 +99,7 @@
       letter-spacing: -0.01em;
     }
     
-    /* Premium Button Styles */
+    /* Premium Button Styles - Responsive and Adaptive */
     .btn-apple-primary {
       background: linear-gradient(180deg, #0077ED 0%, #0071e3 100%);
       color: white;
@@ -107,11 +107,15 @@
       padding: 12px 24px;
       border-radius: var(--radius-full);
       font-weight: 600;
-      font-size: 15px;
+      font-size: clamp(13px, 2vw, 16px); /* Adaptive font sizing */
       letter-spacing: -0.01em;
       transition: all 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
       box-shadow: 0 4px 14px rgba(0, 113, 227, 0.35);
       cursor: pointer;
+      min-height: 44px; /* Touch-friendly minimum */
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
     .btn-apple-primary:hover {
       transform: translateY(-1px);
@@ -128,14 +132,27 @@
       padding: 12px 24px;
       border-radius: var(--radius-full);
       font-weight: 600;
-      font-size: 15px;
+      font-size: clamp(13px, 2vw, 16px); /* Adaptive font sizing */
       transition: all 0.2s ease;
+      min-height: 44px; /* Touch-friendly minimum */
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
     .btn-apple-secondary:hover {
       background: rgba(0, 113, 227, 0.1);
     }
+    
+    /* Responsive button sizing */
+    @media (min-width: 1441px) {
+      .btn-apple-primary,
+      .btn-apple-secondary {
+        padding: 14px 28px;
+        min-height: 52px;
+      }
+    }
 
-    /* Glass Morphism Cards */
+    /* Glass Morphism Cards - Responsive */
     .glass-card {
       background: var(--glass-bg);
       backdrop-filter: blur(20px) saturate(180%);
@@ -143,6 +160,7 @@
       border: 1px solid var(--glass-border);
       border-radius: var(--radius-xl);
       box-shadow: var(--shadow-lg);
+      padding: clamp(12px, 3vw, 24px); /* Adaptive padding */
     }
     
     .premium-card {
@@ -151,10 +169,26 @@
       box-shadow: var(--shadow-md);
       border: 1px solid rgba(0, 0, 0, 0.04);
       transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+      padding: clamp(12px, 3vw, 24px); /* Adaptive padding */
     }
     .premium-card:hover {
       box-shadow: var(--shadow-lg);
       transform: translateY(-2px);
+    }
+    
+    /* Responsive card spacing */
+    @media (max-width: 640px) {
+      .glass-card,
+      .premium-card {
+        border-radius: var(--radius-md);
+      }
+    }
+    
+    @media (min-width: 1441px) {
+      .glass-card,
+      .premium-card {
+        border-radius: var(--radius-2xl);
+      }
     }
 
     /* Premium Header */
@@ -718,354 +752,487 @@
 
     .modal-scroll { max-height: calc(100vh - 160px); overflow: auto; }
     
-    /* Mobile Game Panel - COMPLETELY FIXED FOR ALL DEVICES */
+    /* ========================================
+       LOTTERY MODAL - MOBILE-FIRST RESPONSIVE
+       Simplified, clean design for ALL screen sizes
+       ======================================== */
+    
+    /* Base modal styles - work for all screens */
     #modal-root {
-      overflow-y: auto !important;
-      overflow-x: hidden !important;
-      -webkit-overflow-scrolling: touch !important;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
     }
     
     #modal-card {
-      overflow-y: auto !important;
-      overflow-x: hidden !important;
-      -webkit-overflow-scrolling: touch !important;
+      display: flex;
+      flex-direction: column;
+      background: white;
+      border-radius: var(--radius-xl);
+      max-width: 900px;
+      max-height: 90vh;
+      margin: 20px auto;
+      overflow: hidden; /* Prevent overflow on the card itself */
     }
     
-    /* MOBILE: Full-height scrollable game panel */
+    /* Fixed header - stays at top */
+    #modal-card > div:first-child {
+      flex-shrink: 0; /* Prevent header from shrinking */
+      position: relative;
+      z-index: 10;
+    }
+    
+    /* Scrollable content area */
+    #modal-card > div:last-child,
+    #modal-card .modal-content-scroll {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Dark mode for modal */
+    .dark #modal-card {
+      background: #1c1c1e;
+      color: #f5f5f7;
+    }
+    
+    /* Mobile-first responsive design (320px+) */
     @media (max-width: 768px) {
       #modal-root {
-        position: fixed !important;
-        top: 0 !important;
-        left: 0 !important;
-        right: 0 !important;
-        bottom: 0 !important;
-        padding: 0 !important;
-        overflow-y: scroll !important;
-        overflow-x: hidden !important;
-        -webkit-overflow-scrolling: touch !important;
-        flex-direction: column !important;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        padding: 0;
+        overflow: hidden; /* Prevent outer scroll */
+        flex-direction: column;
       }
       
       #modal-backdrop {
-        position: fixed !important;
-        z-index: 1 !important;
+        position: fixed;
+        z-index: 1;
       }
       
       #modal-card {
-        position: relative !important;
-        z-index: 2 !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        min-height: 100vh !important;
-        min-height: 100dvh !important;
-        max-height: none !important;
-        height: auto !important;
-        margin: 0 !important;
-        border-radius: 0 !important;
-        overflow-y: auto !important;
-        overflow-x: hidden !important;
-        -webkit-overflow-scrolling: touch !important;
-        flex: 1 !important;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 2;
+        width: 100%;
+        max-width: 100%;
+        max-height: 100vh;
+        max-height: 100dvh;
+        height: 100vh;
+        height: 100dvh;
+        margin: 0;
+        border-radius: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
       }
       
-      /* Header - STICKY at top, always visible */
+      /* Fixed header - stays at top */
       #modal-card > div:first-child {
-        position: sticky !important;
-        top: 0 !important;
-        z-index: 1000 !important;
-        padding: 8px 10px !important;
-        margin: 0 !important;
-        flex-shrink: 0 !important;
+        position: relative;
+        top: 0;
+        z-index: 1000;
+        padding: 12px 16px;
+        background: inherit;
+        flex-shrink: 0;
       }
       
-      /* Header content compact */
+      /* Scrollable content - takes remaining space */
+      #modal-card > div:last-child {
+        flex: 1;
+        overflow-y: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: calc(20px + env(safe-area-inset-bottom));
+      }
+      
+      /* Compact header elements */
       #modal-card > div:first-child .w-16,
       #modal-card > div:first-child .w-16.h-16 {
-        width: 36px !important;
-        height: 36px !important;
-        flex-shrink: 0 !important;
+        width: 40px;
+        height: 40px;
+        flex-shrink: 0;
       }
       
       #modal-card > div:first-child h2 {
-        font-size: 1.1rem !important;
-        line-height: 1.2 !important;
+        font-size: 1.125rem;
+        line-height: 1.3;
       }
       
+      /* Hide subtitle on mobile to save space */
       #modal-card > div:first-child .text-sm {
-        font-size: 0.65rem !important;
-        display: none !important;
+        display: none;
       }
       
-      /* Close button always visible and accessible */
+      /* Close button - touch-friendly */
       #modal-card > div:first-child button {
-        min-width: 50px !important;
-        padding: 5px 8px !important;
-        font-size: 11px !important;
-        flex-shrink: 0 !important;
+        min-width: 44px;
+        min-height: 44px;
+        padding: 8px 12px;
+        font-size: 13px;
+        flex-shrink: 0;
       }
       
-      #modal-card > div:first-child .flex.items-center.gap-2 {
-        gap: 4px !important;
-      }
-      
-      /* Content area - scrollable */
-      #modal-card > div:not(:first-child) {
-        overflow-y: auto !important;
-        -webkit-overflow-scrolling: touch !important;
-      }
-      
-      /* All padding sections more compact */
+      /* Content spacing */
       #modal-card .p-6 {
-        padding: 8px !important;
+        padding: 16px;
       }
       
       #modal-card .p-8 {
-        padding: 10px !important;
+        padding: 16px;
       }
       
-      /* Add safe padding at bottom for iOS home indicator */
-      #modal-card > div:last-child {
-        padding-bottom: 100px !important;
-      }
-      
-      /* Number grid - 5 columns with proper spacing */
+      /* Number grid - 5 columns on mobile */
       #modal-card .grid-cols-10 {
-        grid-template-columns: repeat(5, 1fr) !important;
-        gap: 6px !important;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 8px;
       }
       
       #modal-card .grid-cols-10 button {
-        font-size: 12px !important;
-        padding: 4px !important;
-        min-height: 38px !important;
-        min-width: 38px !important;
-        aspect-ratio: 1 !important;
+        font-size: 14px;
+        padding: 8px;
+        min-height: 44px;
+        min-width: 44px;
+        aspect-ratio: 1;
       }
       
       /* Game type cards - single column */
       #modal-card .grid.grid-cols-1.md\\:grid-cols-2 {
-        grid-template-columns: 1fr !important;
-        gap: 8px !important;
+        grid-template-columns: 1fr;
+        gap: 12px;
       }
       
       #modal-card button.p-6 {
-        padding: 8px !important;
+        padding: 16px;
       }
       
       #modal-card .w-16.h-16 {
-        width: 40px !important;
-        height: 40px !important;
+        width: 48px;
+        height: 48px;
       }
       
       #modal-card .text-2xl.font-bold {
-        font-size: 1rem !important;
+        font-size: 1.25rem;
       }
       
       #modal-card .text-3xl.font-bold {
-        font-size: 1.1rem !important;
+        font-size: 1.5rem;
       }
       
-      /* 3-column layout becomes 1 column (Step 3) */
+      /* 3-column layout becomes 1 column */
       #modal-card .lg\\:grid-cols-3,
       #modal-card .grid-cols-1.lg\\:grid-cols-3 {
-        grid-template-columns: 1fr !important;
-        gap: 12px !important;
+        grid-template-columns: 1fr;
+        gap: 16px;
       }
       
       #modal-card .lg\\:col-span-2 {
-        grid-column: span 1 !important;
+        grid-column: span 1;
       }
       
-      /* Step info bar compact */
+      /* Step info bar */
       #modal-card .mb-4.p-4 {
-        padding: 6px !important;
-        margin-bottom: 6px !important;
+        padding: 12px;
+        margin-bottom: 12px;
       }
       
       #modal-card .mb-4.p-4 button {
-        padding: 3px 6px !important;
-        font-size: 10px !important;
+        padding: 6px 12px;
+        font-size: 12px;
       }
       
-      /* Sidebar compact */
+      /* Sidebar */
       #modal-card .bg-gray-50.dark\\:bg-slate-900 {
-        padding: 10px !important;
+        padding: 16px;
       }
       
       #modal-card .bg-gray-50.dark\\:bg-slate-900 .text-2xl {
-        font-size: 1.1rem !important;
+        font-size: 1.25rem;
       }
       
-      /* Step 1 banca cards compact */
+      /* Banca cards */
       #modal-card .border-2.dark\\:border-slate-600 {
-        padding: 8px !important;
+        padding: 12px;
       }
       
       #modal-card .border-2.dark\\:border-slate-600 .w-12 {
-        width: 36px !important;
-        height: 36px !important;
+        width: 40px;
+        height: 40px;
       }
     }
     
+    /* Small phones (max 480px) */
     @media (max-width: 480px) {
-      #modal-card .grid-cols-10 {
-        grid-template-columns: repeat(5, 1fr) !important;
-        gap: 5px !important;
-      }
-      
-      #modal-card .grid-cols-5 {
-        grid-template-columns: repeat(5, 1fr) !important;
-        gap: 5px !important;
-      }
-      
-      #modal-card .grid-cols-10 button,
-      #modal-card .grid-cols-5 button {
-        font-size: 11px !important;
-        padding: 3px !important;
-        min-height: 34px !important;
-        min-width: 34px !important;
-      }
-      
       #modal-card > div:first-child {
-        padding: 6px 8px !important;
+        padding: 10px 12px;
       }
       
       #modal-card > div:first-child .w-16,
       #modal-card > div:first-child .w-16.h-16 {
-        width: 30px !important;
-        height: 30px !important;
+        width: 36px;
+        height: 36px;
       }
       
       #modal-card > div:first-child h2 {
-        font-size: 0.95rem !important;
+        font-size: 1rem;
       }
       
-      #modal-card .text-xl {
-        font-size: 0.9rem !important;
-      }
-      
-      #modal-card .text-lg {
-        font-size: 0.8rem !important;
-      }
-    }
-    
-    @media (max-width: 375px) {
       #modal-card .grid-cols-10 {
-        grid-template-columns: repeat(4, 1fr) !important;
-        gap: 4px !important;
+        gap: 6px;
       }
       
       #modal-card .grid-cols-10 button {
-        font-size: 10px !important;
-        padding: 2px !important;
-        min-height: 30px !important;
-        min-width: 30px !important;
+        font-size: 13px;
+        padding: 6px;
+        min-height: 40px;
+        min-width: 40px;
       }
       
       #modal-card .p-6,
       #modal-card .p-8 {
-        padding: 6px !important;
+        padding: 12px;
       }
       
-      #modal-card > div:first-child h2 {
-        font-size: 0.85rem !important;
-      }
-    }
-    
-    @media (max-width: 320px) {
-      #modal-card .grid-cols-10 {
-        grid-template-columns: repeat(4, 1fr) !important;
-        gap: 3px !important;
-      }
-      
-      #modal-card .grid-cols-10 button {
-        font-size: 9px !important;
-        padding: 1px !important;
-        min-height: 26px !important;
-        min-width: 26px !important;
-      }
-    }
-      
-      #modal-card > div:first-child h2 {
-        font-size: 1rem !important;
-      }
-      
-      /* Smaller text */
       #modal-card .text-xl {
-        font-size: 0.95rem !important;
+        font-size: 1rem;
       }
       
       #modal-card .text-lg {
-        font-size: 0.85rem !important;
+        font-size: 0.95rem;
       }
     }
     
+    /* Extra small phones (max 375px) */
     @media (max-width: 375px) {
+      #modal-card > div:first-child {
+        padding: 8px 10px;
+      }
+      
+      #modal-card > div:first-child .w-16,
+      #modal-card > div:first-child .w-16.h-16 {
+        width: 32px;
+        height: 32px;
+      }
+      
+      #modal-card > div:first-child h2 {
+        font-size: 0.95rem;
+      }
+      
       #modal-card .grid-cols-10 {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 5px;
+      }
+      
+      #modal-card .grid-cols-10 button {
+        font-size: 12px;
+        padding: 4px;
+        min-height: 36px;
+        min-width: 36px;
+      }
+      
+      #modal-card .p-6,
+      #modal-card .p-8 {
+        padding: 10px;
+      }
+      
+      #modal-card .w-16.h-16 {
+        width: 40px;
+        height: 40px;
+      }
+    }
+    
+    /* Smallest phones (max 320px) */
+    @media (max-width: 320px) {
+      #modal-card .grid-cols-10 {
+        gap: 4px;
+      }
+      
+      #modal-card .grid-cols-10 button {
+        font-size: 11px;
+        padding: 3px;
+        min-height: 32px;
+        min-width: 32px;
+      }
+      
+      #modal-card > div:first-child h2 {
+        font-size: 0.9rem;
+      }
+    }
+    
+    /* Tablet landscape (768px to 1024px) - Optimize for horizontal space */
+    @media (min-width: 769px) and (max-width: 1024px) {
+      #modal-card {
+        max-width: 750px;
+        max-height: 85vh;
+        margin: 30px auto;
+      }
+      
+      #modal-card .grid-cols-10 {
+        grid-template-columns: repeat(10, 1fr);
+        gap: 10px;
+      }
+      
+      #modal-card .grid-cols-10 button {
+        font-size: 15px;
+        padding: 10px;
+        min-height: 48px;
+        min-width: 48px;
+      }
+      
+      /* Two-column layout for game type selection */
+      #modal-card .grid.grid-cols-1.md\\:grid-cols-2 {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+      }
+    }
+    
+    /* Large tablets and small desktops (1025px to 1440px) */
+    @media (min-width: 1025px) and (max-width: 1440px) {
+      #modal-card {
+        max-width: 900px;
+        max-height: 85vh;
+        margin: 40px auto;
+      }
+      
+      #modal-card .grid-cols-10 {
+        grid-template-columns: repeat(10, 1fr);
+        gap: 12px;
+      }
+      
+      #modal-card .grid-cols-10 button {
+        font-size: 16px;
+        padding: 12px;
+        min-height: 52px;
+        min-width: 52px;
+      }
+      
+      /* Restore 3-column layouts */
+      #modal-card .lg\\:grid-cols-3 {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      
+      #modal-card .lg\\:col-span-2 {
+        grid-column: span 2;
+      }
+    }
+    
+    /* Large desktops (1441px+) - Maximize space usage */
+    @media (min-width: 1441px) {
+      #modal-card {
+        max-width: 1200px;
+        max-height: 90vh;
+        margin: 50px auto;
+      }
+      
+      #modal-card .grid-cols-10 {
+        grid-template-columns: repeat(10, 1fr);
+        gap: 14px;
+      }
+      
+      #modal-card .grid-cols-10 button {
+        font-size: 18px;
+        padding: 14px;
+        min-height: 56px;
+        min-width: 56px;
+      }
+      
+      /* More spacious padding on larger screens */
+      #modal-card .p-6 {
+        padding: 32px;
+      }
+      
+      #modal-card .p-8 {
+        padding: 40px;
+      }
+    }
+    
+    /* Ultra-wide screens (1920px+) - Prevent excessive stretching */
+    @media (min-width: 1920px) {
+      #modal-card {
+        max-width: 1400px;
+      }
+      
+      #modal-card .grid-cols-10 {
+        gap: 16px;
+      }
+      
+      #modal-card .grid-cols-10 button {
+        font-size: 20px;
+        padding: 16px;
+        min-height: 60px;
+        min-width: 60px;
+      }
+    }
+    
+    /* ========================================
+       RESPONSIVE GRIDS FOR ALL MODALS
+       Apply to Play Modal and other modals
+       ======================================== */
+    
+    /* Mobile: 5 columns for all modals */
+    @media (max-width: 768px) {
+      .grid-cols-10 {
+        grid-template-columns: repeat(5, 1fr) !important;
+        gap: 8px !important;
+      }
+      
+      .grid-cols-10 button {
+        font-size: 14px !important;
+        padding: 8px !important;
+        min-height: 44px !important;
+        min-width: 44px !important;
+      }
+    }
+    
+    /* Small phones: 4-5 columns */
+    @media (max-width: 480px) {
+      .grid-cols-10 {
+        grid-template-columns: repeat(5, 1fr) !important;
+        gap: 6px !important;
+      }
+      
+      .grid-cols-10 button {
+        font-size: 13px !important;
+        padding: 6px !important;
+        min-height: 40px !important;
+        min-width: 40px !important;
+      }
+    }
+    
+    /* Extra small phones: 4 columns */
+    @media (max-width: 375px) {
+      .grid-cols-10 {
         grid-template-columns: repeat(4, 1fr) !important;
         gap: 5px !important;
       }
       
-      #modal-card .grid-cols-10 button {
+      .grid-cols-10 button {
+        font-size: 12px !important;
+        padding: 4px !important;
+        min-height: 36px !important;
+        min-width: 36px !important;
+      }
+    }
+    
+    /* Smallest phones: tighter spacing */
+    @media (max-width: 320px) {
+      .grid-cols-10 {
+        gap: 4px !important;
+      }
+      
+      .grid-cols-10 button {
         font-size: 11px !important;
         padding: 3px !important;
         min-height: 32px !important;
         min-width: 32px !important;
-      }
-      
-      #modal-card .p-6,
-      #modal-card .p-8 {
-        padding: 8px !important;
-        padding-bottom: 100px !important;
-      }
-    }
-    
-    @media (max-width: 320px) {
-      #modal-card .grid-cols-10 {
-        grid-template-columns: repeat(4, 1fr) !important;
-        gap: 4px !important;
-      }
-      
-      #modal-card .grid-cols-10 button {
-        font-size: 10px !important;
-        padding: 2px !important;
-        min-height: 28px !important;
-        min-width: 28px !important;
-      }
-    }
-        font-size: 0.9rem !important;
-      }
-    }
-    
-    @media (max-width: 375px) {
-      #modal-card .grid-cols-10 {
-        grid-template-columns: repeat(4, 1fr) !important;
-        gap: 4px !important;
-      }
-      
-      #modal-card .grid-cols-10 button {
-        font-size: 12px !important;
-        padding: 6px !important;
-        min-height: 38px;
-      }
-      
-      #modal-card .p-6,
-      #modal-card .p-8 {
-        padding: 10px !important;
-        padding-bottom: 80px !important;
-      }
-    }
-    
-    @media (max-width: 320px) {
-      #modal-card .grid-cols-10 {
-        grid-template-columns: repeat(4, 1fr) !important;
-        gap: 3px !important;
-      }
-      
-      #modal-card .grid-cols-10 button {
-        font-size: 11px !important;
-        padding: 4px !important;
-        min-height: 34px;
       }
     }
     
@@ -1105,23 +1272,52 @@
       100% { transform: translateY(0) scale(1); opacity: 1; }
     }
     
-    /* Dark mode for modal card */
-    .dark #modal-card { background: #1c1c1e; color: #f5f5f7; }
-    .dark #modal-card .bg-white { background: #2c2c2e !important; }
-    .dark #modal-card .text-gray-500 { color: #a1a1a6 !important; }
-    .dark #modal-card .border { border-color: rgba(255,255,255,0.1) !important; }
-    .dark #modal-card .bg-gray-50 { background: rgba(255,255,255,0.05) !important; }
+    /* Dark mode for modal card - consolidated */
+    .dark #modal-card,
+    #modal-card.lottery-dark-mode {
+      background: #1c1c1e;
+      color: #f5f5f7;
+    }
     
-    /* Lottery modal specific dark mode */
-    #modal-card.lottery-dark-mode { background: #1c1c1e; color: #f5f5f7; }
-    #modal-card.lottery-dark-mode .bg-white { background: #2c2c2e !important; }
-    #modal-card.lottery-dark-mode .text-gray-500 { color: #a1a1a6 !important; }
-    #modal-card.lottery-dark-mode .text-gray-600 { color: #8e8e93 !important; }
-    #modal-card.lottery-dark-mode .text-gray-700 { color: #c7c7cc !important; }
-    #modal-card.lottery-dark-mode .border { border-color: rgba(255,255,255,0.1) !important; }
-    #modal-card.lottery-dark-mode .bg-gray-50 { background: rgba(255,255,255,0.05) !important; }
-    #modal-card.lottery-dark-mode .bg-blue-50 { background: rgba(0, 113, 227, 0.15) !important; }
-    #modal-card.lottery-dark-mode .bg-green-50 { background: rgba(52, 199, 89, 0.15) !important; }
+    .dark #modal-card .bg-white,
+    #modal-card.lottery-dark-mode .bg-white {
+      background: #2c2c2e;
+    }
+    
+    .dark #modal-card .bg-gray-50,
+    #modal-card.lottery-dark-mode .bg-gray-50 {
+      background: rgba(255,255,255,0.05);
+    }
+    
+    .dark #modal-card .bg-blue-50,
+    #modal-card.lottery-dark-mode .bg-blue-50 {
+      background: rgba(0, 113, 227, 0.15);
+    }
+    
+    .dark #modal-card .bg-green-50,
+    #modal-card.lottery-dark-mode .bg-green-50 {
+      background: rgba(52, 199, 89, 0.15);
+    }
+    
+    .dark #modal-card .text-gray-500,
+    #modal-card.lottery-dark-mode .text-gray-500 {
+      color: #a1a1a6;
+    }
+    
+    .dark #modal-card .text-gray-600,
+    #modal-card.lottery-dark-mode .text-gray-600 {
+      color: #8e8e93;
+    }
+    
+    .dark #modal-card .text-gray-700,
+    #modal-card.lottery-dark-mode .text-gray-700 {
+      color: #c7c7cc;
+    }
+    
+    .dark #modal-card .border,
+    #modal-card.lottery-dark-mode .border {
+      border-color: rgba(255,255,255,0.1);
+    }
     
     /* Premium Number Button */
     .num-btn { 
@@ -1150,15 +1346,28 @@
     }
     @keyframes loading { from { width: 0%; } to { width: 100%; } }
     
-    /* Premium Input Fields */
+    /* Premium Input Fields - Fully Responsive */
     input, select, textarea {
       border-radius: var(--radius-md);
       transition: all 0.2s ease;
+      font-size: clamp(14px, 2vw, 16px); /* Adaptive font size */
+      padding: clamp(10px, 2vw, 14px); /* Adaptive padding */
+      min-height: 44px; /* Touch-friendly minimum */
+      width: 100%; /* Full width by default */
+      box-sizing: border-box;
     }
     input:focus, select:focus, textarea:focus {
       outline: none;
       border-color: var(--primary);
       box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.15);
+    }
+    
+    /* Responsive input sizing */
+    @media (min-width: 1441px) {
+      input, select, textarea {
+        min-height: 52px;
+        border-radius: var(--radius-lg);
+      }
     }
     
     /* Elegant Scrollbar */
@@ -1206,542 +1415,6 @@
     @keyframes shimmer {
       0% { background-position: -200% 0; }
       100% { background-position: 200% 0; }
-    }
-
-    /* ========================================
-       DESKTOP APP DESIGN SYSTEM
-       Native desktop application appearance
-       ======================================== */
-    
-    /* Desktop Window Container */
-    .desktop-window {
-      margin: 0;
-      border-radius: 0;
-      box-shadow: none;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-    
-    @media (min-width: 1024px) {
-      .desktop-window {
-        margin: 20px;
-        border-radius: 16px;
-        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05);
-        min-height: calc(100vh - 40px);
-        overflow: hidden;
-      }
-    }
-    
-    /* Custom Title Bar */
-    .title-bar {
-      height: 52px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 16px;
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(20px) saturate(180%);
-      -webkit-backdrop-filter: blur(20px) saturate(180%);
-      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-      -webkit-app-region: drag;
-      user-select: none;
-      position: relative;
-      z-index: 100;
-    }
-    
-    .title-bar * {
-      -webkit-app-region: no-drag;
-    }
-    
-    .title-bar-logo {
-      width: 28px;
-      height: 28px;
-      border-radius: 6px;
-      object-fit: contain;
-    }
-    
-    .title-bar-title {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--gray-600);
-      letter-spacing: -0.02em;
-    }
-    
-    /* Window Control Buttons */
-    .window-controls {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    
-    .window-btn {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      border: none;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 9px;
-      color: rgba(0, 0, 0, 0.5);
-    }
-    
-    .window-btn:hover {
-      transform: scale(1.1);
-    }
-    
-    .window-btn::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      border-radius: 50%;
-      opacity: 0;
-      transition: opacity 0.2s ease;
-    }
-    
-    .window-btn:hover::before {
-      opacity: 1;
-    }
-    
-    /* macOS Style Window Controls */
-    .os-macos .window-controls {
-      order: -1;
-      gap: 8px;
-    }
-    
-    .os-macos .window-btn-close {
-      background: #ff5f57;
-    }
-    
-    .os-macos .window-btn-minimize {
-      background: #ffbd2e;
-    }
-    
-    .os-macos .window-btn-maximize {
-      background: #28ca42;
-    }
-    
-    .os-macos .window-btn:hover::after {
-      content: '';
-      position: absolute;
-      font-size: 10px;
-      font-weight: bold;
-      color: rgba(0, 0, 0, 0.7);
-    }
-    
-    .os-macos .window-btn-close:hover::after {
-      content: '✕';
-    }
-    
-    .os-macos .window-btn-minimize:hover::after {
-      content: '−';
-    }
-    
-    .os-macos .window-btn-maximize:hover::after {
-      content: '+';
-    }
-    
-    /* Windows Style Window Controls */
-    .os-windows .window-controls {
-      gap: 1px;
-    }
-    
-    .os-windows .window-btn {
-      width: 46px;
-      height: 32px;
-      border-radius: 0;
-      background: transparent;
-      color: var(--gray-600);
-      font-size: 10px;
-    }
-    
-    .os-windows .window-btn:hover {
-      background: rgba(0, 0, 0, 0.05);
-      transform: none;
-    }
-    
-    .os-windows .window-btn-close:hover {
-      background: #e81123;
-      color: white;
-    }
-    
-    .os-windows .window-btn::after {
-      content: '─';
-      font-size: 14px;
-      font-weight: 300;
-    }
-    
-    .os-windows .window-btn-minimize::after {
-      content: '─';
-    }
-    
-    .os-windows .window-btn-maximize::after {
-      content: '☐';
-      font-size: 12px;
-    }
-    
-    .os-windows .window-btn-close::after {
-      content: '✕';
-      font-size: 12px;
-    }
-    
-    /* Linux Style Window Controls */
-    .os-linux .window-controls {
-      order: 1;
-      gap: 6px;
-    }
-    
-    .os-linux .window-btn {
-      width: 28px;
-      height: 28px;
-      border-radius: 4px;
-      background: rgba(0, 0, 0, 0.05);
-      border: 1px solid rgba(0, 0, 0, 0.1);
-    }
-    
-    .os-linux .window-btn:hover {
-      background: rgba(0, 0, 0, 0.1);
-      transform: none;
-    }
-    
-    .os-linux .window-btn::after {
-      font-size: 12px;
-      color: var(--gray-600);
-    }
-    
-    .os-linux .window-btn-minimize::after {
-      content: '_';
-    }
-    
-    .os-linux .window-btn-maximize::after {
-      content: '□';
-    }
-    
-    .os-linux .window-btn-close::after {
-      content: '×';
-    }
-    
-    /* Desktop Sidebar */
-    .desktop-sidebar {
-      width: 250px;
-      background: rgba(255, 255, 255, 0.9);
-      backdrop-filter: blur(20px) saturate(180%);
-      -webkit-backdrop-filter: blur(20px) saturate(180%);
-      border-right: 1px solid rgba(0, 0, 0, 0.08);
-      display: flex;
-      flex-direction: column;
-      transition: width 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
-      position: relative;
-      z-index: 50;
-    }
-    
-    .desktop-sidebar.collapsed {
-      width: 70px;
-    }
-    
-    .sidebar-header {
-      flex-shrink: 0;
-    }
-    
-    .desktop-sidebar.collapsed .sidebar-header .sidebar-item-text {
-      display: none;
-    }
-    
-    .sidebar-nav {
-      flex: 1;
-      padding: 12px 8px;
-      overflow-y: auto;
-    }
-    
-    .sidebar-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 16px;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      color: var(--gray-600);
-      font-size: 14px;
-      font-weight: 500;
-      text-decoration: none;
-      white-space: nowrap;
-      margin-bottom: 4px;
-    }
-    
-    .sidebar-item:hover {
-      background: rgba(0, 113, 227, 0.08);
-      color: var(--primary);
-    }
-    
-    .sidebar-item.active {
-      background: rgba(0, 113, 227, 0.12);
-      color: var(--primary);
-    }
-    
-    .sidebar-item-icon {
-      font-size: 20px;
-      width: 24px;
-      text-align: center;
-      flex-shrink: 0;
-    }
-    
-    .sidebar-item-text {
-      flex: 1;
-      transition: opacity 0.2s ease;
-    }
-    
-    .desktop-sidebar.collapsed .sidebar-item-text {
-      opacity: 0;
-      width: 0;
-      overflow: hidden;
-    }
-    
-    .sidebar-toggle {
-      padding: 12px 16px;
-      border-top: 1px solid rgba(0, 0, 0, 0.08);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      color: var(--gray-400);
-      transition: all 0.2s ease;
-    }
-    
-    .sidebar-toggle:hover {
-      background: rgba(0, 0, 0, 0.03);
-      color: var(--gray-600);
-    }
-    
-    /* Main Content Area */
-    .desktop-content {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-    
-    .desktop-main {
-      flex: 1;
-      overflow-y: auto;
-      overflow-x: hidden;
-    }
-    
-    /* Status Bar */
-    .status-bar {
-      height: 28px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 16px;
-      background: rgba(245, 245, 247, 0.95);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-top: 1px solid rgba(0, 0, 0, 0.08);
-      font-size: 11px;
-      color: var(--gray-500);
-      user-select: none;
-    }
-    
-    .status-bar-section {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-    
-    .status-indicator {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    
-    .status-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--success);
-      animation: pulse-status 2s ease-in-out infinite;
-    }
-    
-    @keyframes pulse-status {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
-    }
-    
-    .status-dot.offline {
-      background: var(--gray-400);
-      animation: none;
-    }
-    
-    /* Dark Mode - Desktop App */
-    .dark .title-bar {
-      background: rgba(28, 28, 30, 0.9);
-      border-bottom-color: rgba(255, 255, 255, 0.08);
-    }
-    
-    .dark .title-bar-title {
-      color: #f5f5f7;
-    }
-    
-    .dark .desktop-sidebar {
-      background: rgba(28, 28, 30, 0.95);
-      border-right-color: rgba(255, 255, 255, 0.08);
-    }
-    
-    .dark .sidebar-item {
-      color: #a1a1a6;
-    }
-    
-    .dark .sidebar-item:hover {
-      background: rgba(0, 113, 227, 0.15);
-      color: #42a5f5;
-    }
-    
-    .dark .sidebar-item.active {
-      background: rgba(0, 113, 227, 0.2);
-      color: #42a5f5;
-    }
-    
-    .dark .sidebar-toggle {
-      border-top-color: rgba(255, 255, 255, 0.08);
-      color: #6e6e73;
-    }
-    
-    .dark .sidebar-toggle:hover {
-      background: rgba(255, 255, 255, 0.05);
-      color: #a1a1a6;
-    }
-    
-    .dark .status-bar {
-      background: rgba(28, 28, 30, 0.95);
-      border-top-color: rgba(255, 255, 255, 0.08);
-      color: #8e8e93;
-    }
-    
-    /* OS-Specific Styles */
-    
-    /* Windows - Fluent Design */
-    .os-windows .desktop-window {
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.1);
-    }
-    
-    .os-windows .title-bar {
-      background: rgba(249, 249, 249, 0.95);
-    }
-    
-    .os-windows.dark .title-bar {
-      background: rgba(32, 32, 32, 0.95);
-    }
-    
-    /* macOS - Apple Style */
-    .os-macos .desktop-window {
-      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.2), 0 0 0 0.5px rgba(0, 0, 0, 0.15);
-    }
-    
-    .os-macos .title-bar {
-      height: 52px;
-      background: rgba(246, 246, 246, 0.8);
-      backdrop-filter: blur(40px) saturate(200%);
-      -webkit-backdrop-filter: blur(40px) saturate(200%);
-    }
-    
-    .os-macos.dark .title-bar {
-      background: rgba(30, 30, 30, 0.8);
-    }
-    
-    .os-macos .desktop-sidebar {
-      background: rgba(246, 246, 246, 0.7);
-      backdrop-filter: blur(40px) saturate(200%);
-      -webkit-backdrop-filter: blur(40px) saturate(200%);
-    }
-    
-    .os-macos.dark .desktop-sidebar {
-      background: rgba(30, 30, 30, 0.7);
-    }
-    
-    /* Linux - GTK/Adwaita Style */
-    .os-linux .desktop-window {
-      border-radius: 12px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.15);
-    }
-    
-    .os-linux .title-bar {
-      background: #f6f5f4;
-      border-bottom: 1px solid #deddda;
-    }
-    
-    .os-linux.dark .title-bar {
-      background: #242424;
-      border-bottom-color: #3d3d3d;
-    }
-    
-    /* Hide desktop elements on mobile */
-    @media (max-width: 1023px) {
-      .title-bar,
-      .desktop-sidebar,
-      .status-bar {
-        display: none !important;
-      }
-      
-      .desktop-window {
-        margin: 0;
-        border-radius: 0;
-        box-shadow: none;
-      }
-      
-      .desktop-content {
-        flex: 1;
-      }
-    }
-    
-    /* Sidebar mobile toggle */
-    .sidebar-mobile-toggle {
-      display: none;
-    }
-    
-    @media (max-width: 1023px) {
-      .sidebar-mobile-toggle {
-        display: block;
-        position: fixed;
-        top: 16px;
-        left: 16px;
-        z-index: 100;
-        width: 44px;
-        height: 44px;
-        border-radius: 12px;
-        background: rgba(255, 255, 255, 0.9);
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(0, 0, 0, 0.1);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      }
-      
-      .dark .sidebar-mobile-toggle {
-        background: rgba(28, 28, 30, 0.9);
-        border-color: rgba(255, 255, 255, 0.1);
-      }
-      
-      .sidebar-mobile-toggle:hover {
-        transform: scale(1.05);
-      }
-      
-      .desktop-sidebar.mobile-open {
-        display: flex;
-        position: fixed;
-        top: 0;
-        left: 0;
-        height: 100vh;
-        z-index: 90;
-        box-shadow: 0 0 40px rgba(0, 0, 0, 0.3);
-      }
     }
     
     /* ========================================
@@ -1910,6 +1583,328 @@
   </div>
 
   <div id="root"></div>
+
+  <!-- Terms of Service Modal for Bancas (Outside React) -->
+  <div id="terms-modal-root" class="fixed inset-0 z-50 hidden overflow-y-auto overflow-x-hidden" style="-webkit-overflow-scrolling: touch;">
+    <div 
+      id="terms-modal-backdrop" 
+      class="fixed inset-0 bg-black/60 backdrop-blur-sm" 
+      onclick="window.closeTermsModal && window.closeTermsModal()"
+    ></div>
+    <div class="relative min-h-screen flex items-center justify-center p-4">
+      <div 
+        id="terms-modal-card" 
+        class="relative w-full max-w-4xl bg-white dark:bg-slate-800 rounded-2xl shadow-2xl overflow-hidden"
+        style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); border: 1px solid rgba(255, 255, 255, 0.18); max-height: 90vh;"
+      >
+        <!-- Modal Header -->
+        <div class="sticky top-0 z-10 bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6 flex items-center justify-between" style="background: linear-gradient(90deg, #2563eb 0%, #1d4ed8 100%);">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center text-2xl" style="background: rgba(255, 255, 255, 0.2); border-radius: 12px;">
+              📄
+            </div>
+            <div>
+              <h2 class="text-2xl font-bold">Términos y Condiciones</h2>
+              <p class="text-sm text-blue-100 mt-1">Para Bancas Asociadas a LotoLink</p>
+            </div>
+          </div>
+          <button 
+            onclick="window.closeTermsModal && window.closeTermsModal()"
+            class="w-10 h-10 bg-white/20 hover:bg-white/30 rounded-lg flex items-center justify-center transition-colors"
+            style="background: rgba(255, 255, 255, 0.2); border-radius: 8px; cursor: pointer; border: none;"
+            aria-label="Cerrar modal"
+          >
+            <span class="text-2xl">✕</span>
+          </button>
+        </div>
+        
+        <!-- Modal Content - Scrollable -->
+        <div class="overflow-y-auto" style="max-height: calc(90vh - 180px); -webkit-overflow-scrolling: touch; padding: 40px 50px; background: white; font-family: 'Times New Roman', Times, serif;">
+          
+          <!-- Contract-style header -->
+          <div style="text-align: center; margin-bottom: 30px; border-bottom: 2px solid #1f2937; padding-bottom: 20px;">
+            <h2 style="font-size: 22px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; color: #1f2937; margin-bottom: 10px;">TÉRMINOS DE SERVICIO PARA BANCAS</h2>
+            <p style="font-size: 14px; color: #4b5563; margin: 5px 0;"><strong>LOTOLINK SRL</strong></p>
+            <p style="font-size: 12px; color: #6b7280; margin: 5px 0;">Versión: 1.0 — Fecha de entrada en vigor: 23 de diciembre de 2025</p>
+          </div>
+          
+          <!-- Index -->
+          <div style="margin-bottom: 30px; padding: 20px; background: #f9fafb; border: 1px solid #e5e7eb;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 15px; text-align: center;">ÍNDICE</h3>
+            <div style="font-size: 13px; line-height: 2; color: #374151;">
+              <p style="margin: 5px 0;">1. Partes y Objeto</p>
+              <p style="margin: 5px 0;">2. Definiciones</p>
+              <p style="margin: 5px 0;">3. Elegibilidad, Registro y Validación</p>
+              <p style="margin: 5px 0;">4. Obligaciones de la Banca</p>
+              <p style="margin: 5px 0;">5. Obligaciones de LOTOLINK</p>
+              <p style="margin: 5px 0;">6. Pagos, Comisiones y Facturación</p>
+              <p style="margin: 5px 0;">7. Integraciones Técnicas y Herramientas</p>
+              <p style="margin: 5px 0;">8. Protección de Datos y Confidencialidad</p>
+              <p style="margin: 5px 0;">9. Prevención de Lavado de Activos (AML/KYC)</p>
+              <p style="margin: 5px 0;">10. Responsabilidad e Indemnización</p>
+              <p style="margin: 5px 0;">11. Suspensión y Terminación</p>
+              <p style="margin: 5px 0;">12. Modificaciones</p>
+              <p style="margin: 5px 0;">13. Resolución de Conflictos, Ley Aplicable y Jurisdicción</p>
+              <p style="margin: 5px 0;">14. Disposiciones Generales</p>
+              <p style="margin: 5px 0; font-style: italic;">Anexos: A. Checklist de Onboarding, B. Cláusula de Aceptación</p>
+            </div>
+          </div>
+          
+          <!-- Section 1: Partes y Objeto -->
+          <div style="margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #d1d5db; padding-bottom: 6px;">
+              1. PARTES Y OBJETO
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0;">Estos Términos de Servicio ("Términos") se celebran entre <strong>LOTOLINK SRL, RNC 123-456-789</strong>, con domicilio en Calle Fantasía #42, Santo Domingo, República Dominicana ("LOTOLINK"), y la persona jurídica o física que se registra como Banca en la plataforma ("Banca").</p>
+              <p style="margin: 8px 0;"><strong>Objeto:</strong> LOTOLINK provee una plataforma tecnológica que permite la recepción, transmisión y gestión de jugadas de lotería realizadas por Usuarios y la integración de Bancas para procesar dichas jugadas. LOTOLINK actúa exclusivamente como intermediario tecnológico y no como operador de lotería ni como pagador de premios.</p>
+            </div>
+          </div>
+          
+          <!-- Section 2: Definiciones -->
+          <div style="margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #d1d5db; padding-bottom: 6px;">
+              2. DEFINICIONES
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0;"><strong>Banca:</strong> Entidad o negocio, físico o digital, que se registra y valida para recibir jugadas a través de la Plataforma.</p>
+              <p style="margin: 8px 0;"><strong>Usuario:</strong> Persona natural que realiza jugadas por medio de la Plataforma.</p>
+              <p style="margin: 8px 0;"><strong>Plataforma / Sistema:</strong> Conjunto de aplicaciones móviles, paneles web, APIs, servicios y procesos operados por LOTOLINK.</p>
+              <p style="margin: 8px 0;"><strong>Jugadas / Boletos:</strong> Solicitudes de participación en sorteos que la Banca procesa y valida según reglas aplicables.</p>
+              <p style="margin: 8px 0;"><strong>Comisión:</strong> Porcentaje retenido por LOTOLINK sobre el importe de cada jugada vendida a través de la Plataforma.</p>
+              <p style="margin: 8px 0;"><strong>Integración:</strong> Modalidad técnica de conexión: API Directa, App White-Label (POS) o Middleware.</p>
+            </div>
+          </div>
+          
+          <!-- Section 3: Elegibilidad -->
+          <div style="margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #d1d5db; padding-bottom: 6px;">
+              3. ELEGIBILIDAD, REGISTRO Y VALIDACIÓN
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0;">La Banca declara que su actividad está permitida en su jurisdicción y que cumple con permisos, licencias y obligaciones legales aplicables. La Banca podrá ser ubicada dentro o fuera de la República Dominicana siempre que cumpla la regulación local pertinente.</p>
+              <p style="margin: 8px 0;"><strong>Documentación requerida:</strong> identificación del propietario/representante legal, RNC o NIT (si aplica), licencia o permiso de operación, datos bancarios para transferencias, cédula o documento de identidad y documentación adicional KYC/AML que LOTOLINK requiera.</p>
+              <p style="margin: 8px 0;">LOTOLINK podrá realizar verificaciones KYC/AML y auditorías; si la documentación no resulta satisfactoria, LOTOLINK podrá rechazar el registro o suspender la relación.</p>
+            </div>
+          </div>
+          
+          <!-- Section 4: Obligaciones de la Banca -->
+          <div style="margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #d1d5db; padding-bottom: 6px;">
+              4. OBLIGACIONES DE LA BANCA
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0;">• Pagar directamente los premios a los Usuarios ganadores de acuerdo con las reglas de la lotería y la Banca. LOTOLINK solo facilita la notificación y el proceso técnico.</p>
+              <p style="margin: 8px 0;">• Mantener vigentes licencias, permisos y registros, y notificar a LOTOLINK cualquier cambio que afecte la operación.</p>
+              <p style="margin: 8px 0;">• Cumplir las obligaciones fiscales y reportes exigidos por su jurisdicción; colaborar con auditorías y requerimientos regulatorios.</p>
+              <p style="margin: 8px 0;">• Implementar controles internos contra fraude y abuso, mantener la integridad de sus cuentas y proteger credenciales/API keys.</p>
+              <p style="margin: 8px 0;">• Responder a las reclamaciones de Usuarios y coordinar con LOTOLINK los procesos de verificación y resolución.</p>
+            </div>
+          </div>
+          
+          <!-- Section 5: Obligaciones de LOTOLINK -->
+          <div style="margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #d1d5db; padding-bottom: 6px;">
+              5. OBLIGACIONES DE LOTOLINK
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0;">• Proveer, mantener y operar la Plataforma con esfuerzos razonables para asegurar disponibilidad, seguridad y continuidad del servicio.</p>
+              <p style="margin: 8px 0;">• Retener las comisiones pactadas en el flujo de pagos, emitir comprobantes/facturas por las comisiones y remitir reportes periódicos a la Banca con detalle de ventas, comisiones y conciliaciones.</p>
+              <p style="margin: 8px 0;">• Implementar medidas técnicas y organizativas de seguridad y tratar los datos personales conforme a la Política de Privacidad y la Ley 172-13 de Protección de Datos Personales.</p>
+              <p style="margin: 8px 0;">• Notificar a la Banca de cambios técnicos relevantes, mantenimientos programados e incidentes de seguridad.</p>
+            </div>
+          </div>
+          
+          <!-- Section 6: Pagos y Comisiones -->
+          <div style="margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #d1d5db; padding-bottom: 6px;">
+              6. PAGOS, COMISIONES Y FACTURACIÓN
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0;">La Banca acepta que LOTOLINK retendrá una comisión porcentual sobre cada jugada vendida por la Plataforma. La comisión vigente al momento de entrada en vigor de estos Términos es del <strong>7%</strong> y podrá incrementarse hasta <strong>10%</strong> previa notificación con 30 días de antelación.</p>
+              <p style="margin: 8px 0;"><strong>Retención automática:</strong> las comisiones se retendrán automáticamente en el flujo de pago (por ejemplo, Stripe Connect) antes de transferir el saldo a la cuenta de la Banca.</p>
+              <p style="margin: 8px 0;"><strong>Facturación:</strong> LOTOLINK emitirá facturas o comprobantes por las comisiones cobradas. La Banca es responsable por impuestos, retenciones u otros cargos que su jurisdicción exija.</p>
+              <p style="margin: 8px 0;"><strong>Devoluciones y ajustes:</strong> en caso de transacciones rechazadas, fallidas o jugadas no aceptadas por la Banca, se aplicarán ajustes y notas de crédito conforme a la política de pagos y conciliación definida en la documentación técnica.</p>
+            </div>
+          </div>
+          
+          <!-- Section 7: Integraciones Técnicas -->
+          <div style="margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #d1d5db; padding-bottom: 6px;">
+              7. INTEGRACIONES TÉCNICAS Y HERRAMIENTAS
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0;">LOTOLINK soporta las siguientes modalidades de integración:</p>
+              <p style="margin: 8px 0;"><strong>• API Directa:</strong> Para Bancas con sistema propio. Se entregan especificaciones OpenAPI, claves y endpoints. La Banca es responsable de implementar llamadas con seguridad adecuada.</p>
+              <p style="margin: 8px 0;"><strong>• App White-Label / POS:</strong> Aplicación móvil proporcionada por LOTOLINK (marca blanca) para vendedores y POS que permita registrar jugadas y emitir comprobantes.</p>
+              <p style="margin: 8px 0;"><strong>• Middleware / Integración personalizada:</strong> Conexiones a medida para sistemas legacy o terceros.</p>
+              <p style="margin: 8px 0;"><strong>Responsabilidades técnicas:</strong> la Banca conservará en secreto sus credenciales y las claves API, respetará límites de uso y reportará errores a LOTOLINK. LOTOLINK no será responsable por integraciones realizadas por terceros elegidos por la Banca sin autorización.</p>
+              <p style="margin: 8px 0;"><strong>SLA y mantenimiento:</strong> LOTOLINK hará esfuerzos razonables por mantener la Plataforma disponible; los mantenimientos programados se anunciarán con antelación razonable.</p>
+            </div>
+          </div>
+          
+          <!-- Section 8: Protección de Datos -->
+          <div style="margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #d1d5db; padding-bottom: 6px;">
+              8. PROTECCIÓN DE DATOS Y CONFIDENCIALIDAD
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0;">Ambas partes cumplirán la <strong>Ley 172-13 de Protección de Datos Personales</strong> y normativa aplicable. LOTOLINK actuará como responsable del tratamiento de los datos procesados en la Plataforma.</p>
+              <p style="margin: 8px 0;">La Banca garantizará que cuenta con la base legal para el tratamiento de los datos que facilite a LOTOLINK y cooperará en la atención de solicitudes ARCO de Usuarios.</p>
+              <p style="margin: 8px 0;"><strong>Confidencialidad:</strong> la información técnica, comercial y de clientes se considera confidencial. Las partes mantendrán confidencialidad por tres (3) años tras la terminación del vínculo, salvo obligaciones legales en contrario.</p>
+            </div>
+          </div>
+          
+          <!-- Section 9: AML/KYC -->
+          <div style="margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #d1d5db; padding-bottom: 6px;">
+              9. PREVENCIÓN DE LAVADO DE ACTIVOS (AML/KYC)
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0;">La Banca implementará procedimientos KYC/AML conforme a su jurisdicción y cooperará con LOTOLINK para detectar y reportar operaciones sospechosas.</p>
+              <p style="margin: 8px 0;">LOTOLINK podrá requerir documentación adicional y suspender operaciones ante indicios de lavado de activos, fraude o conductas ilícitas, y reportar a autoridades competentes cuando sea obligatorio.</p>
+            </div>
+          </div>
+          
+          <!-- Section 10: Responsabilidad -->
+          <div style="margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #d1d5db; padding-bottom: 6px;">
+              10. RESPONSABILIDAD E INDEMNIZACIÓN
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0;">La Banca indemnizará y mantendrá indemne a LOTOLINK frente a reclamaciones, sanciones, pérdidas o gastos que resulten de: (i) incumplimiento por la Banca de leyes aplicables; (ii) impago de premios o deudas fiscales; (iii) fraude o manipulación de jugadas; (iv) violaciones de derechos de terceros.</p>
+              <p style="margin: 8px 0;">LOTOLINK indemnizará a la Banca únicamente por fallas técnicas demostrables imputables exclusivamente a LOTOLINK y que causen daño directo comprobable a la Banca.</p>
+              <p style="margin: 8px 0;"><strong>Limitación de responsabilidad:</strong> salvo por dolo o fraude, la responsabilidad total se limitará al mayor de: (a) las comisiones efectivamente pagadas por la Banca durante los doce (12) meses anteriores al evento; o (b) RD$100,000. En ningún caso se cubrirán daños indirectos o lucro cesante.</p>
+            </div>
+          </div>
+          
+          <!-- Section 11: Suspensión y Terminación -->
+          <div style="margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #d1d5db; padding-bottom: 6px;">
+              11. SUSPENSIÓN Y TERMINACIÓN
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0;">LOTOLINK podrá suspender o cancelar el acceso en caso de: fraude, impago, incumplimiento material, orden judicial, o riesgo reputacional. La suspensión podrá ser inmediata cuando existan indicios serios.</p>
+              <p style="margin: 8px 0;"><strong>Efectos:</strong> al terminar la relación, la Banca perderá acceso; obligaciones de pago, confidencialidad e indemnización subsistirán. LOTOLINK podrá retener fondos justificados para cubrir deudas pendientes.</p>
+              <p style="margin: 8px 0;">La Banca podrá resolver la relación con 30 días de aviso, coordinando la liquidación de operaciones en curso.</p>
+            </div>
+          </div>
+          
+          <!-- Section 12: Modificaciones -->
+          <div style="margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #d1d5db; padding-bottom: 6px;">
+              12. MODIFICACIONES
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0;">LOTOLINK podrá modificar estos Términos con 30 días de aviso previo; cambios urgentes por razones de seguridad o regulatorias podrán aplicarse con menor preaviso. El uso continuado implica aceptación.</p>
+            </div>
+          </div>
+          
+          <!-- Section 13: Resolución de Conflictos -->
+          <div style="margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #d1d5db; padding-bottom: 6px;">
+              13. RESOLUCIÓN DE CONFLICTOS, LEY APLICABLE Y JURISDICCIÓN
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0;"><strong>Ley aplicable:</strong> República Dominicana.</p>
+              <p style="margin: 8px 0;"><strong>Jurisdicción:</strong> Tribunales de Santo Domingo, República Dominicana.</p>
+            </div>
+          </div>
+          
+          <!-- Section 14: Disposiciones Generales -->
+          <div style="margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #d1d5db; padding-bottom: 6px;">
+              14. DISPOSICIONES GENERALES
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0;"><strong>Notificaciones:</strong> se enviarán a las direcciones registradas y a legal@lotolink.com.</p>
+              <p style="margin: 8px 0;"><strong>Cesión:</strong> la Banca no podrá ceder derechos sin consentimiento; LOTOLINK podrá ceder en eventos de fusión o venta de activos.</p>
+              <p style="margin: 8px 0;"><strong>Acuerdo completo:</strong> estos Términos y la Política de Privacidad constituyen el acuerdo completo.</p>
+            </div>
+          </div>
+          
+          <!-- Anexo A -->
+          <div style="margin-bottom: 25px; padding: 20px; background: #f9fafb; border: 1px solid #d1d5db;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase;">
+              ANEXO A — CHECKLIST DE ONBOARDING PARA BANCAS
+            </h3>
+            <div style="font-size: 13px; line-height: 1.8; color: #374151;">
+              <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                <tr style="background: #e5e7eb;">
+                  <th style="padding: 8px; text-align: left; border: 1px solid #d1d5db; font-weight: bold;">Documento</th>
+                  <th style="padding: 8px; text-align: left; border: 1px solid #d1d5db; font-weight: bold;">Descripción</th>
+                </tr>
+                <tr>
+                  <td style="padding: 8px; border: 1px solid #d1d5db;">Formulario completado</td>
+                  <td style="padding: 8px; border: 1px solid #d1d5db;">Datos del negocio, propietario, cuenta bancaria, contactos.</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px; border: 1px solid #d1d5db;">Documentos KYC</td>
+                  <td style="padding: 8px; border: 1px solid #d1d5db;">Cédula/ID, RNC/NIT, licencia de operación.</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px; border: 1px solid #d1d5db;">Integración técnica</td>
+                  <td style="padding: 8px; border: 1px solid #d1d5db;">Tipo API / App / Middleware y endpoints.</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px; border: 1px solid #d1d5db;">Pruebas</td>
+                  <td style="padding: 8px; border: 1px solid #d1d5db;">Pruebas de extremo a extremo: ventas, reembolsos y conciliación.</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px; border: 1px solid #d1d5db;">Firma/aceptación</td>
+                  <td style="padding: 8px; border: 1px solid #d1d5db;">Checkbox + registro de IP y timestamp.</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px; border: 1px solid #d1d5db;">Producción</td>
+                  <td style="padding: 8px; border: 1px solid #d1d5db;">Activación y monitoreo inicial 72 horas.</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          
+          <!-- Anexo B -->
+          <div style="margin-bottom: 25px; padding: 20px; background: #eff6ff; border: 2px solid #2563eb;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase;">
+              ANEXO B — CLÁUSULA DE ACEPTACIÓN
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0; font-weight: bold;">Al marcar esta casilla y enviar el formulario, declaro que soy representante legal de la banca, que la información suministrada es verdadera y que acepto quedar vinculado por los Términos para Bancas y la Política de Privacidad.</p>
+            </div>
+          </div>
+          
+          <!-- Contact Information -->
+          <div style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #1f2937; text-align: center;">
+            <h4 style="font-size: 14px; font-weight: bold; color: #1f2937; margin-bottom: 10px;">CONTACTO</h4>
+            <p style="font-size: 12px; color: #6b7280; line-height: 1.6;">
+              <strong>Soporte:</strong> soporte@lotolink.com<br>
+              <strong>Legal:</strong> legal@lotolink.com<br>
+              <strong>Privacidad:</strong> privacidad@lotolink.com
+            </p>
+          </div>
+          
+          <!-- Signature section -->
+          <div style="margin-top: 40px; padding-top: 30px; border-top: 2px solid #1f2937;">
+            <p style="font-size: 13px; color: #6b7280; text-align: center; line-height: 1.6;">
+              Este documento constituye el acuerdo completo entre las partes. La firma electrónica mediante la aceptación del checkbox tiene la misma validez legal que una firma manuscrita.
+            </p>
+          </div>
+          
+        </div>
+        
+        <!-- Modal Footer -->
+        <div class="sticky bottom-0 bg-gray-50 dark:bg-slate-900 border-t border-gray-200 dark:border-slate-700 p-6 flex justify-center" style="background: #f9fafb; border-top: 1px solid #e5e7eb; padding: 24px; display: flex; justify-content: center;">
+          <button 
+            onclick="window.closeTermsModal && window.closeTermsModal()"
+            class="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-full shadow-lg hover:shadow-xl transition-all transform hover:scale-105 flex items-center gap-2"
+            style="background: #2563eb; color: white; border: none; padding: 12px 32px; border-radius: 9999px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3); transition: all 0.2s;"
+          >
+            <span>✓</span>
+            <span>Entendido</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- React Libraries -->
   <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
@@ -2446,7 +2441,7 @@
                         className="mt-1 w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" 
                       />
                       <span className="text-sm text-gray-600 leading-tight">
-                        He leído y acepto los <a href="#" className="text-blue-600 hover:underline">Términos de Servicio</a>.
+                        He leído y acepto los <a href="#" onClick={(e) => { e.preventDefault(); window.openTermsModal && window.openTermsModal(); }} className="text-blue-600 hover:underline">Términos de Servicio</a>.
                       </span>
                     </label>
                   </div>
@@ -2743,7 +2738,7 @@
     }
 
     /* --- COMPONENT: BANCAS (With Portal Link) --- */
-    function Bancas({ banks, onPlay, onJoin, initialViewMode = 'list', focusBank = null, onLocationClick }) {
+    function Bancas({ banks, onPlay, onJoin, initialViewMode = 'list', focusBank = null }) {
       const [viewMode, setViewMode] = useState(initialViewMode);
       const mapInitializedRef = useRef(false);
       const mapInstanceRef = useRef(null);
@@ -2760,7 +2755,7 @@
               mapContainer.className = '';
               
               // Initialize Leaflet map
-              const centerCoords = focusBank ? focusBank.coords : [DEFAULT_LOCATION.latitude, DEFAULT_LOCATION.longitude];
+              const centerCoords = focusBank ? focusBank.coords : [18.4861, -69.9312];
               const zoomLevel = focusBank ? 16 : 13;
               
               const map = L.map('bancas-map-container').setView(centerCoords, zoomLevel);
@@ -2885,7 +2880,7 @@
                   <div className="flex gap-2">
                     <button onClick={() => onPlay(b)} className="px-5 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 shadow-sm">Jugar</button>
                     <button 
-                      onClick={() => onLocationClick ? onLocationClick(b) : setViewMode('map')} 
+                      onClick={() => setViewMode('map')} 
                       className="px-4 py-2 bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-gray-300 rounded-lg font-medium hover:bg-gray-200 dark:hover:bg-slate-600 transition"
                       title="Ver en mapa"
                     >
@@ -2968,6 +2963,7 @@
                   <button onClick={() => handleNavClick('demo')} className="px-4 py-2 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 font-medium transition-all">Demo/Mapa</button>
                   <button onClick={() => handleNavClick('loterias')} className="px-4 py-2 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 font-medium transition-all">Loterías</button>
                   <button onClick={() => handleNavClick('bancas')} className="px-4 py-2 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 font-medium transition-all">Bancas</button>
+                  <button onClick={() => handleNavClick('tickets')} className="px-4 py-2 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 font-medium transition-all">Mis Tickets</button>
                   <button onClick={() => handleNavClick('rankings')} className="px-4 py-2 pr-[52px] rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 font-medium transition-all">Rankings</button>
                 </nav>
               </div>
@@ -3146,6 +3142,7 @@
                     { icon: '🗺️', label: 'Demo / Mapa', view: 'demo' },
                     { icon: '🎰', label: 'Loterías', view: 'loterias' },
                     { icon: '🏪', label: 'Bancas', view: 'bancas' },
+                    { icon: '🎫', label: 'Mis Tickets', view: 'tickets' },
                     { icon: '🏆', label: 'Rankings', view: 'rankings' },
                     { icon: '⭐', label: 'Más Jugados', view: 'masjugados' },
                   ].map(item => (
@@ -3685,7 +3682,7 @@
             {/* Admin Panel Access - Only for admin users */}
             {user?.isAdmin && (
               <button 
-                onClick={() => setShowAdminLoginModal(true)}
+                onClick={() => window.open('admin-panel.html', '_blank')}
                 className="px-5 py-2.5 rounded-xl font-medium text-sm transition-all duration-300 bg-gradient-to-r from-purple-600 to-purple-700 text-white hover:from-purple-700 hover:to-purple-800 shadow-md flex items-center gap-2"
                 title="Acceder al Panel de Administración"
               >
@@ -4492,6 +4489,276 @@
       );
     }
 
+    /* --- COMPONENT: My Tickets --- */
+    function MyTickets({ user, onLogin }) {
+      const [tickets, setTickets] = useState(() => JSON.parse(localStorage.getItem("ll_history") || "[]"));
+      const [filterStatus, setFilterStatus] = useState('all');
+      const [selectedTicket, setSelectedTicket] = useState(null);
+      const [showTicketModal, setShowTicketModal] = useState(false);
+
+      const getStatusColor = (status) => {
+        switch (status) {
+          case 'confirmed': return 'text-green-500 bg-green-100 dark:bg-green-900/30';
+          case 'pending': return 'text-yellow-500 bg-yellow-100 dark:bg-yellow-900/30';
+          case 'won': return 'text-purple-500 bg-purple-100 dark:bg-purple-900/30';
+          case 'lost': return 'text-gray-500 bg-gray-100 dark:bg-gray-700/30';
+          default: return 'text-blue-500 bg-blue-100 dark:bg-blue-900/30';
+        }
+      };
+
+      const getStatusText = (status) => {
+        switch (status) {
+          case 'confirmed': return 'CONFIRMADO';
+          case 'pending': return 'PENDIENTE';
+          case 'won': return '¡GANADOR!';
+          case 'lost': return 'NO GANÓ';
+          default: return status?.toUpperCase() || 'PENDIENTE';
+        }
+      };
+
+      const filteredTickets = tickets.filter(t => {
+        if (filterStatus === 'all') return true;
+        return t.status === filterStatus;
+      });
+
+      if (!user) {
+        return (
+          <div className="flex flex-col items-center justify-center py-20 px-4">
+            <div className="text-6xl mb-6">🎟️</div>
+            <h2 className="text-2xl font-bold mb-4 dark:text-white">Inicia Sesión</h2>
+            <p className="text-gray-600 dark:text-gray-400 mb-6 text-center max-w-md">
+              Inicia sesión para ver tus tickets virtuales
+            </p>
+            <button onClick={onLogin} className="btn-apple-primary">
+              Iniciar Sesión
+            </button>
+          </div>
+        );
+      }
+
+      return (
+        <section className="mt-6">
+          <div className="mb-6">
+            <h2 className="text-3xl font-bold dark:text-white mb-2">Mis Tickets</h2>
+            <p className="text-gray-600 dark:text-gray-400">Tus tickets virtuales con información completa de banca y sucursal</p>
+          </div>
+
+          {/* Filter Tabs */}
+          <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
+            {['all', 'pending', 'confirmed', 'won'].map(status => (
+              <button
+                key={status}
+                onClick={() => setFilterStatus(status)}
+                className={`px-4 py-2 rounded-full font-medium whitespace-nowrap transition-all ${
+                  filterStatus === status
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                }`}
+              >
+                {status === 'all' ? 'Todos' : status === 'pending' ? 'Pendientes' : status === 'confirmed' ? 'Confirmados' : 'Ganadores'}
+              </button>
+            ))}
+          </div>
+
+          {/* Tickets List */}
+          {filteredTickets.length === 0 ? (
+            <div className="text-center py-20">
+              <div className="text-6xl mb-4">🎫</div>
+              <h3 className="text-xl font-bold dark:text-white mb-2">
+                {filterStatus === 'all' ? 'No tienes tickets' : `No hay tickets ${getStatusText(filterStatus).toLowerCase()}`}
+              </h3>
+              <p className="text-gray-600 dark:text-gray-400">
+                Comienza a jugar para ver tus tickets virtuales aquí
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {filteredTickets.map((ticket, idx) => (
+                <div 
+                  key={idx}
+                  className="premium-card p-4 cursor-pointer hover:shadow-lg transition-shadow"
+                  onClick={() => { setSelectedTicket(ticket); setShowTicketModal(true); }}
+                >
+                  {/* Ticket Header */}
+                  <div className="flex justify-between items-start mb-3">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-lg font-bold dark:text-white">🎰 {ticket.bancaName || 'LOTEKA'}</span>
+                        <span className={`text-xs px-2 py-1 rounded-full font-semibold ${getStatusColor(ticket.status)}`}>
+                          {getStatusText(ticket.status)}
+                        </span>
+                      </div>
+                      <div className="text-sm text-gray-600 dark:text-gray-400">
+                        Sucursal: <strong>{ticket.sucursalName || 'Principal'}</strong> • Código: {ticket.sucursalCode || '4000-01'}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Sorteo Info */}
+                  <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-3 mb-3">
+                    <div className="flex justify-between text-sm">
+                      <div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">SORTEO</div>
+                        <div className="font-semibold dark:text-white">{ticket.sorteoName || 'Lotería Real'}</div>
+                        <div className="text-xs text-blue-600">#{ticket.sorteoNumber || '00000'}</div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-xs text-gray-500 dark:text-gray-400">HORA</div>
+                        <div className="font-semibold dark:text-white">{ticket.sorteoTime || '1:00 PM'}</div>
+                        <div className="text-xs text-gray-500">{new Date(ticket.timestamp || Date.now()).toLocaleDateString('es-DO')}</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Bet Info */}
+                  <div className="border-t border-b border-gray-200 dark:border-gray-700 py-3 mb-3">
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <span className="inline-block bg-blue-600 text-white px-2 py-1 rounded text-xs font-semibold mr-2">
+                          {ticket.type || 'QN'}
+                        </span>
+                        <span className="font-mono font-semibold dark:text-white">
+                          {Array.isArray(ticket.numbers) ? ticket.numbers.join(' - ') : ticket.numbers}
+                        </span>
+                      </div>
+                      <div className="text-lg font-bold text-blue-600">
+                        RD$ {ticket.amount?.toFixed(2) || '0.00'}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Footer */}
+                  <div className="flex justify-between items-center text-xs text-gray-500 dark:text-gray-400">
+                    <span>Ticket: {ticket.ticketCode || ticket.id}</span>
+                    <span>👤 Op: {ticket.operatorId || 'N/A'}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Ticket Detail Modal */}
+          {showTicketModal && selectedTicket && (
+            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowTicketModal(false)}>
+              <div className="bg-white dark:bg-gray-800 rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+                {/* Modal Header */}
+                <div className="sticky top-0 bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6 rounded-t-2xl">
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                      <h3 className="text-2xl font-bold mb-2">🎰 {selectedTicket.bancaName || 'LOTEKA'}</h3>
+                      <div className="text-sm opacity-90">Sucursal: <strong>{selectedTicket.sucursalName || 'Principal'}</strong></div>
+                      <div className="text-xs opacity-75">Código: {selectedTicket.sucursalCode || '4000-01'}</div>
+                    </div>
+                    <button onClick={() => setShowTicketModal(false)} className="text-white hover:bg-white/20 w-8 h-8 rounded-full flex items-center justify-center">
+                      ✕
+                    </button>
+                  </div>
+                  <div className={`mt-3 inline-block px-3 py-1 rounded-full text-xs font-bold ${getStatusColor(selectedTicket.status)}`}>
+                    {getStatusText(selectedTicket.status)}
+                  </div>
+                </div>
+
+                {/* Modal Body */}
+                <div className="p-6">
+                  {/* Sorteo Info */}
+                  <div className="bg-gray-50 dark:bg-gray-900 rounded-xl p-4 mb-4">
+                    <div className="flex justify-between">
+                      <div>
+                        <div className="text-xs text-gray-500 uppercase">Sorteo</div>
+                        <div className="font-semibold text-lg dark:text-white">{selectedTicket.sorteoName || 'Lotería Real'}</div>
+                        <div className="text-sm text-blue-600 font-semibold">#{selectedTicket.sorteoNumber || '00000'}</div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-xs text-gray-500 uppercase">Hora</div>
+                        <div className="font-semibold dark:text-white">{selectedTicket.sorteoTime || '1:00 PM'}</div>
+                        <div className="text-sm text-gray-500">{new Date(selectedTicket.timestamp || Date.now()).toLocaleDateString('es-DO')}</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Bet Details */}
+                  <div className="border-t-2 border-b-2 border-dashed border-gray-300 dark:border-gray-600 py-4 mb-4">
+                    <div className="text-xs text-gray-500 uppercase mb-2">Jugadas</div>
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <span className="inline-block bg-blue-600 text-white px-3 py-1 rounded text-sm font-bold mr-2">
+                          {selectedTicket.type || 'QN'}
+                        </span>
+                        <span className="font-mono text-xl font-bold dark:text-white">
+                          {Array.isArray(selectedTicket.numbers) ? selectedTicket.numbers.join(' - ') : selectedTicket.numbers}
+                        </span>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-sm text-gray-500">Monto</div>
+                        <div className="text-xl font-bold text-gray-900 dark:text-white">
+                          RD$ {selectedTicket.amount?.toFixed(2) || '0.00'}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Total */}
+                  <div className="flex justify-between items-center mb-4 text-2xl font-bold">
+                    <span className="dark:text-white">TOTAL:</span>
+                    <span className="text-blue-600">RD$ {selectedTicket.amount?.toFixed(2) || '0.00'}</span>
+                  </div>
+
+                  {/* Barcode */}
+                  <div className="bg-gray-50 dark:bg-gray-900 rounded-xl p-6 text-center mb-4">
+                    <div className="font-mono text-4xl tracking-wider mb-2" style={{ fontFamily: "'Libre Barcode 128', monospace" }}>
+                      {selectedTicket.barcode || String(Date.now()).slice(-14)}
+                    </div>
+                    <div className="text-xs text-gray-500">{selectedTicket.ticketCode || selectedTicket.id}</div>
+                  </div>
+
+                  {/* Footer Info */}
+                  <div className="text-xs text-gray-600 dark:text-gray-400 space-y-2 border-t border-gray-200 dark:border-gray-700 pt-4">
+                    {selectedTicket.operatorId && (
+                      <div className="flex items-center gap-2">
+                        <span>👤</span>
+                        <span>Operador: {selectedTicket.operatorId}</span>
+                      </div>
+                    )}
+                    <div className="flex items-center gap-2">
+                      <span>✓</span>
+                      <span>Válido hasta: {new Date(Date.now() + 60*24*60*60*1000).toLocaleDateString('es-DO')}</span>
+                    </div>
+                    {selectedTicket.sucursalAddress && (
+                      <div className="flex items-center gap-2">
+                        <span>📍</span>
+                        <span>{selectedTicket.sucursalAddress}</span>
+                      </div>
+                    )}
+                    {selectedTicket.sucursalPhone && (
+                      <div className="flex items-center gap-2">
+                        <span>📞</span>
+                        <span>{selectedTicket.sucursalPhone}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Notice */}
+                  <div className="mt-4 text-center text-xs text-gray-500 italic">
+                    Verifique su jugada • Conserve este ticket
+                  </div>
+
+                  {/* Actions */}
+                  <div className="mt-6 flex gap-3">
+                    <button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-xl font-semibold transition-colors">
+                      🔗 Compartir
+                    </button>
+                    <button className="flex-1 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-900 dark:text-white py-3 px-4 rounded-xl font-semibold transition-colors">
+                      💾 Guardar
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </section>
+      );
+    }
+
     /* --- MAIN APP LOGIC --- */
     function LotoLinkApp() {
       const [view, setView] = useState("home");
@@ -4515,10 +4782,11 @@
       const [playModalStake, setPlayModalStake] = useState(10); // Stake amount
       const [showBranchSelector, setShowBranchSelector] = useState(false); // Branch selector in play modal
       const [showAuthModal, setShowAuthModal] = useState(false);
-      const [showAdminLoginModal, setShowAdminLoginModal] = useState(false);
-      const [adminUsername, setAdminUsername] = useState('');
-      const [adminPassword, setAdminPassword] = useState('');
-      const [adminLoginError, setAdminLoginError] = useState('');
+      // Multi-step auth states
+      const [authModalView, setAuthModalView] = useState('selection'); // 'selection' | 'phone' | 'otp' | 'email' | 'age' | 'admin'
+      const [currentPhone, setCurrentPhone] = useState('');
+      const [currentUserId, setCurrentUserId] = useState('');
+      const [isGuestMode, setIsGuestMode] = useState(() => localStorage.getItem('ll_guest') === 'true');
       const [isCartOpen, setIsCartOpen] = useState(false);
       const [theme, setTheme] = useState(() => localStorage.getItem('ll_theme') || 'light');
       const [showInstallGuide, setShowInstallGuide] = useState(null); // 'ios' | 'android' | 'desktop' | null
@@ -4542,8 +4810,9 @@
       const [showTicketConfirmation, setShowTicketConfirmation] = useState(false);
       const [confirmedTicket, setConfirmedTicket] = useState(null);
       
-      // App commission configuration
-      const APP_COMMISSION_RATE = 0.07; // 7% commission
+      // App commission configuration - fetched from backend
+      const [appServiceFeePercentage, setAppServiceFeePercentage] = useState(7); // Default 7%, will be fetched from backend
+      const APP_COMMISSION_RATE = appServiceFeePercentage / 100; // Convert percentage to decimal
 
       // Voice Assistant state - Natural language AI with personality, context memory, and varied responses
       const [isVoiceAssistantOpen, setIsVoiceAssistantOpen] = useState(false);
@@ -4557,12 +4826,6 @@
       const [welcomeStep, setWelcomeStep] = useState(0); // 0: loading, 1: greeting, 2: ask action
       const [assistantMode, setAssistantMode] = useState('idle'); // 'idle' | 'guided_play' | 'select_banca' | 'select_lottery' | 'select_modality' | 'select_numbers'
       const [guidedPlayData, setGuidedPlayData] = useState({ banca: null, lottery: null, modality: null, numbers: [] });
-      
-      // Desktop App State
-      const [desktopOS, setDesktopOS] = useState('windows'); // 'windows' | 'macos' | 'linux'
-      const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-      const [isSidebarMobileOpen, setIsSidebarMobileOpen] = useState(false);
-      const [currentTime, setCurrentTime] = useState(new Date());
       
       // AI Assistant configuration constants - Enhanced for LLM and TTS Integration
       const AI_CONFIG = {
@@ -5340,6 +5603,26 @@
         }
       }, [view]);
 
+      // Fetch app service fee percentage from backend on mount
+      useEffect(() => {
+        const fetchAppServiceFee = async () => {
+          try {
+            const API_BASE = window.API_BASE_URL || 'http://localhost:3000/api';
+            const response = await fetch(`${API_BASE}/public/settings/app-service-fee`);
+            if (response.ok) {
+              const data = await response.json();
+              setAppServiceFeePercentage(data.appServiceFeePercentage ?? 7);
+            } else {
+              console.warn('Failed to fetch app service fee, using default 7%');
+            }
+          } catch (error) {
+            console.error('Error fetching app service fee:', error);
+            // Keep default value of 7%
+          }
+        };
+        fetchAppServiceFee();
+      }, []); // Run once on mount
+
       // Load nearby bancas from API with geolocation
       const loadNearbyBancas = async () => {
         setLoadingBancas(true);
@@ -5461,7 +5744,7 @@
         const commission = Math.round(subtotal * APP_COMMISSION_RATE * 100) / 100;
         const total = subtotal + commission;
         return { subtotal, commission, total };
-      }, [cart]);
+      }, [cart, appServiceFeePercentage]); // Added appServiceFeePercentage dependency
       
       // Show payment options before checkout
       const initiateCheckout = () => { 
@@ -5517,26 +5800,6 @@
       useEffect(() => { window.addGlobalCartItem = (item) => addPlayToCart({ type: `${item.lottery} - ${item.modality}`, numbers: item.numbers, amount: item.stake, banca: item.banca || selectedBank?.name || 'Sin banca' }); return () => delete window.addGlobalCartItem; }, [selectedBank]);
       useEffect(() => { window.triggerPlayModal = (bankId) => { const bank = DEFAULT_BANKS.find(b => b.id === bankId); if(bank) { setSelectedBank(bank); setShowPlayModal(true); } }; return () => delete window.triggerPlayModal; }, []);
       
-      // Desktop App: OS Detection
-      useEffect(() => {
-        const userAgent = navigator.userAgent.toLowerCase();
-        if (userAgent.indexOf('mac') !== -1) {
-          setDesktopOS('macos');
-        } else if (userAgent.indexOf('linux') !== -1) {
-          setDesktopOS('linux');
-        } else {
-          setDesktopOS('windows');
-        }
-      }, []);
-      
-      // Desktop App: Update time every second for status bar
-      useEffect(() => {
-        const timer = setInterval(() => {
-          setCurrentTime(new Date());
-        }, 1000);
-        return () => clearInterval(timer);
-      }, []);
-      
       // Reset play modal state when opening
       const openPlayModal = (bank = null) => {
         if (bank) setSelectedBank(bank);
@@ -5585,160 +5848,9 @@
         setAssistantResponse(response);
         speakText(response);
       };
-      
-      // Handle bank location click - switch to map view and focus on bank
-      const handleBankLocationClick = (bank) => {
-        setBancasFocusBank(bank);
-        setBancasViewMode('map');
-      };
 
       return (
-        <div className={`${theme === 'dark' ? 'dark' : ''} os-${desktopOS}`}>
-          {/* Desktop Window Container */}
-          <div className="desktop-window">
-            {/* Custom Title Bar - Desktop only */}
-            <div className="title-bar">
-              <div className="flex items-center gap-3">
-                <div className="window-controls">
-                  <button className="window-btn window-btn-close" aria-label="Cerrar"></button>
-                  <button className="window-btn window-btn-minimize" aria-label="Minimizar"></button>
-                  <button className="window-btn window-btn-maximize" aria-label="Maximizar"></button>
-                </div>
-                <img src="./lotolink-logo.png" alt="LotoLink" className="title-bar-logo" />
-                <span className="title-bar-title">LotoLink — Premium Lottery App</span>
-              </div>
-              <div className="flex items-center gap-2">
-                {/* Desktop theme toggle */}
-                <button 
-                  onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} 
-                  className="hidden lg:flex w-8 h-8 items-center justify-center rounded-lg hover:bg-black/5 dark:hover:bg-white/10 transition-all text-sm"
-                  title="Cambiar tema"
-                >
-                  {theme === 'dark' ? '☀️' : '🌙'}
-                </button>
-              </div>
-            </div>
-
-            {/* Main Layout: Sidebar + Content */}
-            <div className="flex flex-1 overflow-hidden">
-              {/* Desktop Sidebar - Desktop only */}
-              <aside className={`desktop-sidebar ${isSidebarCollapsed ? 'collapsed' : ''} ${isSidebarMobileOpen ? 'mobile-open' : ''}`}>
-                {/* Sidebar Header with LotoLink Title */}
-                <div className="sidebar-header p-4 border-b border-gray-200 dark:border-white/10">
-                  <div className="flex items-center gap-3">
-                    <img src="./lotolink-logo.png" alt="LotoLink" className="w-10 h-10 rounded-lg object-contain flex-shrink-0" />
-                    <div className={`sidebar-item-text ${isSidebarCollapsed ? 'hidden' : ''}`}>
-                      <div className="font-bold text-lg text-gray-900 dark:text-white">LotoLink</div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400">Premium Lottery</div>
-                    </div>
-                  </div>
-                </div>
-                
-                <nav className="sidebar-nav">
-                  <a onClick={() => { setView('home'); setIsSidebarMobileOpen(false); }} className={`sidebar-item ${view === 'home' ? 'active' : ''}`}>
-                    <span className="sidebar-item-icon">🏠</span>
-                    <span className="sidebar-item-text">Inicio</span>
-                  </a>
-                  <a onClick={() => { openPlayModal(DEFAULT_BANKS[0]); setIsSidebarMobileOpen(false); }} className="sidebar-item">
-                    <span className="sidebar-item-icon">🎟️</span>
-                    <span className="sidebar-item-text">Jugar Lotería</span>
-                  </a>
-                  <a onClick={() => { setView('loterias'); setIsSidebarMobileOpen(false); }} className={`sidebar-item ${view === 'loterias' ? 'active' : ''}`}>
-                    <span className="sidebar-item-icon">🎰</span>
-                    <span className="sidebar-item-text">Loterías</span>
-                  </a>
-                  <a onClick={() => { setView('bancas'); setIsSidebarMobileOpen(false); }} className={`sidebar-item ${view === 'bancas' ? 'active' : ''}`}>
-                    <span className="sidebar-item-icon">🏪</span>
-                    <span className="sidebar-item-text">Bancas</span>
-                  </a>
-                  <a onClick={() => { setView('profile'); setIsSidebarMobileOpen(false); }} className={`sidebar-item ${view === 'profile' ? 'active' : ''}`}>
-                    <span className="sidebar-item-icon">🎫</span>
-                    <span className="sidebar-item-text">Mis Tickets</span>
-                  </a>
-                  <a onClick={() => { setView('how'); setIsSidebarMobileOpen(false); }} className={`sidebar-item ${view === 'how' ? 'active' : ''}`}>
-                    <span className="sidebar-item-icon">📖</span>
-                    <span className="sidebar-item-text">Cómo funciona</span>
-                  </a>
-                  <a onClick={() => { setView('demo'); setIsSidebarMobileOpen(false); }} className={`sidebar-item ${view === 'demo' ? 'active' : ''}`}>
-                    <span className="sidebar-item-icon">🗺️</span>
-                    <span className="sidebar-item-text">Mapa</span>
-                  </a>
-                  <a onClick={() => { setView('rankings'); setIsSidebarMobileOpen(false); }} className={`sidebar-item ${view === 'rankings' ? 'active' : ''}`}>
-                    <span className="sidebar-item-icon">🏅</span>
-                    <span className="sidebar-item-text">Rankings</span>
-                  </a>
-                  
-                  {/* Winning Tickets Indicator */}
-                  {winningTickets.length > 0 && (
-                    <a onClick={() => { setShowWinningTicketsModal(true); setIsSidebarMobileOpen(false); }} className="sidebar-item">
-                      <span className="sidebar-item-icon">🏆</span>
-                      <span className="sidebar-item-text flex items-center gap-2">
-                        <span>Ganadores</span>
-                        <span className="bg-green-600 text-white text-xs font-bold px-2 py-0.5 rounded-full">{winningTickets.length}</span>
-                      </span>
-                    </a>
-                  )}
-                  
-                  {/* Registered Card */}
-                  {registeredCard && (
-                    <a onClick={() => { setShowCardManagement(true); setIsSidebarMobileOpen(false); }} className="sidebar-item">
-                      <span className="sidebar-item-icon">💳</span>
-                      <span className="sidebar-item-text flex items-center gap-2">
-                        <span>Tarjeta</span>
-                        <span className="font-mono text-xs">•••{registeredCard.lastFour}</span>
-                      </span>
-                    </a>
-                  )}
-                  
-                  <div className="mt-4 border-t border-gray-200 dark:border-white/10 pt-4">
-                    {/* Security Badge */}
-                    <div className={`px-4 py-2 mb-2 ${isSidebarCollapsed ? 'hidden' : ''}`}>
-                      <div className="trust-badge text-xs">
-                        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                        </svg>
-                        <span>App Segura</span>
-                      </div>
-                    </div>
-                    
-                    <a onClick={() => { setTheme(theme === 'dark' ? 'light' : 'dark'); }} className="sidebar-item">
-                      <span className="sidebar-item-icon">{theme === 'dark' ? '☀️' : '🌙'}</span>
-                      <span className="sidebar-item-text">Modo {theme === 'dark' ? 'Claro' : 'Oscuro'}</span>
-                    </a>
-                    {user ? (
-                      <a onClick={() => { setUser(null); localStorage.removeItem("ll_user"); setIsSidebarMobileOpen(false); }} className="sidebar-item">
-                        <span className="sidebar-item-icon">👤</span>
-                        <span className="sidebar-item-text">Cerrar Sesión</span>
-                      </a>
-                    ) : (
-                      <a onClick={() => { setShowAuthModal(true); setIsSidebarMobileOpen(false); }} className="sidebar-item">
-                        <span className="sidebar-item-icon">👤</span>
-                        <span className="sidebar-item-text">Iniciar Sesión</span>
-                      </a>
-                    )}
-                  </div>
-                </nav>
-                <div className="sidebar-toggle" onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}>
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={isSidebarCollapsed ? "M9 5l7 7-7 7" : "M15 19l-7-7 7-7"} />
-                  </svg>
-                </div>
-              </aside>
-
-              {/* Mobile Sidebar Toggle Button */}
-              <button 
-                className="sidebar-mobile-toggle"
-                onClick={() => setIsSidebarMobileOpen(!isSidebarMobileOpen)}
-                aria-label="Menú"
-              >
-                <svg className="w-6 h-6 text-gray-700 dark:text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              </button>
-
-              {/* Main Content Area */}
-              <div className="desktop-content">
-                <div className="desktop-main">
+        <div className={theme === 'dark' ? 'dark' : ''}>
           {/* Welcome Screen with AI Assistant */}
           {showWelcomeScreen && (
             <div className="fixed inset-0 z-[100] bg-gradient-to-br from-gray-900 via-slate-900 to-gray-800 flex items-center justify-center">
@@ -5808,12 +5920,7 @@
             </div>
           )}
 
-          {/* Mobile Header - Hidden on Desktop (lg+) */}
-          {view !== 'portal' && (
-            <div className="lg:hidden">
-              <Header theme={theme} setTheme={setTheme} user={user} onLogin={()=>setShowAuthModal(true)} onLogout={()=>{setUser(null);localStorage.removeItem("ll_user")}} onNav={setView} onOpenPlay={()=>openPlayModal(DEFAULT_BANKS[0])} cartCount={cart.length} onToggleCart={()=>setIsCartOpen(true)} winningTicketsCount={winningTickets.length} onShowWinningTickets={() => setShowWinningTicketsModal(true)} registeredCard={registeredCard} onManageCard={() => setShowCardManagement(true)} />
-            </div>
-          )}
+          {view !== 'portal' && (<Header theme={theme} setTheme={setTheme} user={user} onLogin={()=>setShowAuthModal(true)} onLogout={()=>{setUser(null);localStorage.removeItem("ll_user")}} onNav={setView} onOpenPlay={()=>openPlayModal(DEFAULT_BANKS[0])} cartCount={cart.length} onToggleCart={()=>setIsCartOpen(true)} winningTicketsCount={winningTickets.length} onShowWinningTickets={() => setShowWinningTicketsModal(true)} registeredCard={registeredCard} onManageCard={() => setShowCardManagement(true)} />)}
 
           <main className="max-w-7xl mx-auto px-4 sm:px-6 pb-24 lg:pb-32" style={{ paddingBottom: 'max(96px, calc(24px + env(safe-area-inset-bottom)))' }}>
             {view === "home" && (
@@ -6069,9 +6176,10 @@
               </>
             )}
 
-            {view === "bancas" && <Bancas banks={DEFAULT_BANKS} onPlay={(b) => openPlayModal(b)} onJoin={() => setView("portal")} initialViewMode={bancasViewMode} focusBank={bancasFocusBank} onLocationClick={handleBankLocationClick} />}
+            {view === "bancas" && <Bancas banks={DEFAULT_BANKS} onPlay={(b) => openPlayModal(b)} onJoin={() => setView("portal")} initialViewMode={bancasViewMode} focusBank={bancasFocusBank} />}
             {view === "portal" && <BancaPortal onBack={() => setView("home")} />}
             {view === "profile" && <Profile user={user} ticket={ticket} registeredCards={registeredCards} onManageCards={() => setShowCardManagement(true)} onLogin={() => setShowAuthModal(true)} />}
+            {view === "tickets" && <MyTickets user={user} onLogin={() => setShowAuthModal(true)} />}
             {view === "rankings" && <Rankings />}
             {view === "masjugados" && <MostPlayedSection most={MOST_PLAYED} />}
             {view === "join" && <JoinUs />}
@@ -6242,78 +6350,80 @@
           {/* Play Modal - Step by Step */}
           {showPlayModal && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-              <div className="bg-white dark:bg-slate-800 w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden animate-fade-in">
-                {/* Modal Header */}
-                <div className="p-6 bg-gray-50 dark:bg-slate-900 border-b dark:border-slate-700 flex justify-between items-center">
-                  <div className="flex items-center gap-3">
-                    <div>
-                      <div className="text-sm text-gray-500 dark:text-gray-400">Jugando en</div>
-                      <div className="font-bold text-lg dark:text-white">{selectedBank?.name ?? '—'}</div>
+              <div className="bg-white dark:bg-slate-800 w-full max-w-4xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden animate-fade-in">
+                {/* Modal Header - Fixed */}
+                <div className="flex-shrink-0">
+                  <div className="p-6 bg-gray-50 dark:bg-slate-900 border-b dark:border-slate-700 flex justify-between items-center">
+                    <div className="flex items-center gap-3">
+                      <div>
+                        <div className="text-sm text-gray-500 dark:text-gray-400">Jugando en</div>
+                        <div className="font-bold text-lg dark:text-white">{selectedBank?.name ?? '—'}</div>
+                      </div>
+                      <button 
+                        type="button"
+                        onClick={() => setShowBranchSelector(!showBranchSelector)}
+                        className="px-3 py-1.5 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full text-sm font-medium hover:bg-blue-200 dark:hover:bg-blue-800/40 transition-colors flex items-center gap-1 cursor-pointer"
+                        style={{ cursor: 'pointer' }}
+                      >
+                        📍 Cambiar Sucursal
+                      </button>
                     </div>
-                    <button 
-                      type="button"
-                      onClick={() => setShowBranchSelector(!showBranchSelector)}
-                      className="px-3 py-1.5 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full text-sm font-medium hover:bg-blue-200 dark:hover:bg-blue-800/40 transition-colors flex items-center gap-1 cursor-pointer"
-                      style={{ cursor: 'pointer' }}
-                    >
-                      📍 Cambiar Sucursal
-                    </button>
+                    <button onClick={closePlayModal} className="text-gray-400 hover:text-black dark:hover:text-white text-2xl">✕</button>
                   </div>
-                  <button onClick={closePlayModal} className="text-gray-400 hover:text-black dark:hover:text-white text-2xl">✕</button>
+                  
+                  {/* Branch Selector Dropdown */}
+                  {showBranchSelector && (
+                    <div className="p-4 bg-blue-50 dark:bg-slate-800 border-b dark:border-slate-700">
+                      <div className="flex justify-between items-center mb-3">
+                        <div className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                          Selecciona otra sucursal:
+                        </div>
+                        {loadingBancas && (
+                          <div className="text-xs text-gray-500">Cargando...</div>
+                        )}
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                        {availableBancas.map(bank => (
+                          <button
+                            type="button"
+                            key={bank.id}
+                            onClick={() => {
+                              setSelectedBank(bank);
+                              localStorage.setItem('ll_selected_banca', JSON.stringify(bank));
+                              setShowBranchSelector(false);
+                            }}
+                            className={`p-3 rounded-lg text-left transition-all cursor-pointer ${
+                              selectedBank?.id === bank.id 
+                                ? 'bg-blue-600 text-white' 
+                                : 'bg-white dark:bg-slate-700 hover:bg-blue-100 dark:hover:bg-slate-600'
+                            }`}
+                            style={{ cursor: 'pointer' }}
+                          >
+                            <div className="font-medium dark:text-white">{bank.name}</div>
+                            <div className={`text-xs ${selectedBank?.id === bank.id ? 'text-blue-100' : 'text-gray-500 dark:text-gray-400'}`}>
+                              📍 {bank.address}
+                            </div>
+                            {bank.phone && (
+                              <div className={`text-xs mt-1 ${selectedBank?.id === bank.id ? 'text-blue-100' : 'text-gray-500 dark:text-gray-400'}`}>
+                                📞 {bank.phone}
+                              </div>
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={loadNearbyBancas}
+                        className="mt-3 w-full py-2 px-4 bg-white dark:bg-slate-700 border border-gray-300 dark:border-slate-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-600 transition-colors"
+                      >
+                        🔄 Actualizar bancas cercanas
+                      </button>
+                    </div>
+                  )}
                 </div>
                 
-                {/* Branch Selector Dropdown */}
-                {showBranchSelector && (
-                  <div className="p-4 bg-blue-50 dark:bg-slate-800 border-b dark:border-slate-700">
-                    <div className="flex justify-between items-center mb-3">
-                      <div className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                        Selecciona otra sucursal:
-                      </div>
-                      {loadingBancas && (
-                        <div className="text-xs text-gray-500">Cargando...</div>
-                      )}
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                      {availableBancas.map(bank => (
-                        <button
-                          type="button"
-                          key={bank.id}
-                          onClick={() => {
-                            setSelectedBank(bank);
-                            localStorage.setItem('ll_selected_banca', JSON.stringify(bank));
-                            setShowBranchSelector(false);
-                          }}
-                          className={`p-3 rounded-lg text-left transition-all cursor-pointer ${
-                            selectedBank?.id === bank.id 
-                              ? 'bg-blue-600 text-white' 
-                              : 'bg-white dark:bg-slate-700 hover:bg-blue-100 dark:hover:bg-slate-600'
-                          }`}
-                          style={{ cursor: 'pointer' }}
-                        >
-                          <div className="font-medium dark:text-white">{bank.name}</div>
-                          <div className={`text-xs ${selectedBank?.id === bank.id ? 'text-blue-100' : 'text-gray-500 dark:text-gray-400'}`}>
-                            📍 {bank.address}
-                          </div>
-                          {bank.phone && (
-                            <div className={`text-xs mt-1 ${selectedBank?.id === bank.id ? 'text-blue-100' : 'text-gray-500 dark:text-gray-400'}`}>
-                              📞 {bank.phone}
-                            </div>
-                          )}
-                        </button>
-                      ))}
-                    </div>
-                    <button
-                      type="button"
-                      onClick={loadNearbyBancas}
-                      className="mt-3 w-full py-2 px-4 bg-white dark:bg-slate-700 border border-gray-300 dark:border-slate-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-600 transition-colors"
-                    >
-                      🔄 Actualizar bancas cercanas
-                    </button>
-                  </div>
-                )}
-                
-                {/* Modal Body */}
-                <div className="p-8">
+                {/* Modal Body - Scrollable */}
+                <div className="flex-1 overflow-y-auto overflow-x-hidden p-8" style={{ WebkitOverflowScrolling: 'touch' }}>
                   {/* Step 1: Select Lottery */}
                   {playModalStep === 'lottery' && (
                     <div>
@@ -6576,8 +6686,8 @@
                 <input 
                   id="loginEmail"
                   className="w-full border border-gray-200 dark:border-white/10 p-4 rounded-xl mb-4 bg-gray-50 dark:bg-white/5 dark:text-white focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition-all" 
-                  placeholder="Tu email" 
-                  type="email"
+                  placeholder="Tu email o usuario" 
+                  type="text"
                 />
                 <input 
                   id="loginPhone"
@@ -6605,6 +6715,35 @@
                     
                     if(pwd.length < 8) {
                       alert('La contraseña debe tener al menos 8 caracteres');
+                      return;
+                    }
+                    
+                    // ===== ADMIN AUTHENTICATION =====
+                    // Special admin credentials check
+                    const ADMIN_USERNAME = 'admin';
+                    const ADMIN_PASSWORD = 'Admin@LotoLink2024';
+                    
+                    if ((e.toLowerCase() === ADMIN_USERNAME || e.toLowerCase() === 'administrador') && pwd === ADMIN_PASSWORD) {
+                      // Admin login successful
+                      const adminUser = {
+                        name: n || 'Administrador',
+                        email: 'admin@lotolink.com',
+                        phone: p || 'N/A',
+                        id: uid("ADMIN"),
+                        isAdmin: true,
+                        role: 'admin',
+                        adminLevel: 'super'
+                      };
+                      setUser(adminUser);
+                      localStorage.setItem("ll_user", JSON.stringify(adminUser));
+                      localStorage.setItem("ll_admin_auth", "true");
+                      localStorage.setItem("ll_admin_timestamp", Date.now().toString());
+                      setShowAuthModal(false);
+                      
+                      // Show success notification
+                      setTimeout(() => {
+                        alert('✅ Bienvenido, Administrador!\n\nAhora puedes acceder al Panel de Administración desde tu perfil.');
+                      }, 300);
                       return;
                     }
                     
@@ -6674,149 +6813,19 @@
                 >
                   Cancelar
                 </button>
-              </div>
-            </div>
-          )}
-
-          {/* Admin Login Modal */}
-          {showAdminLoginModal && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center modal-backdrop p-4">
-              <div className="premium-card w-full max-w-sm p-8 text-center animate-fade-in">
-                <div className="w-20 h-20 bg-gradient-to-br from-purple-600 to-purple-700 rounded-3xl flex items-center justify-center mx-auto mb-6 text-4xl shadow-lg shadow-purple-500/30">
-                  🔐
-                </div>
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Panel de Administración</h3>
-                <p className="text-gray-500 dark:text-gray-400 mb-6">Ingresa tus credenciales de administrador</p>
                 
-                {adminLoginError && (
-                  <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-600 dark:text-red-400 text-sm animate-fade-in">
-                    {adminLoginError}
+                {/* Admin Login Info */}
+                <div className="mt-6 p-4 bg-purple-50 dark:bg-purple-900/20 rounded-xl border-2 border-purple-200 dark:border-purple-800">
+                  <div className="flex items-start gap-3">
+                    <span className="text-2xl">👑</span>
+                    <div className="flex-1 text-left">
+                      <p className="text-xs font-bold text-purple-900 dark:text-purple-200 mb-1">Acceso para Administradores</p>
+                      <p className="text-xs text-purple-700 dark:text-purple-300">
+                        <strong>Usuario:</strong> admin<br/>
+                        <strong>Contraseña:</strong> Admin@LotoLink2024
+                      </p>
+                    </div>
                   </div>
-                )}
-                
-                <input 
-                  value={adminUsername}
-                  onChange={(e) => {
-                    setAdminUsername(e.target.value);
-                    setAdminLoginError('');
-                  }}
-                  className="w-full border border-gray-200 dark:border-white/10 p-4 rounded-xl mb-4 bg-gray-50 dark:bg-white/5 dark:text-white focus:ring-2 focus:ring-purple-500/30 focus:border-purple-500 transition-all" 
-                  placeholder="Usuario" 
-                  autoComplete="off"
-                  onKeyPress={(e) => {
-                    if (e.key === 'Enter') {
-                      // Validar credenciales de administrador
-                      const ADMIN_CREDENTIALS = {
-                        username: 'admin',
-                        password: 'lotolink2024'
-                      };
-                      
-                      if(!adminUsername || !adminPassword) {
-                        setAdminLoginError('Por favor completa todos los campos');
-                        return;
-                      }
-                      
-                      if(adminUsername === ADMIN_CREDENTIALS.username && adminPassword === ADMIN_CREDENTIALS.password) {
-                        setShowAdminLoginModal(false);
-                        window.open('admin-panel.html', '_blank');
-                        setAdminUsername('');
-                        setAdminPassword('');
-                        setAdminLoginError('');
-                      } else {
-                        setAdminLoginError('❌ Credenciales incorrectas. Por favor verifica tu usuario y contraseña.');
-                        setAdminPassword('');
-                      }
-                    }
-                  }}
-                />
-                <input 
-                  value={adminPassword}
-                  onChange={(e) => {
-                    setAdminPassword(e.target.value);
-                    setAdminLoginError('');
-                  }}
-                  className="w-full border border-gray-200 dark:border-white/10 p-4 rounded-xl mb-6 bg-gray-50 dark:bg-white/5 dark:text-white focus:ring-2 focus:ring-purple-500/30 focus:border-purple-500 transition-all" 
-                  placeholder="Contraseña" 
-                  type="password"
-                  autoComplete="off"
-                  onKeyPress={(e) => {
-                    if (e.key === 'Enter') {
-                      // Validar credenciales de administrador
-                      const ADMIN_CREDENTIALS = {
-                        username: 'admin',
-                        password: 'lotolink2024'
-                      };
-                      
-                      if(!adminUsername || !adminPassword) {
-                        setAdminLoginError('Por favor completa todos los campos');
-                        return;
-                      }
-                      
-                      if(adminUsername === ADMIN_CREDENTIALS.username && adminPassword === ADMIN_CREDENTIALS.password) {
-                        setShowAdminLoginModal(false);
-                        window.open('admin-panel.html', '_blank');
-                        setAdminUsername('');
-                        setAdminPassword('');
-                        setAdminLoginError('');
-                      } else {
-                        setAdminLoginError('❌ Credenciales incorrectas. Por favor verifica tu usuario y contraseña.');
-                        setAdminPassword('');
-                      }
-                    }
-                  }}
-                />
-                
-                <button 
-                  onClick={() => { 
-                    // Validar credenciales de administrador
-                    // NOTA: Estas credenciales deben ser cambiadas en producción
-                    // y debe implementarse un sistema de autenticación más robusto
-                    const ADMIN_CREDENTIALS = {
-                      username: 'admin',
-                      password: 'lotolink2024'
-                    };
-                    
-                    if(!adminUsername || !adminPassword) {
-                      setAdminLoginError('Por favor completa todos los campos');
-                      return;
-                    }
-                    
-                    if(adminUsername === ADMIN_CREDENTIALS.username && adminPassword === ADMIN_CREDENTIALS.password) {
-                      // Credenciales correctas - abrir panel admin
-                      setShowAdminLoginModal(false);
-                      window.open('admin-panel.html', '_blank');
-                      
-                      // Limpiar los campos y error
-                      setAdminUsername('');
-                      setAdminPassword('');
-                      setAdminLoginError('');
-                    } else {
-                      // Credenciales incorrectas
-                      setAdminLoginError('❌ Credenciales incorrectas. Por favor verifica tu usuario y contraseña.');
-                      setAdminPassword('');
-                    }
-                  }} 
-                  className="w-full py-4 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-xl font-bold hover:from-purple-700 hover:to-purple-800 transition-all shadow-lg"
-                >
-                  Acceder al Panel
-                </button>
-                
-                <button 
-                  onClick={() => {
-                    setShowAdminLoginModal(false);
-                    setAdminUsername('');
-                    setAdminPassword('');
-                    setAdminLoginError('');
-                  }} 
-                  className="mt-4 text-gray-500 dark:text-gray-400 text-sm hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
-                >
-                  Cancelar
-                </button>
-                
-                <div className="mt-6 pt-6 border-t border-gray-200 dark:border-white/10">
-                  <p className="text-xs text-gray-400 dark:text-gray-500">
-                    🔒 Área restringida solo para administradores
-                  </p>
                 </div>
               </div>
             </div>
@@ -7037,7 +7046,7 @@
                         <span className="font-medium dark:text-white">RD$ {cartTotals.subtotal.toLocaleString('es-DO')}</span>
                       </div>
                       <div className="flex justify-between text-orange-600 dark:text-orange-400">
-                        <span>Servicio App (7%):</span>
+                        <span>Servicio App ({appServiceFeePercentage}%):</span>
                         <span className="font-medium">RD$ {cartTotals.commission.toLocaleString('es-DO')}</span>
                       </div>
                       <div className="border-t dark:border-slate-600 pt-2 mt-2">
@@ -7179,6 +7188,26 @@
                     <div className="text-center mb-4">
                       <div className="font-mono text-lg font-bold text-blue-600">#{confirmedTicket.id}</div>
                       <div className="text-sm text-gray-500 dark:text-gray-400">{confirmedTicket.bank}</div>
+                      {confirmedTicket.sucursal && (
+                        <div className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                          📍 Sucursal: {confirmedTicket.sucursal}
+                        </div>
+                      )}
+                      {confirmedTicket.sorteoName && (
+                        <div className="text-xs text-blue-500 dark:text-blue-400 mt-1 font-semibold">
+                          🎯 {confirmedTicket.sorteoName} {confirmedTicket.sorteoNumber && `#${confirmedTicket.sorteoNumber}`}
+                        </div>
+                      )}
+                      {confirmedTicket.sorteoTime && (
+                        <div className="text-xs text-gray-500 dark:text-gray-400">
+                          ⏰ Sorteo: {confirmedTicket.sorteoTime}
+                        </div>
+                      )}
+                      {confirmedTicket.barcode && (
+                        <div className="text-xs text-gray-400 dark:text-gray-500 mt-2 font-mono">
+                          🔖 {confirmedTicket.barcode}
+                        </div>
+                      )}
                     </div>
                     
                     {/* Plays */}
@@ -7198,7 +7227,7 @@
                         <span className="dark:text-white">RD$ {confirmedTicket.subtotal.toLocaleString('es-DO')}</span>
                       </div>
                       <div className="flex justify-between text-sm text-orange-600 dark:text-orange-400">
-                        <span>Servicio App:</span>
+                        <span>Servicio App ({appServiceFeePercentage}%):</span>
                         <span>RD$ {confirmedTicket.commission.toLocaleString('es-DO')}</span>
                       </div>
                       <div className="flex justify-between text-lg font-bold">
@@ -7231,6 +7260,24 @@
                             hour: '2-digit', 
                             minute: '2-digit' 
                           })}</span>
+                        </div>
+                      )}
+                      {confirmedTicket.operatorUserId && (
+                        <div className="flex justify-between text-xs mt-2 pt-2 border-t dark:border-slate-600">
+                          <span className="text-gray-500 dark:text-gray-500">Operador:</span>
+                          <span className="text-gray-600 dark:text-gray-400 font-mono">{confirmedTicket.operatorUserId}</span>
+                        </div>
+                      )}
+                      {confirmedTicket.validUntil && (
+                        <div className="flex justify-between text-xs mt-1">
+                          <span className="text-gray-500 dark:text-gray-500">Válido hasta:</span>
+                          <span className="text-gray-600 dark:text-gray-400 font-semibold">
+                            {new Date(confirmedTicket.validUntil).toLocaleDateString('es-DO', { 
+                              year: 'numeric',
+                              month: 'short', 
+                              day: 'numeric'
+                            })}
+                          </span>
                         </div>
                       )}
                     </div>
@@ -7646,21 +7693,6 @@
             </div>
           )}
 
-          {/* Floating Action Buttons */}
-          {/* Shopping Cart Floating Button - Desktop Only */}
-          <button
-            onClick={() => setIsCartOpen(true)}
-            className="hidden lg:flex fixed bottom-24 right-24 w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-700 dark:from-blue-500 dark:to-blue-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105 items-center justify-center z-40 border border-blue-500"
-            title="Carrito de Compras"
-          >
-            <span className="text-3xl">🛒</span>
-            {cart.length > 0 && (
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full shadow-lg">
-                {cart.length}
-              </span>
-            )}
-          </button>
-
           {/* Luna AI Assistant Floating Button */}
           <button
             onClick={openVoiceAssistant}
@@ -7954,29 +7986,6 @@
               </div>
             </nav>
           )}
-                </div>
-                {/* Status Bar - Desktop only */}
-                <div className="status-bar">
-                  <div className="status-bar-section">
-                    <div className="status-indicator">
-                      <span className={`status-dot ${isLotteryConnected ? '' : 'offline'}`}></span>
-                      <span>{isLotteryConnected ? 'En línea' : 'Sin conexión'}</span>
-                    </div>
-                    {isLotteryConnected && lotteryLastUpdate && (
-                      <span className="text-xs">Actualizado: {new Date(lotteryLastUpdate).toLocaleTimeString('es-DO', { hour: '2-digit', minute: '2-digit' })}</span>
-                    )}
-                  </div>
-                  <div className="status-bar-section">
-                    <span>v1.0.0</span>
-                    <span>•</span>
-                    <span>{currentTime.toLocaleTimeString('es-DO', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</span>
-                    <span>•</span>
-                    <span>{currentTime.toLocaleDateString('es-DO', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
           
           {/* Legal Footer */}
           <div className="py-8 px-4 mt-8" style={{
@@ -8100,62 +8109,11 @@
       }, 2500); // Show loading screen for at least 2.5 seconds to showcase the animation
     });
 
-    /* --- ELECTRON WINDOW CONTROLS INTEGRATION --- */
-    if (window.electronAPI) {
-      // Setup window control button listeners
-      // Use setTimeout to ensure DOM is ready, or execute immediately if already loaded
-      const setupWindowControls = function() {
-        const closeBtn = document.querySelector('.window-btn-close');
-        const minimizeBtn = document.querySelector('.window-btn-minimize');
-        const maximizeBtn = document.querySelector('.window-btn-maximize');
-        
-        if (closeBtn) {
-          closeBtn.addEventListener('click', () => {
-            if (window.electronAPI && window.electronAPI.closeWindow) {
-              window.electronAPI.closeWindow();
-            }
-          });
-        }
-        
-        if (minimizeBtn) {
-          minimizeBtn.addEventListener('click', () => {
-            if (window.electronAPI && window.electronAPI.minimizeWindow) {
-              window.electronAPI.minimizeWindow();
-            }
-          });
-        }
-        
-        if (maximizeBtn) {
-          maximizeBtn.addEventListener('click', () => {
-            if (window.electronAPI && window.electronAPI.maximizeWindow) {
-              window.electronAPI.maximizeWindow();
-            }
-          });
-        }
-      };
-      
-      // Execute immediately or wait for DOM to be ready
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', setupWindowControls);
-      } else {
-        setupWindowControls();
-      }
-      
-      // Log that we're running in Electron
-      console.log('LotoLink: Running in Electron desktop app mode');
-      if (window.electronAPI && window.electronAPI.platform) {
-        console.log('Platform:', window.electronAPI.platform);
-      }
-    } else {
-      // Running in browser - hide desktop-only elements
-      console.log('LotoLink: Running in web browser mode');
-    }
-
     /* --- MAP INIT LOGIC (Improved from MVP) --- */
     setInterval(() => {
        const mapContainer = document.getElementById('demo-leaflet-map');
        if (mapContainer && !mapContainer._leaflet_id) {
-          const map = L.map('demo-leaflet-map').setView([DEFAULT_LOCATION.latitude, DEFAULT_LOCATION.longitude], 13);
+          const map = L.map('demo-leaflet-map').setView([18.4861, -69.9312], 13);
           L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(map);
           DEFAULT_BANKS.forEach(b => {
              const m = L.marker(b.coords).addTo(map);
@@ -8729,7 +8687,7 @@
         }
         
         // Create new map
-        bancaSelectionMap = L.map('banca-selection-map').setView([DEFAULT_LOCATION.latitude, DEFAULT_LOCATION.longitude], 13);
+        bancaSelectionMap = L.map('banca-selection-map').setView([18.4861, -69.9312], 13);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { 
           attribution: '© OpenStreetMap' 
         }).addTo(bancaSelectionMap);
@@ -9178,7 +9136,8 @@
 
         
         
-        card.innerHTML = headerHtml + contentHtml;
+        // Wrap content in scrollable container
+        card.innerHTML = headerHtml + `<div class="modal-content-scroll">${contentHtml}</div>`;
       }
       
       function updateStake(value) {
@@ -9206,6 +9165,44 @@
       window.updateStake = updateStake;
       window.toggleLotteryDarkMode = toggleLotteryDarkMode;
       window.renderModal = renderModal;
+    })();
+  </script>
+  
+  <!-- Terms of Service Modal Logic -->
+  <script>
+    (function() {
+      // Open Terms of Service Modal
+      function openTermsModal() {
+        const modal = document.getElementById('terms-modal-root');
+        if (modal) {
+          modal.classList.remove('hidden');
+          modal.classList.add('flex');
+          // Prevent body scroll when modal is open
+          document.body.style.overflow = 'hidden';
+        }
+      }
+      
+      // Close Terms of Service Modal
+      function closeTermsModal() {
+        const modal = document.getElementById('terms-modal-root');
+        if (modal) {
+          modal.classList.add('hidden');
+          modal.classList.remove('flex');
+          // Restore body scroll
+          document.body.style.overflow = '';
+        }
+      }
+      
+      // Close modal on Escape key
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          closeTermsModal();
+        }
+      });
+      
+      // Expose functions globally
+      window.openTermsModal = openTermsModal;
+      window.closeTermsModal = closeTermsModal;
     })();
   </script>
   

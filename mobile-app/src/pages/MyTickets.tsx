@@ -20,20 +20,25 @@ import { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import VirtualTicket from '../components/VirtualTicket';
 import { getMyTickets, TicketData, TicketsFilter } from '../services/tickets.service';
+import { useAuth } from '../contexts/AuthContext';
 
 type FilterStatus = 'all' | 'pending' | 'confirmed' | 'won' | 'lost';
 
 const MyTickets: React.FC = () => {
   const history = useHistory();
+  const { user } = useAuth();
   const [tickets, setTickets] = useState<TicketData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filterStatus, setFilterStatus] = useState<FilterStatus>('all');
   const [hasMore, setHasMore] = useState(false);
-  
-  // TODO: Get actual user ID from auth context
-  const userId = 'user-123';
 
   const loadTickets = async (refresh = false) => {
+    // Don't load tickets if user is not authenticated
+    if (!user?.id) {
+      setIsLoading(false);
+      return;
+    }
+
     try {
       if (!refresh) {
         setIsLoading(true);
@@ -45,7 +50,7 @@ const MyTickets: React.FC = () => {
         offset: 0
       };
       
-      const response = await getMyTickets(userId, filters);
+      const response = await getMyTickets(user.id, filters);
       setTickets(response.tickets);
       setHasMore(response.hasMore);
     } catch (error) {
