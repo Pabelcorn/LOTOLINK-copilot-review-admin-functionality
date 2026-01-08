@@ -4782,6 +4782,11 @@
       const [playModalStake, setPlayModalStake] = useState(10); // Stake amount
       const [showBranchSelector, setShowBranchSelector] = useState(false); // Branch selector in play modal
       const [showAuthModal, setShowAuthModal] = useState(false);
+      // Multi-step auth states
+      const [authModalView, setAuthModalView] = useState('selection'); // 'selection' | 'phone' | 'otp' | 'email' | 'age' | 'admin'
+      const [currentPhone, setCurrentPhone] = useState('');
+      const [currentUserId, setCurrentUserId] = useState('');
+      const [isGuestMode, setIsGuestMode] = useState(() => localStorage.getItem('ll_guest') === 'true');
       const [isCartOpen, setIsCartOpen] = useState(false);
       const [theme, setTheme] = useState(() => localStorage.getItem('ll_theme') || 'light');
       const [showInstallGuide, setShowInstallGuide] = useState(null); // 'ios' | 'android' | 'desktop' | null
