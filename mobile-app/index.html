@@ -698,7 +698,11 @@
       }
     }
     
-
+    @media (min-width: 641px) {
+      .desktop-hide {
+        display: none !important;
+      }
+    }
     
     /* PWA Splash screen styles */
     .pwa-splash {
@@ -1554,6 +1558,11 @@
       }
     }
   </style>
+
+  <!-- OAuth SDKs for Social Authentication -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script type="text/javascript" src="https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js" defer></script>
+
 </head>
 <body class="min-h-screen text-gray-900 antialiased">
 
@@ -1574,6 +1583,328 @@
   </div>
 
   <div id="root"></div>
+
+  <!-- Terms of Service Modal for Bancas (Outside React) -->
+  <div id="terms-modal-root" class="fixed inset-0 z-50 hidden overflow-y-auto overflow-x-hidden" style="-webkit-overflow-scrolling: touch;">
+    <div 
+      id="terms-modal-backdrop" 
+      class="fixed inset-0 bg-black/60 backdrop-blur-sm" 
+      onclick="window.closeTermsModal && window.closeTermsModal()"
+    ></div>
+    <div class="relative min-h-screen flex items-center justify-center p-4">
+      <div 
+        id="terms-modal-card" 
+        class="relative w-full max-w-4xl bg-white dark:bg-slate-800 rounded-2xl shadow-2xl overflow-hidden"
+        style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); border: 1px solid rgba(255, 255, 255, 0.18); max-height: 90vh;"
+      >
+        <!-- Modal Header -->
+        <div class="sticky top-0 z-10 bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6 flex items-center justify-between" style="background: linear-gradient(90deg, #2563eb 0%, #1d4ed8 100%);">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center text-2xl" style="background: rgba(255, 255, 255, 0.2); border-radius: 12px;">
+              📄
+            </div>
+            <div>
+              <h2 class="text-2xl font-bold">Términos y Condiciones</h2>
+              <p class="text-sm text-blue-100 mt-1">Para Bancas Asociadas a LotoLink</p>
+            </div>
+          </div>
+          <button 
+            onclick="window.closeTermsModal && window.closeTermsModal()"
+            class="w-10 h-10 bg-white/20 hover:bg-white/30 rounded-lg flex items-center justify-center transition-colors"
+            style="background: rgba(255, 255, 255, 0.2); border-radius: 8px; cursor: pointer; border: none;"
+            aria-label="Cerrar modal"
+          >
+            <span class="text-2xl">✕</span>
+          </button>
+        </div>
+        
+        <!-- Modal Content - Scrollable -->
+        <div class="overflow-y-auto" style="max-height: calc(90vh - 180px); -webkit-overflow-scrolling: touch; padding: 40px 50px; background: white; font-family: 'Times New Roman', Times, serif;">
+          
+          <!-- Contract-style header -->
+          <div style="text-align: center; margin-bottom: 30px; border-bottom: 2px solid #1f2937; padding-bottom: 20px;">
+            <h2 style="font-size: 22px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; color: #1f2937; margin-bottom: 10px;">TÉRMINOS DE SERVICIO PARA BANCAS</h2>
+            <p style="font-size: 14px; color: #4b5563; margin: 5px 0;"><strong>LOTOLINK SRL</strong></p>
+            <p style="font-size: 12px; color: #6b7280; margin: 5px 0;">Versión: 1.0 — Fecha de entrada en vigor: 23 de diciembre de 2025</p>
+          </div>
+          
+          <!-- Index -->
+          <div style="margin-bottom: 30px; padding: 20px; background: #f9fafb; border: 1px solid #e5e7eb;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 15px; text-align: center;">ÍNDICE</h3>
+            <div style="font-size: 13px; line-height: 2; color: #374151;">
+              <p style="margin: 5px 0;">1. Partes y Objeto</p>
+              <p style="margin: 5px 0;">2. Definiciones</p>
+              <p style="margin: 5px 0;">3. Elegibilidad, Registro y Validación</p>
+              <p style="margin: 5px 0;">4. Obligaciones de la Banca</p>
+              <p style="margin: 5px 0;">5. Obligaciones de LOTOLINK</p>
+              <p style="margin: 5px 0;">6. Pagos, Comisiones y Facturación</p>
+              <p style="margin: 5px 0;">7. Integraciones Técnicas y Herramientas</p>
+              <p style="margin: 5px 0;">8. Protección de Datos y Confidencialidad</p>
+              <p style="margin: 5px 0;">9. Prevención de Lavado de Activos (AML/KYC)</p>
+              <p style="margin: 5px 0;">10. Responsabilidad e Indemnización</p>
+              <p style="margin: 5px 0;">11. Suspensión y Terminación</p>
+              <p style="margin: 5px 0;">12. Modificaciones</p>
+              <p style="margin: 5px 0;">13. Resolución de Conflictos, Ley Aplicable y Jurisdicción</p>
+              <p style="margin: 5px 0;">14. Disposiciones Generales</p>
+              <p style="margin: 5px 0; font-style: italic;">Anexos: A. Checklist de Onboarding, B. Cláusula de Aceptación</p>
+            </div>
+          </div>
+          
+          <!-- Section 1: Partes y Objeto -->
+          <div style="margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #d1d5db; padding-bottom: 6px;">
+              1. PARTES Y OBJETO
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0;">Estos Términos de Servicio ("Términos") se celebran entre <strong>LOTOLINK SRL, RNC 123-456-789</strong>, con domicilio en Calle Fantasía #42, Santo Domingo, República Dominicana ("LOTOLINK"), y la persona jurídica o física que se registra como Banca en la plataforma ("Banca").</p>
+              <p style="margin: 8px 0;"><strong>Objeto:</strong> LOTOLINK provee una plataforma tecnológica que permite la recepción, transmisión y gestión de jugadas de lotería realizadas por Usuarios y la integración de Bancas para procesar dichas jugadas. LOTOLINK actúa exclusivamente como intermediario tecnológico y no como operador de lotería ni como pagador de premios.</p>
+            </div>
+          </div>
+          
+          <!-- Section 2: Definiciones -->
+          <div style="margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #d1d5db; padding-bottom: 6px;">
+              2. DEFINICIONES
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0;"><strong>Banca:</strong> Entidad o negocio, físico o digital, que se registra y valida para recibir jugadas a través de la Plataforma.</p>
+              <p style="margin: 8px 0;"><strong>Usuario:</strong> Persona natural que realiza jugadas por medio de la Plataforma.</p>
+              <p style="margin: 8px 0;"><strong>Plataforma / Sistema:</strong> Conjunto de aplicaciones móviles, paneles web, APIs, servicios y procesos operados por LOTOLINK.</p>
+              <p style="margin: 8px 0;"><strong>Jugadas / Boletos:</strong> Solicitudes de participación en sorteos que la Banca procesa y valida según reglas aplicables.</p>
+              <p style="margin: 8px 0;"><strong>Comisión:</strong> Porcentaje retenido por LOTOLINK sobre el importe de cada jugada vendida a través de la Plataforma.</p>
+              <p style="margin: 8px 0;"><strong>Integración:</strong> Modalidad técnica de conexión: API Directa, App White-Label (POS) o Middleware.</p>
+            </div>
+          </div>
+          
+          <!-- Section 3: Elegibilidad -->
+          <div style="margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #d1d5db; padding-bottom: 6px;">
+              3. ELEGIBILIDAD, REGISTRO Y VALIDACIÓN
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0;">La Banca declara que su actividad está permitida en su jurisdicción y que cumple con permisos, licencias y obligaciones legales aplicables. La Banca podrá ser ubicada dentro o fuera de la República Dominicana siempre que cumpla la regulación local pertinente.</p>
+              <p style="margin: 8px 0;"><strong>Documentación requerida:</strong> identificación del propietario/representante legal, RNC o NIT (si aplica), licencia o permiso de operación, datos bancarios para transferencias, cédula o documento de identidad y documentación adicional KYC/AML que LOTOLINK requiera.</p>
+              <p style="margin: 8px 0;">LOTOLINK podrá realizar verificaciones KYC/AML y auditorías; si la documentación no resulta satisfactoria, LOTOLINK podrá rechazar el registro o suspender la relación.</p>
+            </div>
+          </div>
+          
+          <!-- Section 4: Obligaciones de la Banca -->
+          <div style="margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #d1d5db; padding-bottom: 6px;">
+              4. OBLIGACIONES DE LA BANCA
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0;">• Pagar directamente los premios a los Usuarios ganadores de acuerdo con las reglas de la lotería y la Banca. LOTOLINK solo facilita la notificación y el proceso técnico.</p>
+              <p style="margin: 8px 0;">• Mantener vigentes licencias, permisos y registros, y notificar a LOTOLINK cualquier cambio que afecte la operación.</p>
+              <p style="margin: 8px 0;">• Cumplir las obligaciones fiscales y reportes exigidos por su jurisdicción; colaborar con auditorías y requerimientos regulatorios.</p>
+              <p style="margin: 8px 0;">• Implementar controles internos contra fraude y abuso, mantener la integridad de sus cuentas y proteger credenciales/API keys.</p>
+              <p style="margin: 8px 0;">• Responder a las reclamaciones de Usuarios y coordinar con LOTOLINK los procesos de verificación y resolución.</p>
+            </div>
+          </div>
+          
+          <!-- Section 5: Obligaciones de LOTOLINK -->
+          <div style="margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #d1d5db; padding-bottom: 6px;">
+              5. OBLIGACIONES DE LOTOLINK
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0;">• Proveer, mantener y operar la Plataforma con esfuerzos razonables para asegurar disponibilidad, seguridad y continuidad del servicio.</p>
+              <p style="margin: 8px 0;">• Retener las comisiones pactadas en el flujo de pagos, emitir comprobantes/facturas por las comisiones y remitir reportes periódicos a la Banca con detalle de ventas, comisiones y conciliaciones.</p>
+              <p style="margin: 8px 0;">• Implementar medidas técnicas y organizativas de seguridad y tratar los datos personales conforme a la Política de Privacidad y la Ley 172-13 de Protección de Datos Personales.</p>
+              <p style="margin: 8px 0;">• Notificar a la Banca de cambios técnicos relevantes, mantenimientos programados e incidentes de seguridad.</p>
+            </div>
+          </div>
+          
+          <!-- Section 6: Pagos y Comisiones -->
+          <div style="margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #d1d5db; padding-bottom: 6px;">
+              6. PAGOS, COMISIONES Y FACTURACIÓN
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0;">La Banca acepta que LOTOLINK retendrá una comisión porcentual sobre cada jugada vendida por la Plataforma. La comisión vigente al momento de entrada en vigor de estos Términos es del <strong>7%</strong> y podrá incrementarse hasta <strong>10%</strong> previa notificación con 30 días de antelación.</p>
+              <p style="margin: 8px 0;"><strong>Retención automática:</strong> las comisiones se retendrán automáticamente en el flujo de pago (por ejemplo, Stripe Connect) antes de transferir el saldo a la cuenta de la Banca.</p>
+              <p style="margin: 8px 0;"><strong>Facturación:</strong> LOTOLINK emitirá facturas o comprobantes por las comisiones cobradas. La Banca es responsable por impuestos, retenciones u otros cargos que su jurisdicción exija.</p>
+              <p style="margin: 8px 0;"><strong>Devoluciones y ajustes:</strong> en caso de transacciones rechazadas, fallidas o jugadas no aceptadas por la Banca, se aplicarán ajustes y notas de crédito conforme a la política de pagos y conciliación definida en la documentación técnica.</p>
+            </div>
+          </div>
+          
+          <!-- Section 7: Integraciones Técnicas -->
+          <div style="margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #d1d5db; padding-bottom: 6px;">
+              7. INTEGRACIONES TÉCNICAS Y HERRAMIENTAS
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0;">LOTOLINK soporta las siguientes modalidades de integración:</p>
+              <p style="margin: 8px 0;"><strong>• API Directa:</strong> Para Bancas con sistema propio. Se entregan especificaciones OpenAPI, claves y endpoints. La Banca es responsable de implementar llamadas con seguridad adecuada.</p>
+              <p style="margin: 8px 0;"><strong>• App White-Label / POS:</strong> Aplicación móvil proporcionada por LOTOLINK (marca blanca) para vendedores y POS que permita registrar jugadas y emitir comprobantes.</p>
+              <p style="margin: 8px 0;"><strong>• Middleware / Integración personalizada:</strong> Conexiones a medida para sistemas legacy o terceros.</p>
+              <p style="margin: 8px 0;"><strong>Responsabilidades técnicas:</strong> la Banca conservará en secreto sus credenciales y las claves API, respetará límites de uso y reportará errores a LOTOLINK. LOTOLINK no será responsable por integraciones realizadas por terceros elegidos por la Banca sin autorización.</p>
+              <p style="margin: 8px 0;"><strong>SLA y mantenimiento:</strong> LOTOLINK hará esfuerzos razonables por mantener la Plataforma disponible; los mantenimientos programados se anunciarán con antelación razonable.</p>
+            </div>
+          </div>
+          
+          <!-- Section 8: Protección de Datos -->
+          <div style="margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #d1d5db; padding-bottom: 6px;">
+              8. PROTECCIÓN DE DATOS Y CONFIDENCIALIDAD
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0;">Ambas partes cumplirán la <strong>Ley 172-13 de Protección de Datos Personales</strong> y normativa aplicable. LOTOLINK actuará como responsable del tratamiento de los datos procesados en la Plataforma.</p>
+              <p style="margin: 8px 0;">La Banca garantizará que cuenta con la base legal para el tratamiento de los datos que facilite a LOTOLINK y cooperará en la atención de solicitudes ARCO de Usuarios.</p>
+              <p style="margin: 8px 0;"><strong>Confidencialidad:</strong> la información técnica, comercial y de clientes se considera confidencial. Las partes mantendrán confidencialidad por tres (3) años tras la terminación del vínculo, salvo obligaciones legales en contrario.</p>
+            </div>
+          </div>
+          
+          <!-- Section 9: AML/KYC -->
+          <div style="margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #d1d5db; padding-bottom: 6px;">
+              9. PREVENCIÓN DE LAVADO DE ACTIVOS (AML/KYC)
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0;">La Banca implementará procedimientos KYC/AML conforme a su jurisdicción y cooperará con LOTOLINK para detectar y reportar operaciones sospechosas.</p>
+              <p style="margin: 8px 0;">LOTOLINK podrá requerir documentación adicional y suspender operaciones ante indicios de lavado de activos, fraude o conductas ilícitas, y reportar a autoridades competentes cuando sea obligatorio.</p>
+            </div>
+          </div>
+          
+          <!-- Section 10: Responsabilidad -->
+          <div style="margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #d1d5db; padding-bottom: 6px;">
+              10. RESPONSABILIDAD E INDEMNIZACIÓN
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0;">La Banca indemnizará y mantendrá indemne a LOTOLINK frente a reclamaciones, sanciones, pérdidas o gastos que resulten de: (i) incumplimiento por la Banca de leyes aplicables; (ii) impago de premios o deudas fiscales; (iii) fraude o manipulación de jugadas; (iv) violaciones de derechos de terceros.</p>
+              <p style="margin: 8px 0;">LOTOLINK indemnizará a la Banca únicamente por fallas técnicas demostrables imputables exclusivamente a LOTOLINK y que causen daño directo comprobable a la Banca.</p>
+              <p style="margin: 8px 0;"><strong>Limitación de responsabilidad:</strong> salvo por dolo o fraude, la responsabilidad total se limitará al mayor de: (a) las comisiones efectivamente pagadas por la Banca durante los doce (12) meses anteriores al evento; o (b) RD$100,000. En ningún caso se cubrirán daños indirectos o lucro cesante.</p>
+            </div>
+          </div>
+          
+          <!-- Section 11: Suspensión y Terminación -->
+          <div style="margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #d1d5db; padding-bottom: 6px;">
+              11. SUSPENSIÓN Y TERMINACIÓN
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0;">LOTOLINK podrá suspender o cancelar el acceso en caso de: fraude, impago, incumplimiento material, orden judicial, o riesgo reputacional. La suspensión podrá ser inmediata cuando existan indicios serios.</p>
+              <p style="margin: 8px 0;"><strong>Efectos:</strong> al terminar la relación, la Banca perderá acceso; obligaciones de pago, confidencialidad e indemnización subsistirán. LOTOLINK podrá retener fondos justificados para cubrir deudas pendientes.</p>
+              <p style="margin: 8px 0;">La Banca podrá resolver la relación con 30 días de aviso, coordinando la liquidación de operaciones en curso.</p>
+            </div>
+          </div>
+          
+          <!-- Section 12: Modificaciones -->
+          <div style="margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #d1d5db; padding-bottom: 6px;">
+              12. MODIFICACIONES
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0;">LOTOLINK podrá modificar estos Términos con 30 días de aviso previo; cambios urgentes por razones de seguridad o regulatorias podrán aplicarse con menor preaviso. El uso continuado implica aceptación.</p>
+            </div>
+          </div>
+          
+          <!-- Section 13: Resolución de Conflictos -->
+          <div style="margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #d1d5db; padding-bottom: 6px;">
+              13. RESOLUCIÓN DE CONFLICTOS, LEY APLICABLE Y JURISDICCIÓN
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0;"><strong>Ley aplicable:</strong> República Dominicana.</p>
+              <p style="margin: 8px 0;"><strong>Jurisdicción:</strong> Tribunales de Santo Domingo, República Dominicana.</p>
+            </div>
+          </div>
+          
+          <!-- Section 14: Disposiciones Generales -->
+          <div style="margin-bottom: 25px;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #d1d5db; padding-bottom: 6px;">
+              14. DISPOSICIONES GENERALES
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0;"><strong>Notificaciones:</strong> se enviarán a las direcciones registradas y a legal@lotolink.com.</p>
+              <p style="margin: 8px 0;"><strong>Cesión:</strong> la Banca no podrá ceder derechos sin consentimiento; LOTOLINK podrá ceder en eventos de fusión o venta de activos.</p>
+              <p style="margin: 8px 0;"><strong>Acuerdo completo:</strong> estos Términos y la Política de Privacidad constituyen el acuerdo completo.</p>
+            </div>
+          </div>
+          
+          <!-- Anexo A -->
+          <div style="margin-bottom: 25px; padding: 20px; background: #f9fafb; border: 1px solid #d1d5db;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase;">
+              ANEXO A — CHECKLIST DE ONBOARDING PARA BANCAS
+            </h3>
+            <div style="font-size: 13px; line-height: 1.8; color: #374151;">
+              <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                <tr style="background: #e5e7eb;">
+                  <th style="padding: 8px; text-align: left; border: 1px solid #d1d5db; font-weight: bold;">Documento</th>
+                  <th style="padding: 8px; text-align: left; border: 1px solid #d1d5db; font-weight: bold;">Descripción</th>
+                </tr>
+                <tr>
+                  <td style="padding: 8px; border: 1px solid #d1d5db;">Formulario completado</td>
+                  <td style="padding: 8px; border: 1px solid #d1d5db;">Datos del negocio, propietario, cuenta bancaria, contactos.</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px; border: 1px solid #d1d5db;">Documentos KYC</td>
+                  <td style="padding: 8px; border: 1px solid #d1d5db;">Cédula/ID, RNC/NIT, licencia de operación.</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px; border: 1px solid #d1d5db;">Integración técnica</td>
+                  <td style="padding: 8px; border: 1px solid #d1d5db;">Tipo API / App / Middleware y endpoints.</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px; border: 1px solid #d1d5db;">Pruebas</td>
+                  <td style="padding: 8px; border: 1px solid #d1d5db;">Pruebas de extremo a extremo: ventas, reembolsos y conciliación.</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px; border: 1px solid #d1d5db;">Firma/aceptación</td>
+                  <td style="padding: 8px; border: 1px solid #d1d5db;">Checkbox + registro de IP y timestamp.</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px; border: 1px solid #d1d5db;">Producción</td>
+                  <td style="padding: 8px; border: 1px solid #d1d5db;">Activación y monitoreo inicial 72 horas.</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          
+          <!-- Anexo B -->
+          <div style="margin-bottom: 25px; padding: 20px; background: #eff6ff; border: 2px solid #2563eb;">
+            <h3 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px; text-transform: uppercase;">
+              ANEXO B — CLÁUSULA DE ACEPTACIÓN
+            </h3>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151; text-align: justify;">
+              <p style="margin: 8px 0; font-weight: bold;">Al marcar esta casilla y enviar el formulario, declaro que soy representante legal de la banca, que la información suministrada es verdadera y que acepto quedar vinculado por los Términos para Bancas y la Política de Privacidad.</p>
+            </div>
+          </div>
+          
+          <!-- Contact Information -->
+          <div style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #1f2937; text-align: center;">
+            <h4 style="font-size: 14px; font-weight: bold; color: #1f2937; margin-bottom: 10px;">CONTACTO</h4>
+            <p style="font-size: 12px; color: #6b7280; line-height: 1.6;">
+              <strong>Soporte:</strong> soporte@lotolink.com<br>
+              <strong>Legal:</strong> legal@lotolink.com<br>
+              <strong>Privacidad:</strong> privacidad@lotolink.com
+            </p>
+          </div>
+          
+          <!-- Signature section -->
+          <div style="margin-top: 40px; padding-top: 30px; border-top: 2px solid #1f2937;">
+            <p style="font-size: 13px; color: #6b7280; text-align: center; line-height: 1.6;">
+              Este documento constituye el acuerdo completo entre las partes. La firma electrónica mediante la aceptación del checkbox tiene la misma validez legal que una firma manuscrita.
+            </p>
+          </div>
+          
+        </div>
+        
+        <!-- Modal Footer -->
+        <div class="sticky bottom-0 bg-gray-50 dark:bg-slate-900 border-t border-gray-200 dark:border-slate-700 p-6 flex justify-center" style="background: #f9fafb; border-top: 1px solid #e5e7eb; padding: 24px; display: flex; justify-content: center;">
+          <button 
+            onclick="window.closeTermsModal && window.closeTermsModal()"
+            class="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-full shadow-lg hover:shadow-xl transition-all transform hover:scale-105 flex items-center gap-2"
+            style="background: #2563eb; color: white; border: none; padding: 12px 32px; border-radius: 9999px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3); transition: all 0.2s;"
+          >
+            <span>✓</span>
+            <span>Entendido</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- React Libraries -->
   <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
@@ -1596,6 +1927,35 @@
       { id: 3, name: "La Primera - Zona Colonial", coords: [18.4661, -69.8989], hours: "Abierta hasta las 8:00 PM" },
       { id: 4, name: "Lotería Nacional - Naco", coords: [18.4890, -69.9220], hours: "Abierta hasta las 6:00 PM" }
     ];
+
+    // Location configuration constants
+    const DEFAULT_LOCATION = { latitude: 18.4861, longitude: -69.9312 }; // Santo Domingo
+    const DEFAULT_SEARCH_RADIUS_KM = 25;
+    const EARTH_RADIUS_KM = 6371; // Earth's radius in kilometers (for Haversine formula)
+
+    // Haversine formula to calculate distance between two coordinates (in km)
+    const calculateDistance = (lat1, lon1, lat2, lon2) => {
+      const R = EARTH_RADIUS_KM;
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = 
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return R * c;
+    };
+
+    // Format distance for display
+    const formatDistance = (distanceKm) => {
+      if (distanceKm < 1) {
+        return `${Math.round(distanceKm * 1000)} m`;
+      } else if (distanceKm < 10) {
+        return `${distanceKm.toFixed(1)} km`;
+      } else {
+        return `${Math.round(distanceKm)} km`;
+      }
+    };
 
     const MOST_PLAYED = {
       Quiniela: ["08", "66", "36", "63", "42"],
@@ -2081,7 +2441,7 @@
                         className="mt-1 w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" 
                       />
                       <span className="text-sm text-gray-600 leading-tight">
-                        He leído y acepto los <a href="#" className="text-blue-600 hover:underline">Términos de Servicio</a>.
+                        He leído y acepto los <a href="#" onClick={(e) => { e.preventDefault(); window.openTermsModal && window.openTermsModal(); }} className="text-blue-600 hover:underline">Términos de Servicio</a>.
                       </span>
                     </label>
                   </div>
@@ -2570,7 +2930,7 @@
                 {/* Mobile Menu Toggle - Shows on mobile only */}
                 <button 
                   onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                  className="w-10 h-10 flex items-center justify-center rounded-xl bg-gray-100/80 dark:bg-white/10 hover:bg-gray-200/80 dark:hover:bg-white/20 transition-all"
+                  className="lg:hidden w-10 h-10 flex items-center justify-center rounded-xl bg-gray-100/80 dark:bg-white/10 hover:bg-gray-200/80 dark:hover:bg-white/20 transition-all"
                   aria-label="Menú"
                 >
                   {isMobileMenuOpen ? (
@@ -2595,6 +2955,17 @@
                   LotoLink
                   
                 </div>
+                
+                {/* Desktop Navigation - Hidden on mobile/tablet */}
+                <nav className="hidden lg:flex gap-2 text-sm ml-6 mr-6">
+                  <button onClick={() => handleNavClick('home')} className="px-4 py-2 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 font-medium transition-all">Inicio</button>
+                  <button onClick={() => handleNavClick('how')} className="px-4 py-2 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 font-medium transition-all">Cómo funciona</button>
+                  <button onClick={() => handleNavClick('demo')} className="px-4 py-2 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 font-medium transition-all">Demo/Mapa</button>
+                  <button onClick={() => handleNavClick('loterias')} className="px-4 py-2 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 font-medium transition-all">Loterías</button>
+                  <button onClick={() => handleNavClick('bancas')} className="px-4 py-2 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 font-medium transition-all">Bancas</button>
+                  <button onClick={() => handleNavClick('tickets')} className="px-4 py-2 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 font-medium transition-all">Mis Tickets</button>
+                  <button onClick={() => handleNavClick('rankings')} className="px-4 py-2 pr-[52px] rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 font-medium transition-all">Rankings</button>
+                </nav>
               </div>
               
               <div className="w-8"></div>
@@ -2685,7 +3056,7 @@
           
           {/* Mobile Slide-out Menu */}
           {isMobileMenuOpen && (
-            <div className="fixed inset-0 z-50">
+            <div className="fixed inset-0 z-50 lg:hidden">
               {/* Backdrop */}
               <div 
                 className="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
@@ -2771,6 +3142,7 @@
                     { icon: '🗺️', label: 'Demo / Mapa', view: 'demo' },
                     { icon: '🎰', label: 'Loterías', view: 'loterias' },
                     { icon: '🏪', label: 'Bancas', view: 'bancas' },
+                    { icon: '🎫', label: 'Mis Tickets', view: 'tickets' },
                     { icon: '🏆', label: 'Rankings', view: 'rankings' },
                     { icon: '⭐', label: 'Más Jugados', view: 'masjugados' },
                   ].map(item => (
@@ -4117,6 +4489,276 @@
       );
     }
 
+    /* --- COMPONENT: My Tickets --- */
+    function MyTickets({ user, onLogin }) {
+      const [tickets, setTickets] = useState(() => JSON.parse(localStorage.getItem("ll_history") || "[]"));
+      const [filterStatus, setFilterStatus] = useState('all');
+      const [selectedTicket, setSelectedTicket] = useState(null);
+      const [showTicketModal, setShowTicketModal] = useState(false);
+
+      const getStatusColor = (status) => {
+        switch (status) {
+          case 'confirmed': return 'text-green-500 bg-green-100 dark:bg-green-900/30';
+          case 'pending': return 'text-yellow-500 bg-yellow-100 dark:bg-yellow-900/30';
+          case 'won': return 'text-purple-500 bg-purple-100 dark:bg-purple-900/30';
+          case 'lost': return 'text-gray-500 bg-gray-100 dark:bg-gray-700/30';
+          default: return 'text-blue-500 bg-blue-100 dark:bg-blue-900/30';
+        }
+      };
+
+      const getStatusText = (status) => {
+        switch (status) {
+          case 'confirmed': return 'CONFIRMADO';
+          case 'pending': return 'PENDIENTE';
+          case 'won': return '¡GANADOR!';
+          case 'lost': return 'NO GANÓ';
+          default: return status?.toUpperCase() || 'PENDIENTE';
+        }
+      };
+
+      const filteredTickets = tickets.filter(t => {
+        if (filterStatus === 'all') return true;
+        return t.status === filterStatus;
+      });
+
+      if (!user) {
+        return (
+          <div className="flex flex-col items-center justify-center py-20 px-4">
+            <div className="text-6xl mb-6">🎟️</div>
+            <h2 className="text-2xl font-bold mb-4 dark:text-white">Inicia Sesión</h2>
+            <p className="text-gray-600 dark:text-gray-400 mb-6 text-center max-w-md">
+              Inicia sesión para ver tus tickets virtuales
+            </p>
+            <button onClick={onLogin} className="btn-apple-primary">
+              Iniciar Sesión
+            </button>
+          </div>
+        );
+      }
+
+      return (
+        <section className="mt-6">
+          <div className="mb-6">
+            <h2 className="text-3xl font-bold dark:text-white mb-2">Mis Tickets</h2>
+            <p className="text-gray-600 dark:text-gray-400">Tus tickets virtuales con información completa de banca y sucursal</p>
+          </div>
+
+          {/* Filter Tabs */}
+          <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
+            {['all', 'pending', 'confirmed', 'won'].map(status => (
+              <button
+                key={status}
+                onClick={() => setFilterStatus(status)}
+                className={`px-4 py-2 rounded-full font-medium whitespace-nowrap transition-all ${
+                  filterStatus === status
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                }`}
+              >
+                {status === 'all' ? 'Todos' : status === 'pending' ? 'Pendientes' : status === 'confirmed' ? 'Confirmados' : 'Ganadores'}
+              </button>
+            ))}
+          </div>
+
+          {/* Tickets List */}
+          {filteredTickets.length === 0 ? (
+            <div className="text-center py-20">
+              <div className="text-6xl mb-4">🎫</div>
+              <h3 className="text-xl font-bold dark:text-white mb-2">
+                {filterStatus === 'all' ? 'No tienes tickets' : `No hay tickets ${getStatusText(filterStatus).toLowerCase()}`}
+              </h3>
+              <p className="text-gray-600 dark:text-gray-400">
+                Comienza a jugar para ver tus tickets virtuales aquí
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {filteredTickets.map((ticket, idx) => (
+                <div 
+                  key={idx}
+                  className="premium-card p-4 cursor-pointer hover:shadow-lg transition-shadow"
+                  onClick={() => { setSelectedTicket(ticket); setShowTicketModal(true); }}
+                >
+                  {/* Ticket Header */}
+                  <div className="flex justify-between items-start mb-3">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-lg font-bold dark:text-white">🎰 {ticket.bancaName || 'LOTEKA'}</span>
+                        <span className={`text-xs px-2 py-1 rounded-full font-semibold ${getStatusColor(ticket.status)}`}>
+                          {getStatusText(ticket.status)}
+                        </span>
+                      </div>
+                      <div className="text-sm text-gray-600 dark:text-gray-400">
+                        Sucursal: <strong>{ticket.sucursalName || 'Principal'}</strong> • Código: {ticket.sucursalCode || '4000-01'}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Sorteo Info */}
+                  <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-3 mb-3">
+                    <div className="flex justify-between text-sm">
+                      <div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">SORTEO</div>
+                        <div className="font-semibold dark:text-white">{ticket.sorteoName || 'Lotería Real'}</div>
+                        <div className="text-xs text-blue-600">#{ticket.sorteoNumber || '00000'}</div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-xs text-gray-500 dark:text-gray-400">HORA</div>
+                        <div className="font-semibold dark:text-white">{ticket.sorteoTime || '1:00 PM'}</div>
+                        <div className="text-xs text-gray-500">{new Date(ticket.timestamp || Date.now()).toLocaleDateString('es-DO')}</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Bet Info */}
+                  <div className="border-t border-b border-gray-200 dark:border-gray-700 py-3 mb-3">
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <span className="inline-block bg-blue-600 text-white px-2 py-1 rounded text-xs font-semibold mr-2">
+                          {ticket.type || 'QN'}
+                        </span>
+                        <span className="font-mono font-semibold dark:text-white">
+                          {Array.isArray(ticket.numbers) ? ticket.numbers.join(' - ') : ticket.numbers}
+                        </span>
+                      </div>
+                      <div className="text-lg font-bold text-blue-600">
+                        RD$ {ticket.amount?.toFixed(2) || '0.00'}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Footer */}
+                  <div className="flex justify-between items-center text-xs text-gray-500 dark:text-gray-400">
+                    <span>Ticket: {ticket.ticketCode || ticket.id}</span>
+                    <span>👤 Op: {ticket.operatorId || 'N/A'}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Ticket Detail Modal */}
+          {showTicketModal && selectedTicket && (
+            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowTicketModal(false)}>
+              <div className="bg-white dark:bg-gray-800 rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+                {/* Modal Header */}
+                <div className="sticky top-0 bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6 rounded-t-2xl">
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                      <h3 className="text-2xl font-bold mb-2">🎰 {selectedTicket.bancaName || 'LOTEKA'}</h3>
+                      <div className="text-sm opacity-90">Sucursal: <strong>{selectedTicket.sucursalName || 'Principal'}</strong></div>
+                      <div className="text-xs opacity-75">Código: {selectedTicket.sucursalCode || '4000-01'}</div>
+                    </div>
+                    <button onClick={() => setShowTicketModal(false)} className="text-white hover:bg-white/20 w-8 h-8 rounded-full flex items-center justify-center">
+                      ✕
+                    </button>
+                  </div>
+                  <div className={`mt-3 inline-block px-3 py-1 rounded-full text-xs font-bold ${getStatusColor(selectedTicket.status)}`}>
+                    {getStatusText(selectedTicket.status)}
+                  </div>
+                </div>
+
+                {/* Modal Body */}
+                <div className="p-6">
+                  {/* Sorteo Info */}
+                  <div className="bg-gray-50 dark:bg-gray-900 rounded-xl p-4 mb-4">
+                    <div className="flex justify-between">
+                      <div>
+                        <div className="text-xs text-gray-500 uppercase">Sorteo</div>
+                        <div className="font-semibold text-lg dark:text-white">{selectedTicket.sorteoName || 'Lotería Real'}</div>
+                        <div className="text-sm text-blue-600 font-semibold">#{selectedTicket.sorteoNumber || '00000'}</div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-xs text-gray-500 uppercase">Hora</div>
+                        <div className="font-semibold dark:text-white">{selectedTicket.sorteoTime || '1:00 PM'}</div>
+                        <div className="text-sm text-gray-500">{new Date(selectedTicket.timestamp || Date.now()).toLocaleDateString('es-DO')}</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Bet Details */}
+                  <div className="border-t-2 border-b-2 border-dashed border-gray-300 dark:border-gray-600 py-4 mb-4">
+                    <div className="text-xs text-gray-500 uppercase mb-2">Jugadas</div>
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <span className="inline-block bg-blue-600 text-white px-3 py-1 rounded text-sm font-bold mr-2">
+                          {selectedTicket.type || 'QN'}
+                        </span>
+                        <span className="font-mono text-xl font-bold dark:text-white">
+                          {Array.isArray(selectedTicket.numbers) ? selectedTicket.numbers.join(' - ') : selectedTicket.numbers}
+                        </span>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-sm text-gray-500">Monto</div>
+                        <div className="text-xl font-bold text-gray-900 dark:text-white">
+                          RD$ {selectedTicket.amount?.toFixed(2) || '0.00'}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Total */}
+                  <div className="flex justify-between items-center mb-4 text-2xl font-bold">
+                    <span className="dark:text-white">TOTAL:</span>
+                    <span className="text-blue-600">RD$ {selectedTicket.amount?.toFixed(2) || '0.00'}</span>
+                  </div>
+
+                  {/* Barcode */}
+                  <div className="bg-gray-50 dark:bg-gray-900 rounded-xl p-6 text-center mb-4">
+                    <div className="font-mono text-4xl tracking-wider mb-2" style={{ fontFamily: "'Libre Barcode 128', monospace" }}>
+                      {selectedTicket.barcode || String(Date.now()).slice(-14)}
+                    </div>
+                    <div className="text-xs text-gray-500">{selectedTicket.ticketCode || selectedTicket.id}</div>
+                  </div>
+
+                  {/* Footer Info */}
+                  <div className="text-xs text-gray-600 dark:text-gray-400 space-y-2 border-t border-gray-200 dark:border-gray-700 pt-4">
+                    {selectedTicket.operatorId && (
+                      <div className="flex items-center gap-2">
+                        <span>👤</span>
+                        <span>Operador: {selectedTicket.operatorId}</span>
+                      </div>
+                    )}
+                    <div className="flex items-center gap-2">
+                      <span>✓</span>
+                      <span>Válido hasta: {new Date(Date.now() + 60*24*60*60*1000).toLocaleDateString('es-DO')}</span>
+                    </div>
+                    {selectedTicket.sucursalAddress && (
+                      <div className="flex items-center gap-2">
+                        <span>📍</span>
+                        <span>{selectedTicket.sucursalAddress}</span>
+                      </div>
+                    )}
+                    {selectedTicket.sucursalPhone && (
+                      <div className="flex items-center gap-2">
+                        <span>📞</span>
+                        <span>{selectedTicket.sucursalPhone}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Notice */}
+                  <div className="mt-4 text-center text-xs text-gray-500 italic">
+                    Verifique su jugada • Conserve este ticket
+                  </div>
+
+                  {/* Actions */}
+                  <div className="mt-6 flex gap-3">
+                    <button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-xl font-semibold transition-colors">
+                      🔗 Compartir
+                    </button>
+                    <button className="flex-1 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-900 dark:text-white py-3 px-4 rounded-xl font-semibold transition-colors">
+                      💾 Guardar
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </section>
+      );
+    }
+
     /* --- MAIN APP LOGIC --- */
     function LotoLinkApp() {
       const [view, setView] = useState("home");
@@ -4127,6 +4769,9 @@
       const [pendingPlay, setPendingPlay] = useState(null);
       const [ticket, setTicket] = useState(null);
       const [selectedBank, setSelectedBank] = useState(DEFAULT_BANKS[0]);
+      const [availableBancas, setAvailableBancas] = useState(DEFAULT_BANKS); // Bancas from API or default
+      const [loadingBancas, setLoadingBancas] = useState(false);
+      const [userLocation, setUserLocation] = useState(null); // User's GPS location { latitude, longitude }
       const [bancasViewMode, setBancasViewMode] = useState('list'); // 'list' | 'map'
       const [bancasFocusBank, setBancasFocusBank] = useState(null); // Bank to focus on in map view
       const [showPlayModal, setShowPlayModal] = useState(false);
@@ -4137,9 +4782,14 @@
       const [playModalStake, setPlayModalStake] = useState(10); // Stake amount
       const [showBranchSelector, setShowBranchSelector] = useState(false); // Branch selector in play modal
       const [showAuthModal, setShowAuthModal] = useState(false);
+      // Multi-step auth states
+      const [authModalView, setAuthModalView] = useState('selection'); // 'selection' | 'phone' | 'otp' | 'email' | 'age' | 'admin'
+      const [currentPhone, setCurrentPhone] = useState('');
+      const [currentUserId, setCurrentUserId] = useState('');
+      const [isGuestMode, setIsGuestMode] = useState(() => localStorage.getItem('ll_guest') === 'true');
       const [isCartOpen, setIsCartOpen] = useState(false);
       const [theme, setTheme] = useState(() => localStorage.getItem('ll_theme') || 'light');
-      const [showInstallGuide, setShowInstallGuide] = useState(null); // 'ios' | 'android' | null
+      const [showInstallGuide, setShowInstallGuide] = useState(null); // 'ios' | 'android' | 'desktop' | null
       
       // Real-time lottery results from loteriasdominicanas.com
       const { feed: resultsFeed, isConnected: isLotteryConnected, lastUpdate: lotteryLastUpdate } = useLotteryResults(30000);
@@ -4973,6 +5623,102 @@
         fetchAppServiceFee();
       }, []); // Run once on mount
 
+      // Load nearby bancas from API with geolocation
+      const loadNearbyBancas = async () => {
+        setLoadingBancas(true);
+        try {
+          // Get user location
+          let latitude = DEFAULT_LOCATION.latitude;
+          let longitude = DEFAULT_LOCATION.longitude;
+
+          if (navigator.geolocation) {
+            try {
+              const position = await new Promise((resolve, reject) => {
+                navigator.geolocation.getCurrentPosition(resolve, reject, {
+                  timeout: 5000,
+                  maximumAge: 300000, // 5 minutes cache
+                });
+              });
+              latitude = position.coords.latitude;
+              longitude = position.coords.longitude;
+              setUserLocation({ latitude, longitude }); // Store user location
+            } catch (err) {
+              console.log('Could not get user location, using default:', err);
+              setUserLocation(DEFAULT_LOCATION); // Store default location
+            }
+          } else {
+            setUserLocation(DEFAULT_LOCATION); // Store default location
+          }
+
+          // Fetch nearby bancas from API
+          const API_BASE = window.API_BASE_URL || 'http://localhost:3000';
+          const response = await fetch(
+            `${API_BASE}/admin/bancas/nearby?latitude=${latitude}&longitude=${longitude}&radius_km=${DEFAULT_SEARCH_RADIUS_KM}`
+          );
+
+          if (response.ok) {
+            const bancas = await response.json();
+            
+            // Transform API bancas to match DEFAULT_BANKS structure and add distance
+            const transformedBancas = bancas.map(banca => {
+              const bancaLat = banca.latitude || (banca.coords && banca.coords[0]) || DEFAULT_LOCATION.latitude;
+              const bancaLon = banca.longitude || (banca.coords && banca.coords[1]) || DEFAULT_LOCATION.longitude;
+              const distanceKm = calculateDistance(latitude, longitude, bancaLat, bancaLon);
+              
+              return {
+                id: banca.id,
+                name: banca.name,
+                address: banca.address || 'Dirección no disponible',
+                coords: [bancaLat, bancaLon],
+                phone: banca.phone,
+                city: banca.city,
+                region: banca.region,
+                hours: banca.hours || 'Horario no disponible',
+                distanceKm: distanceKm,
+                distanceStr: formatDistance(distanceKm)
+              };
+            });
+
+            // Sort by distance (nearest first)
+            transformedBancas.sort((a, b) => a.distanceKm - b.distanceKm);
+
+            if (transformedBancas.length > 0) {
+              setAvailableBancas(transformedBancas);
+              
+              // If no bank is selected or selected bank is default, select the nearest one
+              if (!selectedBank || selectedBank.id <= 4) {
+                setSelectedBank(transformedBancas[0]);
+                localStorage.setItem('ll_selected_banca', JSON.stringify(transformedBancas[0]));
+              }
+            }
+          } else {
+            console.warn('Failed to fetch bancas, using default banks');
+          }
+        } catch (error) {
+          console.error('Error loading nearby bancas:', error);
+          // Keep using DEFAULT_BANKS
+        } finally {
+          setLoadingBancas(false);
+        }
+      };
+
+      // Load bancas on mount and restore selected banca from localStorage
+      useEffect(() => {
+        // Try to restore selected banca from localStorage
+        const savedBanca = localStorage.getItem('ll_selected_banca');
+        if (savedBanca) {
+          try {
+            const parsed = JSON.parse(savedBanca);
+            setSelectedBank(parsed);
+          } catch (e) {
+            console.error('Failed to parse saved banca:', e);
+          }
+        }
+        
+        // Load nearby bancas
+        loadNearbyBancas();
+      }, []);
+
       const addPlayToCart = (play) => { 
         // Single-banca cart enforcement
         if (!cartBanca) {
@@ -5200,23 +5946,44 @@
                         </button>
                       </div>
                       <div className="space-y-3 sm:space-y-4">
-                        {DEFAULT_BANKS.map((b) => (
+                        {availableBancas.slice(0, 3).map((b, index) => (
                           <div key={b.id} className="premium-card p-3 sm:p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0">
                             <div className="flex items-center gap-3 sm:gap-4 w-full sm:w-auto">
                               <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl sm:rounded-2xl flex items-center justify-center text-white text-lg sm:text-xl shadow-lg shadow-blue-500/25 flex-shrink-0">
                                 🏪
                               </div>
                               <div className="flex-1 min-w-0">
-                                <div className="font-semibold text-gray-900 dark:text-white text-sm sm:text-base truncate">{b.name}</div>
-                                <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 flex items-center gap-2">
-                                  <span className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></span>
-                                  <span className="truncate">{b.hours}</span>
+                                <div className="flex items-center gap-2 flex-wrap">
+                                  <div className="font-semibold text-gray-900 dark:text-white text-sm sm:text-base truncate">{b.name}</div>
+                                  {index === 0 && availableBancas.length > 1 && b.distanceStr && (
+                                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 whitespace-nowrap">
+                                      ⭐ Más cercana
+                                    </span>
+                                  )}
+                                  {b.distanceStr && (
+                                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 whitespace-nowrap">
+                                      📍 {b.distanceStr}
+                                    </span>
+                                  )}
                                 </div>
+                                <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 flex items-center gap-2 mt-1">
+                                  <span className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></span>
+                                  <span className="truncate">{b.hours || 'Horario no disponible'}</span>
+                                </div>
+                                {b.address && (
+                                  <div className="text-xs text-gray-400 dark:text-gray-500 mt-0.5 truncate">
+                                    📍 {b.address}
+                                  </div>
+                                )}
                               </div>
                             </div>
                             <div className="flex gap-2 sm:gap-3 w-full sm:w-auto">
                               <button 
-                                onClick={() => openPlayModal(b)} 
+                                onClick={() => {
+                                  setSelectedBank(b);
+                                  localStorage.setItem('ll_selected_banca', JSON.stringify(b));
+                                  setView('loterias');
+                                }}
                                 className="btn-apple-primary flex-1 sm:flex-initial px-4 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm"
                               >
                                 Jugar
@@ -5365,11 +6132,25 @@
                             <div className="text-lg font-bold -mt-1">Android</div>
                           </div>
                         </a>
-
+                        
+                        {/* Desktop Button - Direct download */}
+                        <a 
+                          href="https://github.com/pabelsims-ux/LOTLINK/releases/latest/download/LotoLink-Desktop.zip"
+                          download
+                          className="flex items-center gap-3 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white px-6 py-3 rounded-xl font-semibold transition-all transform hover:scale-105 shadow-lg min-w-[200px] border border-white/30 no-underline"
+                        >
+                          <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                          </svg>
+                          <div className="text-left">
+                            <div className="text-[10px] opacity-80">Descargar para</div>
+                            <div className="text-lg font-bold -mt-1">Windows / Mac / Linux</div>
+                          </div>
+                        </a>
                       </div>
                       
                       <p className="mt-6 text-xs text-blue-200 opacity-75">
-                        📱 App nativa desarrollada con React Native
+                        📱 Apps nativas desarrolladas con React Native (móvil) y Electron (escritorio)
                       </p>
                       
                       {/* PWA Alternative */}
@@ -5381,7 +6162,7 @@
                               window.deferredPrompt.prompt();
                             } else {
                               const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-                              setShowInstallGuide(isMobile ? (/iPhone|iPad|iPod/i.test(navigator.userAgent) ? 'ios' : 'android') : 'android');
+                              setShowInstallGuide(isMobile ? (/iPhone|iPad|iPod/i.test(navigator.userAgent) ? 'ios' : 'android') : 'desktop');
                             }
                           }}
                           className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all"
@@ -5398,6 +6179,7 @@
             {view === "bancas" && <Bancas banks={DEFAULT_BANKS} onPlay={(b) => openPlayModal(b)} onJoin={() => setView("portal")} initialViewMode={bancasViewMode} focusBank={bancasFocusBank} />}
             {view === "portal" && <BancaPortal onBack={() => setView("home")} />}
             {view === "profile" && <Profile user={user} ticket={ticket} registeredCards={registeredCards} onManageCards={() => setShowCardManagement(true)} onLogin={() => setShowAuthModal(true)} />}
+            {view === "tickets" && <MyTickets user={user} onLogin={() => setShowAuthModal(true)} />}
             {view === "rankings" && <Rankings />}
             {view === "masjugados" && <MostPlayedSection most={MOST_PLAYED} />}
             {view === "join" && <JoinUs />}
@@ -5592,14 +6374,22 @@
                   {/* Branch Selector Dropdown */}
                   {showBranchSelector && (
                     <div className="p-4 bg-blue-50 dark:bg-slate-800 border-b dark:border-slate-700">
-                      <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Selecciona otra sucursal:</div>
+                      <div className="flex justify-between items-center mb-3">
+                        <div className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                          Selecciona otra sucursal:
+                        </div>
+                        {loadingBancas && (
+                          <div className="text-xs text-gray-500">Cargando...</div>
+                        )}
+                      </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                        {DEFAULT_BANKS.map(bank => (
+                        {availableBancas.map(bank => (
                           <button
                             type="button"
                             key={bank.id}
                             onClick={() => {
                               setSelectedBank(bank);
+                              localStorage.setItem('ll_selected_banca', JSON.stringify(bank));
                               setShowBranchSelector(false);
                             }}
                             className={`p-3 rounded-lg text-left transition-all cursor-pointer ${
@@ -5613,9 +6403,21 @@
                             <div className={`text-xs ${selectedBank?.id === bank.id ? 'text-blue-100' : 'text-gray-500 dark:text-gray-400'}`}>
                               📍 {bank.address}
                             </div>
+                            {bank.phone && (
+                              <div className={`text-xs mt-1 ${selectedBank?.id === bank.id ? 'text-blue-100' : 'text-gray-500 dark:text-gray-400'}`}>
+                                📞 {bank.phone}
+                              </div>
+                            )}
                           </button>
                         ))}
                       </div>
+                      <button
+                        type="button"
+                        onClick={loadNearbyBancas}
+                        className="mt-3 w-full py-2 px-4 bg-white dark:bg-slate-700 border border-gray-300 dark:border-slate-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-600 transition-colors"
+                      >
+                        🔄 Actualizar bancas cercanas
+                      </button>
                     </div>
                   )}
                 </div>
@@ -6386,6 +7188,26 @@
                     <div className="text-center mb-4">
                       <div className="font-mono text-lg font-bold text-blue-600">#{confirmedTicket.id}</div>
                       <div className="text-sm text-gray-500 dark:text-gray-400">{confirmedTicket.bank}</div>
+                      {confirmedTicket.sucursal && (
+                        <div className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                          📍 Sucursal: {confirmedTicket.sucursal}
+                        </div>
+                      )}
+                      {confirmedTicket.sorteoName && (
+                        <div className="text-xs text-blue-500 dark:text-blue-400 mt-1 font-semibold">
+                          🎯 {confirmedTicket.sorteoName} {confirmedTicket.sorteoNumber && `#${confirmedTicket.sorteoNumber}`}
+                        </div>
+                      )}
+                      {confirmedTicket.sorteoTime && (
+                        <div className="text-xs text-gray-500 dark:text-gray-400">
+                          ⏰ Sorteo: {confirmedTicket.sorteoTime}
+                        </div>
+                      )}
+                      {confirmedTicket.barcode && (
+                        <div className="text-xs text-gray-400 dark:text-gray-500 mt-2 font-mono">
+                          🔖 {confirmedTicket.barcode}
+                        </div>
+                      )}
                     </div>
                     
                     {/* Plays */}
@@ -6438,6 +7260,24 @@
                             hour: '2-digit', 
                             minute: '2-digit' 
                           })}</span>
+                        </div>
+                      )}
+                      {confirmedTicket.operatorUserId && (
+                        <div className="flex justify-between text-xs mt-2 pt-2 border-t dark:border-slate-600">
+                          <span className="text-gray-500 dark:text-gray-500">Operador:</span>
+                          <span className="text-gray-600 dark:text-gray-400 font-mono">{confirmedTicket.operatorUserId}</span>
+                        </div>
+                      )}
+                      {confirmedTicket.validUntil && (
+                        <div className="flex justify-between text-xs mt-1">
+                          <span className="text-gray-500 dark:text-gray-500">Válido hasta:</span>
+                          <span className="text-gray-600 dark:text-gray-400 font-semibold">
+                            {new Date(confirmedTicket.validUntil).toLocaleDateString('es-DO', { 
+                              year: 'numeric',
+                              month: 'short', 
+                              day: 'numeric'
+                            })}
+                          </span>
                         </div>
                       )}
                     </div>
@@ -6522,13 +7362,16 @@
                 {/* Header */}
                 <div className={`p-6 text-white text-center ${
                   showInstallGuide === 'ios' ? 'bg-gradient-to-r from-gray-800 to-gray-900' :
-                  'bg-gradient-to-r from-green-600 to-green-700'
+                  showInstallGuide === 'android' ? 'bg-gradient-to-r from-green-600 to-green-700' :
+                  'bg-gradient-to-r from-blue-600 to-indigo-700'
                 }`}>
                   <div className="text-5xl mb-3">
-                    {showInstallGuide === 'ios' ? '🍎' : '🤖'}
+                    {showInstallGuide === 'ios' ? '🍎' : showInstallGuide === 'android' ? '🤖' : '💻'}
                   </div>
                   <h3 className="text-xl font-bold">
-                    {showInstallGuide === 'ios' ? 'Instalar en iPhone/iPad' : 'Instalar en Android'}
+                    {showInstallGuide === 'ios' ? 'Instalar en iPhone/iPad' :
+                     showInstallGuide === 'android' ? 'Instalar en Android' :
+                     'Instalar en PC/Mac'}
                   </h3>
                 </div>
                 
@@ -6616,7 +7459,97 @@
                       </div>
                     </div>
                   )}
-
+                  
+                  {/* Desktop Instructions */}
+                  {showInstallGuide === 'desktop' && (
+                    <div className="space-y-4">
+                      {/* Important notice about local files */}
+                      <div className="p-4 bg-amber-50 dark:bg-amber-900/30 rounded-xl border border-amber-200 dark:border-amber-700">
+                        <p className="text-sm text-amber-800 dark:text-amber-200 font-medium flex items-center gap-2">
+                          <svg className="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                          </svg>
+                          Si abriste el archivo directamente, el icono no aparecerá. La app debe estar en un servidor web.
+                        </p>
+                      </div>
+                      
+                      {/* Visual browser mockup */}
+                      <div className="bg-gray-100 dark:bg-slate-700 rounded-xl p-3">
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mb-2 font-medium">Así se ve en Chrome/Edge:</p>
+                        {/* Browser mockup */}
+                        <div className="bg-gray-200 dark:bg-slate-600 rounded-lg overflow-hidden">
+                          {/* Tab bar */}
+                          <div className="bg-gray-300 dark:bg-slate-500 px-2 py-1 flex items-center gap-1">
+                            <div className="flex gap-1">
+                              <div className="w-2 h-2 rounded-full bg-red-400"></div>
+                              <div className="w-2 h-2 rounded-full bg-yellow-400"></div>
+                              <div className="w-2 h-2 rounded-full bg-green-400"></div>
+                            </div>
+                            <div className="flex-1 mx-4 bg-white dark:bg-slate-400 rounded px-2 py-0.5 text-[10px] text-gray-600 truncate">
+                              🎱 LotoLink
+                            </div>
+                          </div>
+                          {/* Address bar with install icon highlighted */}
+                          <div className="bg-white dark:bg-slate-700 px-2 py-1 flex items-center gap-2 border-b dark:border-slate-600">
+                            <div className="flex gap-1 text-gray-400">
+                              <span>←</span><span>→</span><span>↻</span>
+                            </div>
+                            <div className="flex-1 bg-gray-100 dark:bg-slate-600 rounded-full px-3 py-1 text-[10px] text-gray-600 dark:text-gray-300 flex items-center">
+                              <span className="text-green-600 dark:text-green-400 mr-1">🔒</span>
+                              <span className="truncate">lotolink.com</span>
+                              {/* Install icon - highlighted */}
+                              <span className="ml-auto flex items-center gap-1">
+                                <span className="relative animate-pulse">
+                                  <span className="absolute -inset-1 bg-blue-400 rounded opacity-50"></span>
+                                  <span className="relative bg-blue-500 text-white px-1 py-0.5 rounded text-[8px] font-bold">⊕</span>
+                                </span>
+                              </span>
+                            </div>
+                            <span className="text-gray-400 text-sm">⋮</span>
+                          </div>
+                        </div>
+                        <p className="text-xs text-blue-600 dark:text-blue-400 mt-2 text-center font-medium">
+                          ↑ Busca este icono ⊕ al final de la barra de direcciones
+                        </p>
+                      </div>
+                      
+                      <div className="flex items-start gap-4 p-4 bg-gray-50 dark:bg-slate-700 rounded-xl">
+                        <div className="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold flex-shrink-0">1</div>
+                        <div>
+                          <p className="font-semibold text-gray-900 dark:text-white">Abre en Chrome o Edge</p>
+                          <p className="text-sm text-gray-600 dark:text-gray-300">La página debe cargarse desde un servidor (https://...)</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-start gap-4 p-4 bg-gray-50 dark:bg-slate-700 rounded-xl">
+                        <div className="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold flex-shrink-0">2</div>
+                        <div>
+                          <p className="font-semibold text-gray-900 dark:text-white">Haz clic en el icono ⊕</p>
+                          <p className="text-sm text-gray-600 dark:text-gray-300">
+                            Está al final de la barra de direcciones (ver imagen arriba)
+                          </p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-start gap-4 p-4 bg-gray-50 dark:bg-slate-700 rounded-xl">
+                        <div className="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold flex-shrink-0">3</div>
+                        <div>
+                          <p className="font-semibold text-gray-900 dark:text-white">Confirma "Instalar"</p>
+                          <p className="text-sm text-gray-600 dark:text-gray-300">
+                            Alternativa: menú <span className="bg-gray-200 dark:bg-slate-600 px-1.5 py-0.5 rounded font-mono">⋮</span> → "Instalar LotoLink..."
+                          </p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-start gap-4 p-4 bg-green-50 dark:bg-green-900/20 rounded-xl border border-green-200 dark:border-green-800">
+                        <div className="w-10 h-10 bg-green-500 text-white rounded-full flex items-center justify-center font-bold flex-shrink-0">✓</div>
+                        <div>
+                          <p className="font-semibold text-green-800 dark:text-green-300">¡Listo!</p>
+                          <p className="text-sm text-green-700 dark:text-green-400">La app se abrirá en su propia ventana sin barras del navegador</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                   
                   {/* Close button */}
                   <button
@@ -7005,9 +7938,9 @@
             </div>
           )}
           
-          {/* Mobile Bottom Navigation Bar - Always visible */}
+          {/* Mobile Bottom Navigation Bar - Only visible on mobile devices */}
           {view !== 'portal' && !showWelcomeScreen && (
-            <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-t border-gray-200 dark:border-slate-800" style={{ paddingBottom: 'max(8px, env(safe-area-inset-bottom))' }}>
+            <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-t border-gray-200 dark:border-slate-800" style={{ paddingBottom: 'max(8px, env(safe-area-inset-bottom))' }}>
               <div className="flex items-center justify-around px-2 py-2">
                 <button 
                   onClick={() => setView('home')}
@@ -7053,11 +7986,128 @@
               </div>
             </nav>
           )}
+          
+          {/* Legal Footer */}
+          <div className="py-8 px-4 mt-8" style={{
+            background: 'linear-gradient(180deg, rgba(255,255,255,0.0) 0%, rgba(245,245,247,0.8) 50%, rgba(255,255,255,0.95) 100%)',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            borderTop: '1px solid rgba(0,0,0,0.05)'
+          }}>
+            <div className="max-w-4xl mx-auto">
+              {/* Logo or Brand Mark */}
+              <div className="text-center mb-6">
+                <div className="inline-block px-4 py-2 rounded-full" style={{
+                  background: 'rgba(0, 113, 227, 0.08)',
+                  border: '1px solid rgba(0, 113, 227, 0.12)'
+                }}>
+                  <span className="text-sm font-semibold" style={{
+                    background: 'linear-gradient(135deg, #0071e3 0%, #5856d6 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    letterSpacing: '-0.01em'
+                  }}>
+                    LotoLink
+                  </span>
+                </div>
+              </div>
+              
+              {/* Legal Links */}
+              <div className="flex flex-wrap justify-center items-center gap-1 mb-6">
+                <a 
+                  href="./POLITICA_DE_PRIVACIDAD.md" 
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-4 py-2 text-xs font-medium rounded-lg transition-all duration-200"
+                  style={{
+                    color: 'var(--gray-600)',
+                    letterSpacing: '-0.01em'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(0, 113, 227, 0.08)';
+                    e.currentTarget.style.color = 'var(--primary)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'transparent';
+                    e.currentTarget.style.color = 'var(--gray-600)';
+                  }}
+                >
+                  Política de Privacidad
+                </a>
+                <span className="text-gray-300 text-xs">•</span>
+                <a 
+                  href="./TERMINOS_Y_CONDICIONES.md" 
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-4 py-2 text-xs font-medium rounded-lg transition-all duration-200"
+                  style={{
+                    color: 'var(--gray-600)',
+                    letterSpacing: '-0.01em'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(0, 113, 227, 0.08)';
+                    e.currentTarget.style.color = 'var(--primary)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'transparent';
+                    e.currentTarget.style.color = 'var(--gray-600)';
+                  }}
+                >
+                  Términos y Condiciones
+                </a>
+                <span className="text-gray-300 text-xs">•</span>
+                <a 
+                  href="./DECLARACION_LEGAL.md" 
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-4 py-2 text-xs font-medium rounded-lg transition-all duration-200"
+                  style={{
+                    color: 'var(--gray-600)',
+                    letterSpacing: '-0.01em'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(0, 113, 227, 0.08)';
+                    e.currentTarget.style.color = 'var(--primary)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'transparent';
+                    e.currentTarget.style.color = 'var(--gray-600)';
+                  }}
+                >
+                  Declaración Legal
+                </a>
+              </div>
+              
+              {/* Copyright */}
+              <div className="text-center">
+                <p className="text-xs" style={{
+                  color: 'var(--gray-400)',
+                  letterSpacing: '-0.01em',
+                  fontWeight: '500'
+                }}>
+                  © 2024 LotoLink. Todos los derechos reservados.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       );
     }
 
     ReactDOM.render(<LotoLinkApp />, document.getElementById('root'));
+    
+    // Hide loading screen after React app is rendered and content is ready
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const loadingScreen = document.getElementById('loading-screen');
+        if (loadingScreen) {
+          loadingScreen.classList.add('hidden');
+          setTimeout(() => {
+            loadingScreen.remove();
+          }, 500);
+        }
+      }, 2500); // Show loading screen for at least 2.5 seconds to showcase the animation
+    });
 
     /* --- MAP INIT LOGIC (Improved from MVP) --- */
     setInterval(() => {
@@ -8118,6 +9168,44 @@
     })();
   </script>
   
+  <!-- Terms of Service Modal Logic -->
+  <script>
+    (function() {
+      // Open Terms of Service Modal
+      function openTermsModal() {
+        const modal = document.getElementById('terms-modal-root');
+        if (modal) {
+          modal.classList.remove('hidden');
+          modal.classList.add('flex');
+          // Prevent body scroll when modal is open
+          document.body.style.overflow = 'hidden';
+        }
+      }
+      
+      // Close Terms of Service Modal
+      function closeTermsModal() {
+        const modal = document.getElementById('terms-modal-root');
+        if (modal) {
+          modal.classList.add('hidden');
+          modal.classList.remove('flex');
+          // Restore body scroll
+          document.body.style.overflow = '';
+        }
+      }
+      
+      // Close modal on Escape key
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          closeTermsModal();
+        }
+      });
+      
+      // Expose functions globally
+      window.openTermsModal = openTermsModal;
+      window.closeTermsModal = closeTermsModal;
+    })();
+  </script>
+  
   <!-- PWA Install Banner & Service Worker -->
   <script>
     (function() {
@@ -8157,7 +9245,7 @@
             </div>
           `;
         } else if (deferredPrompt || isAndroid) {
-          // Android with install prompt
+          // Android/Desktop with install prompt
           banner.innerHTML = `
             <div class="max-w-md mx-auto bg-white dark:bg-slate-800 rounded-2xl shadow-2xl p-4 flex items-center gap-4">
               <img src="./lotolink-logo.png" alt="LotoLink Logo" class="w-14 h-14 rounded-2xl flex-shrink-0 shadow-lg object-contain" />
@@ -8261,22 +9349,6 @@
         console.log('LotoLink PWA: Ready for installation');
       }
     })();
-  </script>
-  
-  <!-- Loading Screen Script -->
-  <script>
-    // Hide loading screen after app is fully loaded
-    window.addEventListener('load', () => {
-      setTimeout(() => {
-        const loadingScreen = document.getElementById('loading-screen');
-        if (loadingScreen) {
-          loadingScreen.classList.add('hidden');
-          setTimeout(() => {
-            loadingScreen.remove();
-          }, 500);
-        }
-      }, 2500); // Show loading screen for at least 2.5 seconds to showcase the animation
-    });
   </script>
 </body>
 </html>
