@@ -4491,6 +4491,11 @@
 
     /* --- TICKETS API MODULE --- */
     const TicketsAPI = (function() {
+      // Constants
+      const TICKET_VALIDITY_DAYS = 30;
+      const TICKET_VALIDITY_MS = TICKET_VALIDITY_DAYS * 24 * 60 * 60 * 1000;
+      const BARCODE_LENGTH = 14;
+      
       // Configuration
       const getApiBase = () => {
         if (window.location.hostname === 'localhost') {
@@ -4498,6 +4503,14 @@
         }
         return window.API_BASE_URL || 'https://api.lotolink.com/api/v1';
       };
+      
+      /**
+       * Generate barcode from play ID
+       */
+      function generateBarcodeFromId(id) {
+        const numericId = String(id || Date.now()).replace(/[^0-9]/g, '');
+        return numericId.padStart(BARCODE_LENGTH, '0').slice(0, BARCODE_LENGTH);
+      }
       
       /**
        * Get authentication token from storage
@@ -4542,7 +4555,7 @@
         return {
           id: play.id || play.playId,
           ticketCode: play.ticketCode || play.playIdBanca || `TKT-${play.id}`,
-          barcode: play.barcode || String(play.id || Date.now()).replace(/[^0-9]/g, '').padStart(14, '0').slice(0, 14),
+          barcode: play.barcode || generateBarcodeFromId(play.id),
           
           // Bet information
           type: play.betType || 'QN',
@@ -4572,7 +4585,7 @@
           operatorId: play.operatorUserId,
           
           // Validity
-          validUntil: play.validUntil || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+          validUntil: play.validUntil || new Date(Date.now() + TICKET_VALIDITY_MS).toISOString(),
         };
       }
       
