@@ -1959,6 +1959,20 @@
   <script type="text/babel">
     const { useEffect, useMemo, useRef, useState } = React;
 
+    /* --- API CONFIGURATION --- */
+    window.LOTOLINK_CONFIG = {
+      API_BASE_URL: window.location.hostname === 'localhost' 
+        ? 'http://localhost:3000/api/v1' 
+        : (window.LOTOLINK_API_URL || 'https://api.lotolink.com/api/v1'),
+      
+      GOOGLE_CLIENT_ID: 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com',
+      APPLE_CLIENT_ID: 'YOUR_APPLE_CLIENT_ID',
+      
+      STRIPE_PUBLIC_KEY: window.location.hostname === 'localhost'
+        ? 'pk_test_...'
+        : 'pk_live_...'
+    };
+
     /* --- DATA --- */
     const DEFAULT_BANKS = [
       { id: 1, name: "Loteka - Av. Duarte", coords: [18.4693, -69.8990], hours: "Abierta hasta las 8:00 PM" },
@@ -4673,6 +4687,331 @@
         transformPlayToTicket
       };
     })();
+
+    /* --- AUTHENTICATION API MODULE --- */
+    const AuthAPI = (function() {
+      /**
+       * Generate unique device ID
+       */
+      function generateDeviceId() {
+        let deviceId = localStorage.getItem('ll_device_id');
+        if (!deviceId) {
+          deviceId = 'device_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
+          localStorage.setItem('ll_device_id', deviceId);
+        }
+        return deviceId;
+      }
+
+      /**
+       * Make API request using shared apiRequest function
+       */
+      async function makeAuthRequest(endpoint, options = {}) {
+        const token = localStorage.getItem('ll_token') || localStorage.getItem('ll_access_token');
+        
+        const config = {
+          ...options,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': token ? `Bearer ${token}` : '',
+            ...options.headers
+          }
+        };
+        
+        const baseUrl = window.location.hostname === 'localhost' 
+          ? 'http://localhost:3000/api/v1' 
+          : (window.LOTOLINK_API_URL || 'https://api.lotolink.com/api/v1');
+        
+        const response = await fetch(`${baseUrl}${endpoint}`, config);
+        
+        if (response.status === 401) {
+          // Token expired - redirect to login
+          localStorage.removeItem('ll_token');
+          localStorage.removeItem('ll_access_token');
+          localStorage.removeItem('ll_user');
+          throw new Error('Session expired');
+        }
+        
+        if (!response.ok) {
+          const error = await response.json().catch(() => ({ message: response.statusText }));
+          throw new Error(error.message || 'API request failed');
+        }
+        
+        return response.json();
+      }
+
+      // Public API
+      return {
+        // Send OTP to phone
+        async sendOTP(phone) {
+          return makeAuthRequest('/auth/send-otp', {
+            method: 'POST',
+            body: JSON.stringify({ phone, purpose: 'login' })
+          });
+        },
+        
+        // Verify OTP code
+        async verifyOTP(phone, code) {
+          return makeAuthRequest('/auth/verify-otp', {
+            method: 'POST',
+            body: JSON.stringify({ phone, code, purpose: 'login' })
+          });
+        },
+        
+        // Register new user
+        async register(userData) {
+          return makeAuthRequest('/auth/register', {
+            method: 'POST',
+            body: JSON.stringify(userData)
+          });
+        },
+        
+        // Login with phone/password
+        async login(phone, password) {
+          return makeAuthRequest('/auth/login', {
+            method: 'POST',
+            body: JSON.stringify({ phone, password })
+          });
+        },
+        
+        // Google OAuth
+        async googleAuth(idToken) {
+          return makeAuthRequest('/auth/google', {
+            method: 'POST',
+            body: JSON.stringify({ idToken })
+          });
+        },
+        
+        // Apple Sign-In
+        async appleAuth(identityToken, authorizationCode) {
+          return makeAuthRequest('/auth/apple', {
+            method: 'POST',
+            body: JSON.stringify({ identityToken, authorizationCode })
+          });
+        },
+        
+        // Verify age (18+)
+        async verifyAge(userId, birthDate) {
+          return makeAuthRequest('/auth/verify-age', {
+            method: 'POST',
+            body: JSON.stringify({ userId, birthDate })
+          });
+        },
+        
+        // Guest mode
+        async createGuestSession() {
+          return makeAuthRequest('/auth/guest', {
+            method: 'POST',
+            body: JSON.stringify({ deviceId: generateDeviceId() })
+          });
+        },
+        
+        // Admin secret access
+        async adminAccess(secretCode, username, password) {
+          return makeAuthRequest('/auth/admin-secret', {
+            method: 'POST',
+            body: JSON.stringify({ secretCode, username, password })
+          });
+        },
+        
+        // Get current user profile
+        async getProfile() {
+          return makeAuthRequest('/auth/profile');
+        },
+        
+        // Logout
+        async logout() {
+          return makeAuthRequest('/auth/logout', { method: 'POST' });
+        }
+      };
+    })();
+
+    /* --- BANCAS API MODULE --- */
+    const BancasAPI = (function() {
+      /**
+       * Make API request using shared apiRequest function
+       */
+      async function makeBancaRequest(endpoint, options = {}) {
+        const token = localStorage.getItem('ll_token') || localStorage.getItem('ll_access_token');
+        
+        const config = {
+          ...options,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': token ? `Bearer ${token}` : '',
+            ...options.headers
+          }
+        };
+        
+        const baseUrl = window.location.hostname === 'localhost' 
+          ? 'http://localhost:3000/api/v1' 
+          : (window.LOTOLINK_API_URL || 'https://api.lotolink.com/api/v1');
+        
+        const response = await fetch(`${baseUrl}${endpoint}`, config);
+        
+        if (!response.ok) {
+          const error = await response.json().catch(() => ({ message: response.statusText }));
+          throw new Error(error.message || 'API request failed');
+        }
+        
+        return response.json();
+      }
+
+      // Public API
+      return {
+        // Get all bancas
+        async getBancas(params = {}) {
+          const queryParams = new URLSearchParams();
+          Object.entries(params).forEach(([key, value]) => {
+            if (value !== undefined) queryParams.append(key, value);
+          });
+          
+          const queryString = queryParams.toString();
+          return makeBancaRequest(`/bancas${queryString ? '?' + queryString : ''}`);
+        },
+        
+        // Get banca by ID
+        async getBancaById(bancaId) {
+          return makeBancaRequest(`/bancas/${bancaId}`);
+        },
+        
+        // Get nearby bancas with geolocation
+        async getNearbyBancas(latitude, longitude, radiusKm = 10) {
+          return makeBancaRequest(`/bancas/nearby?lat=${latitude}&lng=${longitude}&radius=${radiusKm}`);
+        },
+        
+        // Search bancas
+        async searchBancas(query, filters = {}) {
+          const params = new URLSearchParams({ q: query, ...filters });
+          return makeBancaRequest(`/bancas/search?${params}`);
+        }
+      };
+    })();
+
+    /* --- PLAYS API MODULE --- */
+    const PlaysAPI = (function() {
+      /**
+       * Make API request using shared apiRequest function
+       */
+      async function makePlayRequest(endpoint, options = {}) {
+        const token = localStorage.getItem('ll_token') || localStorage.getItem('ll_access_token');
+        
+        const config = {
+          ...options,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': token ? `Bearer ${token}` : '',
+            ...options.headers
+          }
+        };
+        
+        const baseUrl = window.location.hostname === 'localhost' 
+          ? 'http://localhost:3000/api/v1' 
+          : (window.LOTOLINK_API_URL || 'https://api.lotolink.com/api/v1');
+        
+        const response = await fetch(`${baseUrl}${endpoint}`, config);
+        
+        if (!response.ok) {
+          const error = await response.json().catch(() => ({ message: response.statusText }));
+          throw new Error(error.message || 'API request failed');
+        }
+        
+        return response.json();
+      }
+
+      // Public API
+      return {
+        // Create new play
+        async createPlay(playData) {
+          return makePlayRequest('/plays', {
+            method: 'POST',
+            body: JSON.stringify(playData)
+          });
+        },
+        
+        // Get play by ID
+        async getPlayById(playId) {
+          return makePlayRequest(`/plays/${playId}`);
+        },
+        
+        // Cancel play
+        async cancelPlay(playId, reason) {
+          return makePlayRequest(`/plays/${playId}/cancel`, {
+            method: 'POST',
+            body: JSON.stringify({ reason })
+          });
+        },
+        
+        // Get play statistics
+        async getPlayStats(userId) {
+          return makePlayRequest(`/plays/user/${userId}/stats`);
+        }
+      };
+    })();
+
+    /* --- GEOLOCATION SERVICE MODULE --- */
+    const GeolocationService = (function() {
+      // Public API
+      return {
+        // Get current position
+        async getCurrentPosition() {
+          return new Promise((resolve, reject) => {
+            if (!navigator.geolocation) {
+              reject(new Error('Geolocation not supported'));
+              return;
+            }
+            
+            navigator.geolocation.getCurrentPosition(
+              (position) => resolve({
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude,
+                accuracy: position.coords.accuracy
+              }),
+              (error) => reject(error),
+              { enableHighAccuracy: true, timeout: 10000 }
+            );
+          });
+        },
+        
+        // Calculate distance between two points (Haversine formula)
+        calculateDistance(lat1, lon1, lat2, lon2) {
+          const R = 6371; // Earth radius in km
+          const dLat = (lat2 - lat1) * Math.PI / 180;
+          const dLon = (lon2 - lon1) * Math.PI / 180;
+          const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                    Math.sin(dLon/2) * Math.sin(dLon/2);
+          const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+          return R * c;
+        },
+        
+        // Format distance for display
+        formatDistance(km) {
+          if (km < 1) return `${Math.round(km * 1000)}m`;
+          return `${km.toFixed(1)}km`;
+        }
+      };
+    })();
+
+    /* --- UTILITY FUNCTIONS --- */
+    
+    /**
+     * Generate barcode from ID
+     */
+    function generateBarcode(id) {
+      const idStr = String(id).replace(/\D/g, '');
+      const padded = idStr.padStart(12, '0').slice(-12);
+      const checksum = padded.split('').reduce((a, b) => a + parseInt(b), 0) % 100;
+      return padded + checksum.toString().padStart(2, '0');
+    }
+
+    /**
+     * Calculate ticket validity date
+     */
+    function calculateValidUntil(createdAt, validityDays = 30) {
+      const created = new Date(createdAt || Date.now());
+      created.setDate(created.getDate() + validityDays);
+      return created.toISOString();
+    }
 
     function MyTickets({ user, onLogin }) {
       const [tickets, setTickets] = useState([]);
