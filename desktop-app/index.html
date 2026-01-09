@@ -4883,6 +4883,21 @@
         async searchBancas(query, filters = {}) {
           const params = new URLSearchParams({ q: query, ...filters });
           return makeBancaRequest(`/bancas/search?${params}`);
+        },
+        
+        // Get lotteries available at a specific banca
+        async getBancaLotteries(bancaId) {
+          return makeBancaRequest(`/bancas/${bancaId}/lotteries`);
+        },
+        
+        // Get draws for a lottery at a specific banca
+        async getBancaDraws(bancaId, lotteryId) {
+          return makeBancaRequest(`/bancas/${bancaId}/lotteries/${lotteryId}/draws`);
+        },
+        
+        // Get betting configuration for a banca
+        async getBancaBetConfig(bancaId) {
+          return makeBancaRequest(`/bancas/${bancaId}/bet-config`);
         }
       };
     })();
