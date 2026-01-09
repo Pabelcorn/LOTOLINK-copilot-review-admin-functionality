@@ -9,3 +9,4 @@ export * from './banca.controller';
 export * from './public-settings.controller';
 export * from './sucursal.controller';
 export * from './notifications.controller';
+export * from './prize.controller';

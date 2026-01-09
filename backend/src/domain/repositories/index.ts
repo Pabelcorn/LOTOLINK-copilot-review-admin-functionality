@@ -9,3 +9,4 @@ export * from './sucursal.repository';
 export * from './user-device.repository';
 export * from './notification-log.repository';
 export * from './notification-preference.repository';
+export * from './prize.repository';

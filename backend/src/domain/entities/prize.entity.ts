@@ -1,12 +1,24 @@
 import { v4 as uuidv4 } from 'uuid';
 
 export enum PrizeStatus {
-  PENDING = 'pending',
-  APPROVED = 'approved',
-  PAID = 'paid',
+  PENDING = 'pending',       // Won but not claimed
+  CLAIMED = 'claimed',       // User submitted claim
+  VERIFYING = 'verifying',   // Admin is verifying
+  APPROVED = 'approved',     // Approved for payment
+  PROCESSING = 'processing', // Payment being processed
+  PAID = 'paid',            // Payment complete
   DISPUTED = 'disputed',
-  REJECTED = 'rejected',
+  REJECTED = 'rejected',     // Claim rejected
+  EXPIRED = 'expired'        // Claim window expired
 }
+
+export interface BankAccountInfo {
+  bank: string;
+  account: string;
+  holder: string;
+}
+
+export type PaymentMethod = 'bank_transfer' | 'cash' | 'wallet';
 
 export interface PrizeProps {
   id?: string;
@@ -23,11 +35,19 @@ export interface PrizeProps {
   prizeMultiplier: number;
   prizeAmount: number;
   status?: PrizeStatus;
+  claimedAt?: Date;
+  paymentMethod?: PaymentMethod;
+  bankAccount?: BankAccountInfo;
   paidAt?: Date;
   paidBy?: string;
+  approvedBy?: string;
+  approvedAt?: Date;
   verifiedAt?: Date;
   verifiedBy?: string;
   verificationNotes?: string;
+  transactionId?: string;
+  receiptNumber?: string;
+  notes?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -47,11 +67,19 @@ export class Prize {
   private _prizeMultiplier: number;
   private _prizeAmount: number;
   private _status: PrizeStatus;
+  private _claimedAt?: Date;
+  private _paymentMethod?: PaymentMethod;
+  private _bankAccount?: BankAccountInfo;
   private _paidAt?: Date;
   private _paidBy?: string;
+  private _approvedBy?: string;
+  private _approvedAt?: Date;
   private _verifiedAt?: Date;
   private _verifiedBy?: string;
   private _verificationNotes?: string;
+  private _transactionId?: string;
+  private _receiptNumber?: string;
+  private _notes?: string;
   readonly createdAt: Date;
   private _updatedAt: Date;
 
@@ -70,11 +98,19 @@ export class Prize {
     this._prizeMultiplier = props.prizeMultiplier;
     this._prizeAmount = props.prizeAmount;
     this._status = props.status || PrizeStatus.PENDING;
+    this._claimedAt = props.claimedAt;
+    this._paymentMethod = props.paymentMethod;
+    this._bankAccount = props.bankAccount;
     this._paidAt = props.paidAt;
     this._paidBy = props.paidBy;
+    this._approvedBy = props.approvedBy;
+    this._approvedAt = props.approvedAt;
     this._verifiedAt = props.verifiedAt;
     this._verifiedBy = props.verifiedBy;
     this._verificationNotes = props.verificationNotes;
+    this._transactionId = props.transactionId;
+    this._receiptNumber = props.receiptNumber;
+    this._notes = props.notes;
     this.createdAt = props.createdAt || new Date();
     this._updatedAt = props.updatedAt || new Date();
   }
@@ -152,29 +188,97 @@ export class Prize {
     return this._verificationNotes;
   }
 
+  get claimedAt(): Date | undefined {
+    return this._claimedAt;
+  }
+
+  get paymentMethod(): PaymentMethod | undefined {
+    return this._paymentMethod;
+  }
+
+  get bankAccount(): BankAccountInfo | undefined {
+    return this._bankAccount;
+  }
+
+  get approvedBy(): string | undefined {
+    return this._approvedBy;
+  }
+
+  get approvedAt(): Date | undefined {
+    return this._approvedAt;
+  }
+
+  get transactionId(): string | undefined {
+    return this._transactionId;
+  }
+
+  get receiptNumber(): string | undefined {
+    return this._receiptNumber;
+  }
+
+  get notes(): string | undefined {
+    return this._notes;
+  }
+
   get updatedAt(): Date {
     return this._updatedAt;
   }
 
   // Business methods
-  approve(verifiedBy: string, notes?: string): void {
+  claim(paymentMethod: PaymentMethod, bankAccount?: BankAccountInfo): void {
     if (this._status !== PrizeStatus.PENDING) {
-      throw new Error(`Cannot approve prize with status ${this._status}`);
+      throw new Error(`Cannot claim prize with status ${this._status}`);
     }
-    this._status = PrizeStatus.APPROVED;
+    this._status = PrizeStatus.CLAIMED;
+    this._claimedAt = new Date();
+    this._paymentMethod = paymentMethod;
+    if (bankAccount) {
+      this._bankAccount = bankAccount;
+    }
+    this._updatedAt = new Date();
+  }
+
+  verify(verifiedBy: string, notes?: string): void {
+    if (this._status !== PrizeStatus.CLAIMED && this._status !== PrizeStatus.PENDING) {
+      throw new Error(`Cannot verify prize with status ${this._status}`);
+    }
+    this._status = PrizeStatus.VERIFYING;
     this._verifiedAt = new Date();
     this._verifiedBy = verifiedBy;
     if (notes) this._verificationNotes = notes;
     this._updatedAt = new Date();
   }
 
-  markAsPaid(paidBy: string): void {
-    if (this._status !== PrizeStatus.APPROVED && this._status !== PrizeStatus.PENDING) {
+  approve(verifiedBy: string, notes?: string): void {
+    if (this._status !== PrizeStatus.PENDING && this._status !== PrizeStatus.VERIFYING && this._status !== PrizeStatus.CLAIMED) {
+      throw new Error(`Cannot approve prize with status ${this._status}`);
+    }
+    this._status = PrizeStatus.APPROVED;
+    this._approvedBy = verifiedBy;
+    this._approvedAt = new Date();
+    this._verifiedAt = new Date();
+    this._verifiedBy = verifiedBy;
+    if (notes) this._verificationNotes = notes;
+    this._updatedAt = new Date();
+  }
+
+  startProcessing(): void {
+    if (this._status !== PrizeStatus.APPROVED) {
+      throw new Error(`Cannot start processing prize with status ${this._status}`);
+    }
+    this._status = PrizeStatus.PROCESSING;
+    this._updatedAt = new Date();
+  }
+
+  markAsPaid(paidBy: string, transactionId?: string, receiptNumber?: string): void {
+    if (this._status !== PrizeStatus.APPROVED && this._status !== PrizeStatus.PROCESSING && this._status !== PrizeStatus.PENDING) {
       throw new Error(`Cannot mark as paid prize with status ${this._status}`);
     }
     this._status = PrizeStatus.PAID;
     this._paidAt = new Date();
     this._paidBy = paidBy;
+    if (transactionId) this._transactionId = transactionId;
+    if (receiptNumber) this._receiptNumber = receiptNumber;
     this._updatedAt = new Date();
   }
 
@@ -205,6 +309,14 @@ export class Prize {
     this._updatedAt = new Date();
   }
 
+  expire(): void {
+    if (this._status === PrizeStatus.PAID || this._status === PrizeStatus.REJECTED) {
+      throw new Error(`Cannot expire prize with status ${this._status}`);
+    }
+    this._status = PrizeStatus.EXPIRED;
+    this._updatedAt = new Date();
+  }
+
   isPending(): boolean {
     return this._status === PrizeStatus.PENDING;
   }
@@ -225,6 +337,22 @@ export class Prize {
     return this._status === PrizeStatus.REJECTED;
   }
 
+  isClaimed(): boolean {
+    return this._status === PrizeStatus.CLAIMED;
+  }
+
+  isVerifying(): boolean {
+    return this._status === PrizeStatus.VERIFYING;
+  }
+
+  isProcessing(): boolean {
+    return this._status === PrizeStatus.PROCESSING;
+  }
+
+  isExpired(): boolean {
+    return this._status === PrizeStatus.EXPIRED;
+  }
+
   toJSON() {
     return {
       id: this.id,
@@ -241,11 +369,19 @@ export class Prize {
       prizeMultiplier: this._prizeMultiplier,
       prizeAmount: this._prizeAmount,
       status: this._status,
+      claimedAt: this._claimedAt,
+      paymentMethod: this._paymentMethod,
+      bankAccount: this._bankAccount,
       paidAt: this._paidAt,
       paidBy: this._paidBy,
+      approvedBy: this._approvedBy,
+      approvedAt: this._approvedAt,
       verifiedAt: this._verifiedAt,
       verifiedBy: this._verifiedBy,
       verificationNotes: this._verificationNotes,
+      transactionId: this._transactionId,
+      receiptNumber: this._receiptNumber,
+      notes: this._notes,
       createdAt: this.createdAt,
       updatedAt: this._updatedAt,
     };

@@ -79,11 +79,26 @@ export class PrizeEntity {
   @Index()
   status!: string;
 
+  @Column('timestamp with time zone', { nullable: true, name: 'claimed_at' })
+  claimedAt?: Date;
+
+  @Column('varchar', { length: 20, nullable: true, name: 'payment_method' })
+  paymentMethod?: string;
+
+  @Column('jsonb', { nullable: true, name: 'bank_account' })
+  bankAccount?: { bank: string; account: string; holder: string };
+
   @Column('timestamp with time zone', { nullable: true, name: 'paid_at' })
   paidAt?: Date;
 
   @Column('uuid', { nullable: true, name: 'paid_by' })
   paidBy?: string;
+
+  @Column('uuid', { nullable: true, name: 'approved_by' })
+  approvedBy?: string;
+
+  @Column('timestamp with time zone', { nullable: true, name: 'approved_at' })
+  approvedAt?: Date;
 
   @Column('timestamp with time zone', { nullable: true, name: 'verified_at' })
   verifiedAt?: Date;
@@ -93,6 +108,15 @@ export class PrizeEntity {
 
   @Column('text', { nullable: true, name: 'verification_notes' })
   verificationNotes?: string;
+
+  @Column('varchar', { length: 100, nullable: true, name: 'transaction_id' })
+  transactionId?: string;
+
+  @Column('varchar', { length: 50, nullable: true, name: 'receipt_number' })
+  receiptNumber?: string;
+
+  @Column('text', { nullable: true })
+  notes?: string;
 
   @CreateDateColumn({ name: 'created_at' })
   @Index()

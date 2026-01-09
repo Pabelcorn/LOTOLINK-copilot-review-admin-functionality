@@ -9,3 +9,4 @@ export * from './notification.service';
 export * from './otp.service';
 export * from './guest.service';
 export * from './admin-secret.service';
+export * from './prize.service';
