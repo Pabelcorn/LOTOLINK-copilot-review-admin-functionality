@@ -1,12 +1,12 @@
 import { Controller, Get, Post, Param, Body, Query, UseGuards, Request } from '@nestjs/common';
 import { PrizeService } from '../../../application/services/prize.service';
 import { 
-  ClaimPrizeDto, 
-  VerifyPrizeDto, 
-  ApprovePrizeDto, 
-  RejectPrizeDto, 
-  ProcessPaymentDto,
-  PrizeResponseDto,
+  ClaimPrizeRequestDto, 
+  VerifyPrizeRequestDto, 
+  ApprovePrizeRequestDto, 
+  RejectPrizeRequestDto, 
+  PrizePaymentDto,
+  PrizeDetailsDto,
   PrizeListDto
 } from '../../../application/dtos/prize.dto';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
@@ -28,7 +28,7 @@ export class PrizeController {
 
   @Get(':prizeId')
   @UseGuards(JwtAuthGuard)
-  async getPrizeById(@Param('prizeId') prizeId: string): Promise<PrizeResponseDto> {
+  async getPrizeById(@Param('prizeId') prizeId: string): Promise<PrizeDetailsDto> {
     return this.prizeService.getPrizeById(prizeId);
   }
 
@@ -37,8 +37,8 @@ export class PrizeController {
   async claimPrize(
     @Param('prizeId') prizeId: string,
     @Request() req: any,
-    @Body() dto: ClaimPrizeDto,
-  ): Promise<PrizeResponseDto> {
+    @Body() dto: ClaimPrizeRequestDto,
+  ): Promise<PrizeDetailsDto> {
     const userId = req.user?.userId || req.user?.sub;
     return this.prizeService.claimPrize(prizeId, userId, dto);
   }
@@ -57,8 +57,8 @@ export class PrizeController {
   @UseGuards(JwtAuthGuard)
   async verifyPrize(
     @Param('prizeId') prizeId: string,
-    @Body() dto: VerifyPrizeDto,
-  ): Promise<PrizeResponseDto> {
+    @Body() dto: VerifyPrizeRequestDto,
+  ): Promise<PrizeDetailsDto> {
     return this.prizeService.verifyPrize(prizeId, dto);
   }
 
@@ -66,8 +66,8 @@ export class PrizeController {
   @UseGuards(JwtAuthGuard)
   async approvePrize(
     @Param('prizeId') prizeId: string,
-    @Body() dto: ApprovePrizeDto,
-  ): Promise<PrizeResponseDto> {
+    @Body() dto: ApprovePrizeRequestDto,
+  ): Promise<PrizeDetailsDto> {
     return this.prizeService.approvePrize(prizeId, dto);
   }
 
@@ -75,8 +75,8 @@ export class PrizeController {
   @UseGuards(JwtAuthGuard)
   async rejectPrize(
     @Param('prizeId') prizeId: string,
-    @Body() dto: RejectPrizeDto,
-  ): Promise<PrizeResponseDto> {
+    @Body() dto: RejectPrizeRequestDto,
+  ): Promise<PrizeDetailsDto> {
     return this.prizeService.rejectPrize(prizeId, dto);
   }
 
@@ -84,8 +84,8 @@ export class PrizeController {
   @UseGuards(JwtAuthGuard)
   async processPrizePayment(
     @Param('prizeId') prizeId: string,
-    @Body() dto: ProcessPaymentDto,
-  ): Promise<PrizeResponseDto> {
+    @Body() dto: PrizePaymentDto,
+  ): Promise<PrizeDetailsDto> {
     return this.prizeService.processPrizePayment(prizeId, dto);
   }
 

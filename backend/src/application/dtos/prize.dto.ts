@@ -12,7 +12,7 @@ export class BankAccountDto {
   holder!: string;
 }
 
-export class ClaimPrizeDto {
+export class ClaimPrizeRequestDto {
   @IsEnum(['bank_transfer', 'cash', 'wallet'])
   paymentMethod!: 'bank_transfer' | 'cash' | 'wallet';
 
@@ -22,7 +22,7 @@ export class ClaimPrizeDto {
   bankAccount?: BankAccountDto;
 }
 
-export class VerifyPrizeDto {
+export class VerifyPrizeRequestDto {
   @IsString()
   adminId!: string;
 
@@ -31,7 +31,7 @@ export class VerifyPrizeDto {
   notes?: string;
 }
 
-export class ApprovePrizeDto {
+export class ApprovePrizeRequestDto {
   @IsString()
   adminId!: string;
 
@@ -40,7 +40,7 @@ export class ApprovePrizeDto {
   notes?: string;
 }
 
-export class RejectPrizeDto {
+export class RejectPrizeRequestDto {
   @IsString()
   adminId!: string;
 
@@ -48,7 +48,7 @@ export class RejectPrizeDto {
   reason!: string;
 }
 
-export class ProcessPaymentDto {
+export class PrizePaymentDto {
   @IsString()
   adminId!: string;
 
@@ -61,7 +61,7 @@ export class ProcessPaymentDto {
   receiptNumber?: string;
 }
 
-export class PrizeResponseDto {
+export class PrizeDetailsDto {
   id!: string;
   playId!: string;
   userId!: string;
@@ -94,7 +94,7 @@ export class PrizeResponseDto {
 }
 
 export class PrizeListDto {
-  prizes!: PrizeResponseDto[];
+  prizes!: PrizeDetailsDto[];
   total!: number;
   limit!: number;
   offset!: number;
