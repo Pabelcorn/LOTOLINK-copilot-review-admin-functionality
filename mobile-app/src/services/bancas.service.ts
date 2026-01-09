@@ -93,3 +93,27 @@ export const searchBancas = async (query: string): Promise<Banca[]> => {
   
   return response.data.bancas;
 };
+
+/**
+ * Get lotteries available at a specific banca
+ */
+export const getBancaLotteries = async (bancaId: string) => {
+  const response = await apiClient.get(`/bancas/${bancaId}/lotteries`);
+  return response.data;
+};
+
+/**
+ * Get draws for a lottery at a specific banca
+ */
+export const getBancaDraws = async (bancaId: string, lotteryId: string) => {
+  const response = await apiClient.get(`/bancas/${bancaId}/lotteries/${lotteryId}/draws`);
+  return response.data;
+};
+
+/**
+ * Get betting configuration for a banca
+ */
+export const getBancaBetConfig = async (bancaId: string) => {
+  const response = await apiClient.get(`/bancas/${bancaId}/bet-config`);
+  return response.data;
+};
