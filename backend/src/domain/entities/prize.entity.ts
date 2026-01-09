@@ -225,6 +225,11 @@ export class Prize {
   }
 
   // Business methods
+  /**
+   * User claims a pending prize by selecting a payment method.
+   * Only prizes with PENDING status can be claimed by users.
+   * Once claimed, the prize moves to CLAIMED status and awaits admin verification.
+   */
   claim(paymentMethod: PaymentMethod, bankAccount?: BankAccountInfo): void {
     if (this._status !== PrizeStatus.PENDING) {
       throw new Error(`Cannot claim prize with status ${this._status}`);

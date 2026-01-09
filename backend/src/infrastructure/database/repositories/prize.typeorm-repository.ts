@@ -104,11 +104,19 @@ export class TypeOrmPrizeRepository implements PrizeRepository {
     entity.prizeMultiplier = json.prizeMultiplier;
     entity.prizeAmount = json.prizeAmount;
     entity.status = json.status;
+    entity.claimedAt = json.claimedAt;
+    entity.paymentMethod = json.paymentMethod;
+    entity.bankAccount = json.bankAccount;
     entity.paidAt = json.paidAt;
     entity.paidBy = json.paidBy;
+    entity.approvedBy = json.approvedBy;
+    entity.approvedAt = json.approvedAt;
     entity.verifiedAt = json.verifiedAt;
     entity.verifiedBy = json.verifiedBy;
     entity.verificationNotes = json.verificationNotes;
+    entity.transactionId = json.transactionId;
+    entity.receiptNumber = json.receiptNumber;
+    entity.notes = json.notes;
     entity.createdAt = json.createdAt;
     entity.updatedAt = json.updatedAt;
     
@@ -131,11 +139,19 @@ export class TypeOrmPrizeRepository implements PrizeRepository {
       prizeMultiplier: Number(entity.prizeMultiplier),
       prizeAmount: Number(entity.prizeAmount),
       status: entity.status as PrizeStatus,
+      claimedAt: entity.claimedAt,
+      paymentMethod: entity.paymentMethod as PaymentMethod,
+      bankAccount: entity.bankAccount,
       paidAt: entity.paidAt,
       paidBy: entity.paidBy,
+      approvedBy: entity.approvedBy,
+      approvedAt: entity.approvedAt,
       verifiedAt: entity.verifiedAt,
       verifiedBy: entity.verifiedBy,
       verificationNotes: entity.verificationNotes,
+      transactionId: entity.transactionId,
+      receiptNumber: entity.receiptNumber,
+      notes: entity.notes,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
     });

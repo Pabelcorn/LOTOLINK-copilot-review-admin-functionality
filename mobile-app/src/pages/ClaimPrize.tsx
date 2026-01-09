@@ -23,18 +23,11 @@ import {
   IonIcon,
 } from '@ionic/react';
 import { trophyOutline, cashOutline, cardOutline, walletOutline } from 'ionicons/icons';
-import { getPrizeById, claimPrize, BankAccountInfo } from '../services/prizes.service';
+import { getPrizeById, claimPrize, BankAccountInfo, Prize } from '../services/prizes.service';
 
-interface Prize {
-  id: string;
-  playId: string;
-  prizeAmount: number;
-  status: string;
-  claimedAt?: Date;
-  paymentMethod?: string;
-}
+interface ClaimPrizeProps {}
 
-const ClaimPrize: React.FC = () => {
+const ClaimPrize: React.FC<ClaimPrizeProps> = () => {
   const { prizeId } = useParams<{ prizeId: string }>();
   const navigate = useNavigate();
   
@@ -56,7 +49,7 @@ const ClaimPrize: React.FC = () => {
     try {
       setLoading(true);
       const data = await getPrizeById(prizeId);
-      setPrize(data as any);
+      setPrize(data);
     } catch (err: any) {
       setError(err.message || 'Error al cargar el premio');
     } finally {
