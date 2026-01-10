@@ -1337,6 +1337,214 @@
                 flex-direction: column;
             }
         }
+
+        /* ========================================
+           DARK MODE SUPPORT
+           ======================================== */
+        
+        .dark body {
+            background: #000000;
+            color: #f5f5f7;
+        }
+
+        .dark .sidebar {
+            background: #1c1c1e;
+            border-right-color: #38383a;
+        }
+
+        .dark .sidebar-header {
+            border-bottom-color: #38383a;
+        }
+
+        .dark .sidebar-logo-text {
+            color: #f5f5f7;
+        }
+
+        .dark .sidebar-nav-item {
+            color: #f5f5f7;
+        }
+
+        .dark .sidebar-nav-item:hover {
+            background: #2c2c2e;
+        }
+
+        .dark .sidebar-nav-item.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .dark .main-content {
+            background: #000000;
+        }
+
+        .dark .top-bar {
+            background: rgba(28, 28, 30, 0.85);
+            border-bottom-color: #38383a;
+        }
+
+        .dark .page-title {
+            color: #f5f5f7;
+        }
+
+        .dark .subtitle {
+            color: #a1a1a6;
+        }
+
+        .dark .kpi-card {
+            background: #1c1c1e;
+            border-color: #38383a;
+        }
+
+        .dark .kpi-card:hover {
+            background: #2c2c2e;
+        }
+
+        .dark .kpi-value {
+            color: #f5f5f7;
+        }
+
+        .dark .kpi-label {
+            color: #a1a1a6;
+        }
+
+        .dark .card {
+            background: #1c1c1e;
+            border-color: #38383a;
+        }
+
+        .dark .card-header h2,
+        .dark .card-header h3 {
+            color: #f5f5f7;
+        }
+
+        .dark table {
+            background: #1c1c1e;
+        }
+
+        .dark table thead {
+            background: #2c2c2e;
+            border-bottom-color: #38383a;
+        }
+
+        .dark table th {
+            color: #f5f5f7;
+        }
+
+        .dark table td {
+            color: #f5f5f7;
+            border-bottom-color: #38383a;
+        }
+
+        .dark table tbody tr:hover {
+            background: #2c2c2e;
+        }
+
+        .dark input,
+        .dark select,
+        .dark textarea {
+            background: #2c2c2e;
+            border-color: #48484a;
+            color: #f5f5f7;
+        }
+
+        .dark input::placeholder,
+        .dark textarea::placeholder {
+            color: #98989d;
+        }
+
+        .dark input:focus,
+        .dark select:focus,
+        .dark textarea:focus {
+            border-color: #64b5f6;
+        }
+
+        .dark .btn-secondary {
+            background: #2c2c2e;
+            color: #f5f5f7;
+            border-color: #48484a;
+        }
+
+        .dark .btn-secondary:hover {
+            background: #38383a;
+        }
+
+        .dark .modal {
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        .dark .modal-content {
+            background: #1c1c1e;
+        }
+
+        .dark .modal-header {
+            border-bottom-color: #38383a;
+        }
+
+        .dark .modal-header h2 {
+            color: #f5f5f7;
+        }
+
+        .dark .modal-close {
+            color: #a1a1a6;
+        }
+
+        .dark .modal-close:hover {
+            color: #f5f5f7;
+        }
+
+        .dark .empty-state {
+            color: #a1a1a6;
+        }
+
+        .dark .credentials-box {
+            background: #2c2c2e;
+            border-color: #38383a;
+        }
+
+        .dark .credentials-box h3 {
+            color: #f5f5f7;
+        }
+
+        .dark .credentials-box .credential-item label {
+            color: #a1a1a6;
+        }
+
+        .dark .credentials-box .credential-item input {
+            background: #000000;
+            border-color: #48484a;
+            color: #f5f5f7;
+        }
+
+        .dark .alert {
+            background: rgba(255, 59, 48, 0.15);
+            border-color: rgba(255, 59, 48, 0.3);
+            color: #ff6961;
+        }
+
+        .dark .alert.success {
+            background: rgba(52, 199, 89, 0.15);
+            border-color: rgba(52, 199, 89, 0.3);
+            color: #5cd671;
+        }
+
+        .dark .filters-grid select {
+            background: #2c2c2e;
+            color: #f5f5f7;
+        }
+
+        .dark .pagination button {
+            background: #2c2c2e;
+            color: #f5f5f7;
+            border-color: #48484a;
+        }
+
+        .dark .pagination button:hover:not(:disabled) {
+            background: var(--primary);
+        }
+
+        .dark .page-info {
+            color: #a1a1a6;
+        }
     </style>
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -1422,6 +1630,9 @@
                         </p>
                     </div>
                     <div class="header-actions">
+                        <button onclick="toggleDarkMode()" class="btn btn-secondary btn-small" id="theme-toggle" style="margin-right: 10px;">
+                            🌙 Modo Oscuro
+                        </button>
                         <button onclick="logoutAdmin()" class="btn btn-danger btn-small">
                             Cerrar Sesión
                         </button>
@@ -4384,6 +4595,35 @@
             
             // Check periodically (every 30 seconds)
             setInterval(checkConnection, 30000);
+        });
+
+        // ========================================
+        // DARK MODE FUNCTIONALITY
+        // ========================================
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            localStorage.setItem('ll_admin_theme', isDark ? 'dark' : 'light');
+            
+            // Update button text
+            const btn = document.getElementById('theme-toggle');
+            if (btn) {
+                btn.textContent = isDark ? '☀️ Modo Claro' : '🌙 Modo Oscuro';
+            }
+        }
+
+        // Initialize dark mode on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('ll_admin_theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+                document.documentElement.classList.add('dark');
+                const btn = document.getElementById('theme-toggle');
+                if (btn) {
+                    btn.textContent = '☀️ Modo Claro';
+                }
+            }
         });
     </script>
 </body>

@@ -237,6 +237,118 @@
     .dark .premium-card {
       background: #1c1c1e;
       border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #f5f5f7;
+    }
+    
+    /* Comprehensive Dark Mode Styles */
+    
+    /* Text colors */
+    .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
+      color: #f5f5f7;
+    }
+    
+    .dark p, .dark span, .dark label, .dark div {
+      color: inherit;
+    }
+    
+    /* Form elements */
+    .dark input, .dark select, .dark textarea {
+      background: #2c2c2e;
+      color: #f5f5f7;
+      border-color: #48484a;
+    }
+    
+    .dark input::placeholder, .dark textarea::placeholder {
+      color: #98989d;
+    }
+    
+    .dark input:focus, .dark select:focus, .dark textarea:focus {
+      border-color: #64b5f6;
+      outline-color: #64b5f6;
+    }
+    
+    /* Buttons */
+    .dark .btn-apple-secondary {
+      background: rgba(255, 255, 255, 0.1);
+      color: #64b5f6;
+    }
+    
+    .dark .btn-apple-secondary:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+    
+    .dark button.border, .dark .border {
+      border-color: #48484a;
+    }
+    
+    /* Modals */
+    .dark .modal-backdrop {
+      background: rgba(0, 0, 0, 0.7);
+    }
+    
+    /* Tables */
+    .dark table th {
+      background: #2c2c2e;
+      color: #f5f5f7;
+    }
+    
+    .dark table td {
+      color: #f5f5f7;
+      border-color: #38383a;
+    }
+    
+    /* Footer */
+    .dark footer {
+      background: #1c1c1e;
+      color: #a1a1a6;
+    }
+    
+    /* Ticket print area */
+    .dark #ticket-print-area {
+      background: #374151;
+      color: #f5f5f7;
+    }
+    
+    /* Status badges and small text elements */
+    .dark .text-gray-500 {
+      color: #a1a1a6;
+    }
+    
+    .dark .text-gray-600 {
+      color: #98989d;
+    }
+    
+    .dark .text-gray-700 {
+      color: #86868b;
+    }
+    
+    .dark .text-gray-900 {
+      color: #f5f5f7;
+    }
+    
+    .dark .bg-white {
+      background: #1c1c1e;
+    }
+    
+    .dark .bg-gray-50 {
+      background: #2c2c2e;
+    }
+    
+    .dark .bg-gray-100 {
+      background: #000000;
+    }
+    
+    .dark .border-gray-200 {
+      border-color: #48484a;
+    }
+    
+    .dark .border-gray-300 {
+      border-color: #48484a;
+    }
+    
+    /* Icons and SVGs */
+    .dark .icon, .dark svg {
+      color: currentColor;
     }
     
     /* ========================================
@@ -2339,8 +2451,8 @@
                 <p className="text-blue-100 text-sm mt-2">Gestiona tu banca desde cualquier lugar</p>
               </div>
               <div className="p-8 space-y-5">
-                <div><label className="block text-sm font-medium text-gray-700 mb-1">ID de Banca o Correo</label><input className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Ej. BANCA-1023" /></div>
-                <div><label className="block text-sm font-medium text-gray-700 mb-1">Contraseña</label><input className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" type="password" placeholder="••••••••" /></div>
+                <div><label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ID de Banca o Correo</label><input className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none placeholder-gray-400 dark:placeholder-gray-500" placeholder="Ej. BANCA-1023" /></div>
+                <div><label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Contraseña</label><input className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none placeholder-gray-400 dark:placeholder-gray-500" type="password" placeholder="••••••••" /></div>
                 <button onClick={() => setPortalView('dashboard')} className="w-full bg-gradient-brand text-white p-3 rounded-lg font-bold shadow-lg hover:opacity-90 transition-all">Ingresar al Sistema</button>
               </div>
             </div>
@@ -2365,22 +2477,22 @@
                   
                   {/* Grupo: Información del Negocio */}
                   <div>
-                    <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Datos del Negocio</h3>
+                    <h3 className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-3">Datos del Negocio</h3>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Nombre de la banca *</label>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nombre de la banca *</label>
                         <input 
                           type="text" 
                           required
-                          className="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow" 
+                          className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white p-2.5 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow placeholder-gray-400 dark:placeholder-gray-500" 
                           placeholder="Ej. Banca Juana" 
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Tipo *</label>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tipo *</label>
                         <select 
                           required
-                          className="w-full border border-gray-300 p-2.5 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 outline-none"
+                          className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white p-2.5 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                         >
                           <option value="">Selecciona...</option>
                           <option value="presencial">Presencial</option>
@@ -2389,28 +2501,28 @@
                         </select>
                       </div>
                       <div className="sm:col-span-2">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Dirección completa *</label>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Dirección completa *</label>
                         <input 
                           type="text" 
                           required
-                          className="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" 
+                          className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white p-2.5 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none placeholder-gray-400 dark:placeholder-gray-500" 
                           placeholder="Calle, Número, Sector" 
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Provincia / Estado *</label>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Provincia / Estado *</label>
                         <input 
                           type="text" 
                           required
-                          className="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" 
+                          className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white p-2.5 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none placeholder-gray-400 dark:placeholder-gray-500" 
                           placeholder="Ej. Santo Domingo"
                         />
                       </div>
                       <div className="sm:col-span-2">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Software utilizado en la banca *</label>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Software utilizado en la banca *</label>
                         <select 
                           required
-                          className="w-full border border-gray-300 p-2.5 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 outline-none"
+                          className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white p-2.5 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                         >
                           <option value="">Selecciona el software que usas...</option>
                           <option value="loteria_electronica">Lotería Electrónica</option>
@@ -2425,45 +2537,45 @@
                     </div>
                   </div>
 
-                  <hr className="border-gray-100" />
+                  <hr className="border-gray-100 dark:border-gray-700" />
 
                   {/* Grupo: Contacto */}
                   <div>
-                    <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Datos de Contacto y Pago</h3>
+                    <h3 className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-3">Datos de Contacto y Pago</h3>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Propietario *</label>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Propietario *</label>
                         <input 
                           type="text" 
                           required
-                          className="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" 
+                          className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white p-2.5 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none placeholder-gray-400 dark:placeholder-gray-500" 
                           placeholder="Nombre completo"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Teléfono / WhatsApp *</label>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Teléfono / WhatsApp *</label>
                         <input 
                           type="tel" 
                           required
-                          className="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" 
+                          className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white p-2.5 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none placeholder-gray-400 dark:placeholder-gray-500" 
                           placeholder="+1 (809)..." 
                         />
                       </div>
                       <div className="sm:col-span-2">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Correo electrónico *</label>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Correo electrónico *</label>
                         <input 
                           type="email" 
                           required
-                          className="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" 
+                          className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white p-2.5 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none placeholder-gray-400 dark:placeholder-gray-500" 
                           placeholder="ejemplo@banca.com" 
                         />
                       </div>
                       <div className="sm:col-span-2">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Cuenta Bancaria / Móvil *</label>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Cuenta Bancaria / Móvil *</label>
                         <input 
                           type="text" 
                           required
-                          className="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" 
+                          className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white p-2.5 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none placeholder-gray-400 dark:placeholder-gray-500" 
                           placeholder="Banco X - Cta #123456" 
                         />
                       </div>
@@ -2471,12 +2583,12 @@
                   </div>
 
                   {/* Grupo: Documentos */}
-                  <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
-                    <h3 className="text-sm font-bold text-blue-800 mb-2 flex items-center gap-2">
+                  <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-100 dark:border-blue-800">
+                    <h3 className="text-sm font-bold text-blue-800 dark:text-blue-300 mb-2 flex items-center gap-2">
                       <i className="fas fa-file-upload"></i> Documentación Requerida
                     </h3>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Cédula / ID (Foto clara) *</label>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Cédula / ID (Foto clara) *</label>
                       <input 
                         type="file" 
                         accept="image/*,application/pdf"
@@ -5764,7 +5876,12 @@ Código: ${ticket.ticketCode || ticket.id}`;
       const [currentUserId, setCurrentUserId] = useState('');
       const [isGuestMode, setIsGuestMode] = useState(() => localStorage.getItem('ll_guest') === 'true');
       const [isCartOpen, setIsCartOpen] = useState(false);
-      const [theme, setTheme] = useState(() => localStorage.getItem('ll_theme') || 'light');
+      const [theme, setTheme] = useState(() => {
+        const saved = localStorage.getItem('ll_theme');
+        if (saved) return saved;
+        // Respect system preference if no saved preference
+        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      });
       const [showInstallGuide, setShowInstallGuide] = useState(null); // 'ios' | 'android' | 'desktop' | null
       
       // Real-time lottery results from loteriasdominicanas.com
