@@ -59,21 +59,38 @@ export class SecretsValidator implements OnModuleInit {
   }
   
   private isInsecureValue(value: string): boolean {
-    const insecurePatterns = [
+    const lowerValue = value.toLowerCase();
+    
+    // Exact patterns (case-insensitive)
+    const exactPatterns = [
       'default_secret',
       'default_banca_secret',
-      'CHANGE_THIS',
-      'GENERA_SECRET',
-      'CAMBIA_ESTO',
       'your_password_here',
       'password',
-      'secret',
       'test',
       '123456',
     ];
     
-    return insecurePatterns.some(pattern => 
-      value.toLowerCase().includes(pattern.toLowerCase())
+    // Substring patterns that indicate placeholder text
+    const substringPatterns = [
+      'change_this',
+      'genera_secret',
+      'cambia_esto',
+      'your_secret_here',
+      'your_key_here',
+      'placeholder',
+      'example',
+      'sample',
+    ];
+    
+    // Check exact patterns
+    if (exactPatterns.some(pattern => lowerValue === pattern)) {
+      return true;
+    }
+    
+    // Check substring patterns
+    return substringPatterns.some(pattern => 
+      lowerValue.includes(pattern)
     );
   }
 }
