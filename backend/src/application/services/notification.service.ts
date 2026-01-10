@@ -304,4 +304,46 @@ export class NotificationService {
   async getUnreadCount(userId: string): Promise<number> {
     return this.logRepository.countUnread(userId);
   }
+
+  // ========== Prize Notification Methods ==========
+
+  async sendPrizeClaimNotification(userId: string, amount: number): Promise<void> {
+    await this.sendToUser({
+      userId,
+      type: NotificationType.PRIZE_WON,
+      title: '🎉 Reclamo de Premio Recibido',
+      body: `Tu solicitud para cobrar RD$${amount.toFixed(2)} ha sido recibida y está siendo procesada.`,
+      data: { amount: amount.toString() },
+    });
+  }
+
+  async sendPrizeApprovedNotification(userId: string, amount: number): Promise<void> {
+    await this.sendToUser({
+      userId,
+      type: NotificationType.PRIZE_WON,
+      title: '✅ Premio Aprobado',
+      body: `Tu premio de RD$${amount.toFixed(2)} ha sido aprobado. El pago será procesado pronto.`,
+      data: { amount: amount.toString() },
+    });
+  }
+
+  async sendPrizeRejectedNotification(userId: string, amount: number, reason: string): Promise<void> {
+    await this.sendToUser({
+      userId,
+      type: NotificationType.PRIZE_WON,
+      title: '❌ Premio Rechazado',
+      body: `Tu solicitud de premio por RD$${amount.toFixed(2)} fue rechazada. Motivo: ${reason}`,
+      data: { amount: amount.toString(), reason },
+    });
+  }
+
+  async sendPrizePaidNotification(userId: string, amount: number, transactionId: string): Promise<void> {
+    await this.sendToUser({
+      userId,
+      type: NotificationType.PRIZE_PAID,
+      title: '💰 Premio Pagado',
+      body: `Tu premio de RD$${amount.toFixed(2)} ha sido pagado. ID de transacción: ${transactionId}`,
+      data: { amount: amount.toString(), transactionId },
+    });
+  }
 }

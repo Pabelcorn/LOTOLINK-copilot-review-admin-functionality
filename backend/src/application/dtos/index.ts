@@ -10,3 +10,4 @@ export * from './reports.dto';
 export * from './contact.dto';
 export * from './settings.dto';
 export * from './sucursal.dto';
+export * from './prize.dto';

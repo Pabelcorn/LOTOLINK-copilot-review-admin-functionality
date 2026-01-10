@@ -1394,6 +1394,10 @@
                     <span class="sidebar-nav-item-icon">📊</span>
                     <span>Reportes</span>
                 </button>
+                <button class="sidebar-nav-item" onclick="switchTab('prizes')">
+                    <span class="sidebar-nav-item-icon">🏆</span>
+                    <span>Premios</span>
+                </button>
             </nav>
             
             <div class="sidebar-footer">
@@ -2220,6 +2224,64 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Prizes Tab -->
+            <div id="prizes-tab" class="tab-content" style="display: none;">
+                <div class="card">
+                    <h2>🏆 Gestión de Premios</h2>
+                    <p style="color: var(--gray-500); margin-bottom: 24px;">Administra reclamos y pagos de premios</p>
+                    <div id="prizes-alert"></div>
+
+                    <!-- Filters -->
+                    <div class="report-filters" style="margin-bottom: 24px;">
+                        <div class="filters-grid">
+                            <div class="form-group">
+                                <label for="prize-status-filter">Estado</label>
+                                <select id="prize-status-filter" onchange="loadPrizes()">
+                                    <option value="">Todos</option>
+                                    <option value="pending">Pendiente</option>
+                                    <option value="claimed">Reclamado</option>
+                                    <option value="verifying">Verificando</option>
+                                    <option value="approved">Aprobado</option>
+                                    <option value="processing">Procesando</option>
+                                    <option value="paid">Pagado</option>
+                                    <option value="rejected">Rechazado</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="prize-payment-filter">Método de Pago</label>
+                                <select id="prize-payment-filter" onchange="loadPrizes()">
+                                    <option value="">Todos</option>
+                                    <option value="bank_transfer">Transferencia</option>
+                                    <option value="cash">Efectivo</option>
+                                    <option value="wallet">Wallet</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Prizes Table -->
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Usuario</th>
+                                    <th>Monto</th>
+                                    <th>Estado</th>
+                                    <th>Método Pago</th>
+                                    <th>Fecha Reclamo</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="prizes-table-body">
+                                <tr><td colspan="7" style="text-align: center; padding: 40px;">Cargando premios...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
         </main><!-- End main-content -->
     </div><!-- End admin-container -->
 
@@ -2416,6 +2478,8 @@
             } else if (tabName === 'reports') {
                 loadReportFilters();
                 loadReports();
+            } else if (tabName === 'prizes') {
+                loadPrizes();
             }
         }
 
@@ -4042,6 +4106,225 @@
                 settingsAlert.innerHTML = `<div class="alert alert-error">❌ Error: ${error.message}</div>`;
             }
         }
+
+        // ========================================
+        // PRIZE MANAGEMENT FUNCTIONS
+        // ========================================
+
+        async function loadPrizes() {
+            const tableBody = document.getElementById('prizes-table-body');
+            const statusFilter = document.getElementById('prize-status-filter')?.value || '';
+            const paymentFilter = document.getElementById('prize-payment-filter')?.value || '';
+            
+            try {
+                const user = JSON.parse(localStorage.getItem('ll_user') || '{}');
+                const token = user.accessToken || localStorage.getItem('ll_token');
+                
+                if (!token) {
+                    throw new Error('No se encontró token de autenticación');
+                }
+
+                const response = await fetch(`${API_BASE}/prizes/admin/pending?limit=100&offset=0`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Error al cargar premios');
+                }
+
+                const data = await response.json();
+                let prizes = data.prizes || [];
+                
+                // Apply filters
+                if (statusFilter) {
+                    prizes = prizes.filter(p => p.status === statusFilter);
+                }
+                if (paymentFilter) {
+                    prizes = prizes.filter(p => p.paymentMethod === paymentFilter);
+                }
+                
+                if (prizes.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 40px;">No hay premios pendientes</td></tr>';
+                    return;
+                }
+                
+                tableBody.innerHTML = prizes.map(prize => `
+                    <tr>
+                        <td><code>${prize.id.substring(0, 8)}</code></td>
+                        <td>${prize.userId.substring(0, 8)}</td>
+                        <td><strong>RD$ ${prize.prizeAmount.toFixed(2)}</strong></td>
+                        <td><span class="badge badge-${getStatusColor(prize.status)}">${getStatusLabel(prize.status)}</span></td>
+                        <td>${prize.paymentMethod ? getPaymentMethodLabel(prize.paymentMethod) : '-'}</td>
+                        <td>${prize.claimedAt ? new Date(prize.claimedAt).toLocaleDateString('es-DO') : '-'}</td>
+                        <td>
+                            ${prize.status === 'pending' || prize.status === 'claimed' ? `
+                                <button class="btn btn-sm btn-primary" onclick="approvePrizeAction('${prize.id}')">✓ Aprobar</button>
+                                <button class="btn btn-sm btn-danger" onclick="rejectPrizeAction('${prize.id}')">✗ Rechazar</button>
+                            ` : ''}
+                            ${prize.status === 'approved' ? `
+                                <button class="btn btn-sm btn-success" onclick="payPrizeAction('${prize.id}')">💰 Pagar</button>
+                            ` : ''}
+                            <button class="btn btn-sm" onclick="viewPrizeDetails('${prize.id}')">👁️ Ver</button>
+                        </td>
+                    </tr>
+                `).join('');
+                
+            } catch (error) {
+                console.error('Error loading prizes:', error);
+                tableBody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 40px; color: var(--danger);">Error: ${error.message}</td></tr>`;
+            }
+        }
+
+        function getStatusColor(status) {
+            const colors = {
+                'pending': 'warning',
+                'claimed': 'info',
+                'verifying': 'info',
+                'approved': 'success',
+                'processing': 'info',
+                'paid': 'success',
+                'rejected': 'danger',
+                'expired': 'secondary'
+            };
+            return colors[status] || 'secondary';
+        }
+
+        function getStatusLabel(status) {
+            const labels = {
+                'pending': 'Pendiente',
+                'claimed': 'Reclamado',
+                'verifying': 'Verificando',
+                'approved': 'Aprobado',
+                'processing': 'Procesando',
+                'paid': 'Pagado',
+                'rejected': 'Rechazado',
+                'expired': 'Expirado'
+            };
+            return labels[status] || status;
+        }
+
+        function getPaymentMethodLabel(method) {
+            const labels = {
+                'bank_transfer': '🏦 Transferencia',
+                'cash': '💵 Efectivo',
+                'wallet': '👛 Wallet'
+            };
+            return labels[method] || method;
+        }
+
+        async function approvePrizeAction(prizeId) {
+            if (!confirm('¿Está seguro de aprobar este premio?')) return;
+            
+            try {
+                const user = JSON.parse(localStorage.getItem('ll_user') || '{}');
+                const token = user.accessToken || localStorage.getItem('ll_token');
+                const adminId = user.uid || user.id;
+                
+                const response = await fetch(`${API_BASE}/prizes/${prizeId}/approve`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ adminId, notes: 'Aprobado desde panel admin' })
+                });
+
+                if (!response.ok) throw new Error('Error al aprobar premio');
+                
+                showAlert('prizes-alert', '✅ Premio aprobado exitosamente', 'success');
+                loadPrizes();
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('prizes-alert', `❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function rejectPrizeAction(prizeId) {
+            const reason = prompt('Ingrese la razón del rechazo:');
+            if (!reason) return;
+            
+            try {
+                const user = JSON.parse(localStorage.getItem('ll_user') || '{}');
+                const token = user.accessToken || localStorage.getItem('ll_token');
+                const adminId = user.uid || user.id;
+                
+                const response = await fetch(`${API_BASE}/prizes/${prizeId}/reject`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ adminId, reason })
+                });
+
+                if (!response.ok) throw new Error('Error al rechazar premio');
+                
+                showAlert('prizes-alert', '✅ Premio rechazado', 'success');
+                loadPrizes();
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('prizes-alert', `❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function payPrizeAction(prizeId) {
+            const transactionId = prompt('Ingrese el ID de transacción (opcional):');
+            
+            try {
+                const user = JSON.parse(localStorage.getItem('ll_user') || '{}');
+                const token = user.accessToken || localStorage.getItem('ll_token');
+                const adminId = user.uid || user.id;
+                
+                const response = await fetch(`${API_BASE}/prizes/${prizeId}/pay`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ adminId, transactionId: transactionId || undefined })
+                });
+
+                if (!response.ok) throw new Error('Error al procesar pago');
+                
+                showAlert('prizes-alert', '✅ Premio pagado exitosamente', 'success');
+                loadPrizes();
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('prizes-alert', `❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function viewPrizeDetails(prizeId) {
+            try {
+                const user = JSON.parse(localStorage.getItem('ll_user') || '{}');
+                const token = user.accessToken || localStorage.getItem('ll_token');
+                
+                const response = await fetch(`${API_BASE}/prizes/${prizeId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) throw new Error('Error al cargar detalles');
+                
+                const prize = await response.json();
+                
+                alert(`Detalles del Premio\n-------------------\nID: ${prize.id}\nMonto: RD$ ${prize.prizeAmount.toFixed(2)}\nEstado: ${getStatusLabel(prize.status)}\nUsuario: ${prize.userId}\nMétodo de Pago: ${prize.paymentMethod ? getPaymentMethodLabel(prize.paymentMethod) : 'No especificado'}\nFecha Reclamo: ${prize.claimedAt ? new Date(prize.claimedAt).toLocaleString('es-DO') : 'N/A'}\nFecha Pago: ${prize.paidAt ? new Date(prize.paidAt).toLocaleString('es-DO') : 'N/A'}${prize.verificationNotes ? '\nNotas: ' + prize.verificationNotes : ''}`);
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error al cargar detalles del premio');
+            }
+        }
+
+        // ========================================
+        // END PRIZE MANAGEMENT
+        // ========================================
 
         function logoutAdmin() {
             if (confirm('¿Está seguro que desea cerrar sesión del Panel de Administración?')) {

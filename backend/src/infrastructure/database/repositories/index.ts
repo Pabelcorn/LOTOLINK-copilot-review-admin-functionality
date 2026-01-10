@@ -5,3 +5,4 @@ export * from './sucursal.typeorm-repository';
 export * from './user-device.typeorm-repository';
 export * from './notification-log.typeorm-repository';
 export * from './notification-preference.typeorm-repository';
+export * from './prize.typeorm-repository';
