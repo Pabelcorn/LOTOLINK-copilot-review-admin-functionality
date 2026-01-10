@@ -23,7 +23,9 @@ import { PaymentMethodsController } from './infrastructure/http/controllers/paym
 import { ContactController } from './infrastructure/http/controllers/contact.controller';
 import { SettingsController } from './infrastructure/http/controllers/settings.controller';
 import { PublicSettingsController } from './infrastructure/http/controllers/public-settings.controller';
+import { StripeWebhookController } from './infrastructure/http/controllers/stripe-webhook.controller';
 import { PasswordService } from './infrastructure/security/password.service';
+import { SecretsValidator } from './infrastructure/security/secrets-validator';
 
 // Services
 import { PlayService, UserService, WebhookService, BancaService, BancaConfigService, SettingsService, SucursalService, NotificationService, OtpService, GuestService, AdminSecretService, PrizeService } from './application/services';
@@ -175,13 +177,16 @@ class MockCachePort {
       inject: [ConfigService],
     }),
   ],
-  controllers: [PlaysController, UsersController, WebhooksController, HealthController, AuthController, AdminAuthController, AdminBancasController, BancaController, PaymentMethodsController, ContactController, SettingsController, PublicSettingsController, SucursalController, NotificationsController, PrizeController],
+  controllers: [PlaysController, UsersController, WebhooksController, HealthController, AuthController, AdminAuthController, AdminBancasController, BancaController, PaymentMethodsController, ContactController, SettingsController, PublicSettingsController, SucursalController, NotificationsController, PrizeController, StripeWebhookController],
   providers: [
     // Global rate limiting guard
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
     },
+    
+    // Security validators
+    SecretsValidator,
     
     // Services
     PlayService,

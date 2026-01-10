@@ -11,6 +11,7 @@ import {
   Inject,
   NotFoundException,
   BadRequestException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { 
@@ -56,41 +57,19 @@ export class PaymentMethodsController {
   }
 
   /**
-   * Server-side tokenization endpoint
-   * Securely tokenizes card details and creates a payment method
-   * This is the recommended approach for mobile apps using Capacitor
-   * @param userId User ID
-   * @param body Card details and options
+   * Server-side tokenization endpoint - DISABLED FOR PCI COMPLIANCE
+   * This endpoint is intentionally blocked to prevent server-side handling of raw card data.
+   * Card data must be tokenized client-side using Stripe Elements or Stripe SDK.
+   * Use POST /payment-methods with a Stripe token instead.
    */
   @Post('tokenize')
-  @HttpCode(HttpStatus.CREATED)
-  async tokenizeCard(
-    @Param('userId') userId: string,
-    @Body() body: { cardDetails: CardDetails; setAsDefault?: boolean },
-  ): Promise<PaymentMethod> {
-    // Validate all required card details
-    if (!body.cardDetails) {
-      throw new BadRequestException('Card details are required');
-    }
-
-    const { number, exp_month, exp_year, cvc, name } = body.cardDetails;
-    
-    if (!number || !exp_month || !exp_year || !cvc || !name) {
-      throw new BadRequestException('All card details are required: number, exp_month, exp_year, cvc, name');
-    }
-
-    // Check if the payment gateway supports server-side tokenization
-    if (!this.paymentGateway.tokenizeAndCreatePaymentMethod) {
-      throw new BadRequestException('Server-side tokenization is not supported by the payment gateway');
-    }
-
-    const request: TokenizeCardRequest = {
-      userId,
-      cardDetails: body.cardDetails,
-      setAsDefault: body.setAsDefault,
-    };
-
-    return this.paymentGateway.tokenizeAndCreatePaymentMethod(request);
+  @HttpCode(HttpStatus.FORBIDDEN)
+  async tokenizeCard(): Promise<never> {
+    throw new ForbiddenException(
+      'Server-side card tokenization is disabled for PCI compliance. ' +
+      'Card data must be tokenized client-side using Stripe Elements or Stripe SDK. ' +
+      'Use POST /payment-methods with a Stripe token instead.'
+    );
   }
 
   /**

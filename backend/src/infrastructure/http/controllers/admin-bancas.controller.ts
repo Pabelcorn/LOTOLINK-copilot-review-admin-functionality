@@ -9,6 +9,7 @@ import {
   HttpCode,
   HttpStatus,
   BadRequestException,
+  UseGuards,
 } from '@nestjs/common';
 import { BancaService } from '../../../application/services/banca.service';
 import {
@@ -18,8 +19,13 @@ import {
   BancaListFilterDto,
 } from '../../../application/dtos/banca.dto';
 import { BancaStatus } from '../../../domain/entities/banca.entity';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard';
+import { RolesGuard } from '../guards/roles.guard';
+import { Roles } from '../decorators/roles.decorator';
 
 @Controller('admin/bancas')
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles('admin')
 export class AdminBancasController {
   constructor(private readonly bancaService: BancaService) {}
 

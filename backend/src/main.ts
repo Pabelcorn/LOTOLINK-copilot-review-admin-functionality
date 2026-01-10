@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import helmet from 'helmet';
+import * as express from 'express';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -15,6 +16,10 @@ async function bootstrap() {
 
   // Security
   app.use(helmet());
+
+  // Raw body parser for Stripe webhook signature verification
+  // This must be before the global validation pipe
+  app.use('/webhooks/stripe', express.raw({ type: 'application/json' }));
 
   // CORS - configure based on environment
   const allowedOrigins = configService.get<string>('ALLOWED_ORIGINS');
