@@ -4963,6 +4963,101 @@
       };
     })();
 
+    /* --- PRIZES API MODULE --- */
+    const PrizesAPI = (function() {
+      /**
+       * Make API request using shared apiRequest function
+       */
+      async function makePrizeRequest(endpoint, options = {}) {
+        const token = localStorage.getItem('ll_token') || localStorage.getItem('ll_access_token');
+        
+        const config = {
+          ...options,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': token ? `Bearer ${token}` : '',
+            ...options.headers
+          }
+        };
+        
+        const baseUrl = window.location.hostname === 'localhost' 
+          ? 'http://localhost:3000/api/v1' 
+          : (window.LOTOLINK_API_URL || 'https://api.lotolink.com/api/v1');
+        
+        const response = await fetch(`${baseUrl}${endpoint}`, config);
+        
+        if (!response.ok) {
+          const error = await response.json().catch(() => ({ message: response.statusText }));
+          throw new Error(error.message || 'API request failed');
+        }
+        
+        return response.json();
+      }
+
+      // Public API
+      return {
+        // Get user prizes
+        async getMyPrizes(limit = 20, offset = 0) {
+          const userId = getCurrentUserId();
+          return makePrizeRequest(`/prizes/user/${userId}?limit=${limit}&offset=${offset}`);
+        },
+        
+        // Get prize by ID
+        async getPrizeById(prizeId) {
+          return makePrizeRequest(`/prizes/${prizeId}`);
+        },
+        
+        // Claim prize
+        async claimPrize(prizeId, paymentMethod, bankDetails) {
+          const payload = { paymentMethod };
+          if (bankDetails) {
+            payload.bankAccount = bankDetails;
+          }
+          return makePrizeRequest(`/prizes/${prizeId}/claim`, {
+            method: 'POST',
+            body: JSON.stringify(payload)
+          });
+        },
+        
+        // Get pending prizes (admin only)
+        async getPendingPrizes(limit = 50, offset = 0) {
+          return makePrizeRequest(`/prizes/admin/pending?limit=${limit}&offset=${offset}`);
+        },
+        
+        // Verify prize (admin only)
+        async verifyPrize(prizeId, adminId, notes) {
+          return makePrizeRequest(`/prizes/${prizeId}/verify`, {
+            method: 'POST',
+            body: JSON.stringify({ adminId, notes })
+          });
+        },
+        
+        // Approve prize (admin only)
+        async approvePrize(prizeId, adminId, notes) {
+          return makePrizeRequest(`/prizes/${prizeId}/approve`, {
+            method: 'POST',
+            body: JSON.stringify({ adminId, notes })
+          });
+        },
+        
+        // Reject prize (admin only)
+        async rejectPrize(prizeId, adminId, reason) {
+          return makePrizeRequest(`/prizes/${prizeId}/reject`, {
+            method: 'POST',
+            body: JSON.stringify({ adminId, reason })
+          });
+        },
+        
+        // Process payment (admin only)
+        async processPrizePayment(prizeId, adminId, transactionId, receiptNumber) {
+          return makePrizeRequest(`/prizes/${prizeId}/pay`, {
+            method: 'POST',
+            body: JSON.stringify({ adminId, transactionId, receiptNumber })
+          });
+        }
+      };
+    })();
+
     /* --- GEOLOCATION SERVICE MODULE --- */
     const GeolocationService = (function() {
       // Public API
@@ -5026,6 +5121,25 @@
       const created = new Date(createdAt || Date.now());
       created.setDate(created.getDate() + validityDays);
       return created.toISOString();
+    }
+
+    /**
+     * Get current user ID from storage
+     */
+    function getCurrentUserId() {
+      const user = JSON.parse(localStorage.getItem('ll_user') || 'null');
+      return user?.id || user?.userId || null;
+    }
+
+    /**
+     * Get authentication token from storage
+     */
+    function getGlobalAuthToken() {
+      const token = localStorage.getItem('ll_access_token') || localStorage.getItem('ll_token');
+      if (token) return token;
+      
+      const user = JSON.parse(localStorage.getItem('ll_user') || 'null');
+      return user?.token || user?.accessToken || '';
     }
 
     function MyTickets({ user, onLogin }) {
