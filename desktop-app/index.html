@@ -5123,6 +5123,25 @@
       return created.toISOString();
     }
 
+    /**
+     * Get current user ID from storage
+     */
+    function getCurrentUserId() {
+      const user = JSON.parse(localStorage.getItem('ll_user') || 'null');
+      return user?.id || user?.userId || null;
+    }
+
+    /**
+     * Get authentication token from storage
+     */
+    function getGlobalAuthToken() {
+      const token = localStorage.getItem('ll_access_token') || localStorage.getItem('ll_token');
+      if (token) return token;
+      
+      const user = JSON.parse(localStorage.getItem('ll_user') || 'null');
+      return user?.token || user?.accessToken || '';
+    }
+
     function MyTickets({ user, onLogin }) {
       const [tickets, setTickets] = useState([]);
       const [isLoading, setIsLoading] = useState(true);
