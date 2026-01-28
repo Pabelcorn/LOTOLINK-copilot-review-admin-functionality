@@ -7087,9 +7087,7 @@ Código: ${ticket.ticketCode || ticket.id}`;
                             <div className="flex gap-2 sm:gap-3 w-full sm:w-auto">
                               <button 
                                 onClick={() => {
-                                  setSelectedBank(b);
-                                  localStorage.setItem('ll_selected_banca', JSON.stringify(b));
-                                  setView('loterias');
+                                  openPlayModal(b);
                                 }}
                                 className="btn-apple-primary flex-1 sm:flex-initial px-4 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm"
                               >
