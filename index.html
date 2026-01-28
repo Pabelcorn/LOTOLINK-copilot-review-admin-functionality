@@ -6961,57 +6961,95 @@ Código: ${ticket.ticketCode || ticket.id}`;
       };
       
       // Initialize map in branch selector modal
+      // Initialize map in branch selector modal
       useEffect(() => {
+        let timeoutId;
+        
         if (showBranchSelectorModal && branchModalViewMode === 'map') {
-          setTimeout(() => {
+          timeoutId = setTimeout(() => {
             const mapContainer = document.getElementById('branch-modal-map');
             if (!mapContainer) return;
             
-            // Remove existing map if any
-            if (branchModalMap) {
-              branchModalMap.remove();
-              setBranchModalMap(null);
+            // Check if Leaflet is available
+            if (typeof L === 'undefined') {
+              console.error('Leaflet library not loaded');
+              return;
             }
             
-            // Create new map
-            const map = L.map('branch-modal-map').setView([18.4861, -69.9312], 13);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-              attribution: '© OpenStreetMap'
-            }).addTo(map);
-            
-            // Add markers for each bank
-            availableBancas.forEach(b => {
-              const marker = L.marker(b.coords).addTo(map);
-              
-              const popupContent = `
-                <div style="text-align:center; min-width: 150px;">
-                  <div style="font-weight:bold; margin-bottom:4px; font-size:14px;">${b.name}</div>
-                  <div style="font-size:12px; color:#666; margin-bottom:8px;">${b.hours}</div>
-                  <button id="btn-select-branch-${b.id}" style="background-color:#10b981; color:white; border:none; padding:6px 12px; border-radius:20px; cursor:pointer; font-size:12px; font-weight:600; box-shadow:0 2px 4px rgba(0,0,0,0.2);">
-                    Seleccionar esta banca ✓
-                  </button>
-                </div>
-              `;
-              
-              marker.bindPopup(popupContent);
-              
-              marker.on('popupopen', () => {
-                setTimeout(() => {
-                  const btn = document.getElementById(`btn-select-branch-${b.id}`);
-                  if (btn) {
-                    btn.onclick = (e) => {
-                      e.preventDefault();
-                      selectBankFromModal(b);
-                    };
+            // Only create map if it doesn't exist
+            if (!branchModalMap) {
+              try {
+                // Create new map
+                const map = L.map('branch-modal-map').setView([18.4861, -69.9312], 13);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                  attribution: '© OpenStreetMap'
+                }).addTo(map);
+                
+                // Add markers for each bank
+                availableBancas.forEach(b => {
+                  // Validate coordinates exist
+                  if (!b.coords || !Array.isArray(b.coords) || b.coords.length !== 2) {
+                    console.warn(`Invalid coordinates for banca: ${b.name}`);
+                    return;
                   }
-                }, 50);
-              });
-            });
-            
-            setBranchModalMap(map);
+                  
+                  const marker = L.marker(b.coords).addTo(map);
+                  
+                  // Create popup content using DOM elements to avoid XSS
+                  const popupDiv = document.createElement('div');
+                  popupDiv.style.textAlign = 'center';
+                  popupDiv.style.minWidth = '150px';
+                  
+                  const nameDiv = document.createElement('div');
+                  nameDiv.style.fontWeight = 'bold';
+                  nameDiv.style.marginBottom = '4px';
+                  nameDiv.style.fontSize = '14px';
+                  nameDiv.textContent = b.name || 'Sin nombre';
+                  
+                  const hoursDiv = document.createElement('div');
+                  hoursDiv.style.fontSize = '12px';
+                  hoursDiv.style.color = '#666';
+                  hoursDiv.style.marginBottom = '8px';
+                  hoursDiv.textContent = b.hours || 'Horario no disponible';
+                  
+                  const selectBtn = document.createElement('button');
+                  selectBtn.textContent = 'Seleccionar esta banca ✓';
+                  selectBtn.style.backgroundColor = '#10b981';
+                  selectBtn.style.color = 'white';
+                  selectBtn.style.border = 'none';
+                  selectBtn.style.padding = '6px 12px';
+                  selectBtn.style.borderRadius = '20px';
+                  selectBtn.style.cursor = 'pointer';
+                  selectBtn.style.fontSize = '12px';
+                  selectBtn.style.fontWeight = '600';
+                  selectBtn.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)';
+                  selectBtn.onclick = (e) => {
+                    e.preventDefault();
+                    selectBankFromModal(b);
+                  };
+                  
+                  popupDiv.appendChild(nameDiv);
+                  popupDiv.appendChild(hoursDiv);
+                  popupDiv.appendChild(selectBtn);
+                  
+                  marker.bindPopup(popupDiv);
+                });
+                
+                setBranchModalMap(map);
+              } catch (error) {
+                console.error('Error initializing map:', error);
+              }
+            }
           }, 100);
         }
-      }, [showBranchSelectorModal, branchModalViewMode]);
+        
+        // Cleanup function
+        return () => {
+          if (timeoutId) {
+            clearTimeout(timeoutId);
+          }
+        };
+      }, [showBranchSelectorModal, branchModalViewMode, availableBancas, branchModalMap]);
       
       // Toggle number selection
       const toggleNumber = (num) => {
