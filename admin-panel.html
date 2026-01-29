@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LotoLink - Panel de Administración</title>
+    <!-- Force Light Mode - Prevents dark mode visibility issues -->
+    <meta name="color-scheme" content="light">
     <!-- 
         CONFIGURACIÓN:
         Para cambiar la URL del backend, edita la variable API_BASE_URL en la sección <script> al final de este archivo.
@@ -26,6 +28,9 @@
         }
 
         :root {
+            /* Force light color scheme - prevents browser dark mode overrides */
+            color-scheme: light;
+            
             /* Brand Colors - LotoLink */
             --primary: #0071e3;
             --primary-dark: #0077ED;

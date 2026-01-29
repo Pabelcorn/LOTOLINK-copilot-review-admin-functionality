@@ -16,6 +16,9 @@
   <meta name="msapplication-TileColor" content="#0071e3">
   <meta name="msapplication-tap-highlight" content="no">
   
+  <!-- Force Light Mode - Prevents dark mode visibility issues -->
+  <meta name="color-scheme" content="light">
+  
   <!-- iOS Splash Screens & Favicon -->
   <link rel="icon" type="image/png" href="./lotolink-logo.png">
   <link rel="apple-touch-icon" href="./lotolink-logo.png">
@@ -56,6 +59,9 @@
        ======================================== */
     
     :root {
+      /* Force light color scheme - prevents browser dark mode overrides */
+      color-scheme: light;
+      
       /* Premium Color Palette - Apple inspired */
       --primary: #0071e3;
       --primary-dark: #0077ED;
