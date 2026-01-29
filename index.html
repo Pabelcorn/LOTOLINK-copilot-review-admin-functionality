@@ -5869,6 +5869,9 @@ Código: ${ticket.ticketCode || ticket.id}`;
       const [playModalNumbers, setPlayModalNumbers] = useState([]); // Selected numbers
       const [playModalStake, setPlayModalStake] = useState(10); // Stake amount
       const [showBranchSelector, setShowBranchSelector] = useState(false); // Branch selector in play modal
+      const [showBranchSelectorModal, setShowBranchSelectorModal] = useState(false); // Full modal for branch selection
+      const [branchModalViewMode, setBranchModalViewMode] = useState('list'); // 'list' | 'map' for branch modal
+      const [branchModalMap, setBranchModalMap] = useState(null); // Leaflet map instance
       const [showAuthModal, setShowAuthModal] = useState(false);
       // Multi-step auth states
       const [authModalView, setAuthModalView] = useState('selection'); // 'selection' | 'phone' | 'otp' | 'email' | 'age' | 'admin'
@@ -6929,6 +6932,125 @@ Código: ${ticket.ticketCode || ticket.id}`;
         setShowBranchSelector(false);
       };
       
+      // Open branch selector modal
+      const openBranchSelectorModal = () => {
+        setShowBranchSelectorModal(true);
+        setBranchModalViewMode('list');
+      };
+      
+      // Close branch selector modal
+      const closeBranchSelectorModal = () => {
+        setShowBranchSelectorModal(false);
+        // Clean up map if it exists
+        if (branchModalMap) {
+          branchModalMap.remove();
+          setBranchModalMap(null);
+        }
+      };
+      
+      // Select a bank from branch modal
+      const selectBankFromModal = (bank) => {
+        setSelectedBank(bank);
+        localStorage.setItem('ll_selected_banca', JSON.stringify(bank));
+        closeBranchSelectorModal();
+      };
+      
+      // Toggle between list and map view in branch modal
+      const toggleBranchModalView = (mode) => {
+        setBranchModalViewMode(mode);
+      };
+      
+      // Initialize map in branch selector modal
+      // Initialize map in branch selector modal
+      useEffect(() => {
+        let timeoutId;
+        
+        if (showBranchSelectorModal && branchModalViewMode === 'map') {
+          timeoutId = setTimeout(() => {
+            const mapContainer = document.getElementById('branch-modal-map');
+            if (!mapContainer) return;
+            
+            // Check if Leaflet is available
+            if (typeof L === 'undefined') {
+              console.error('Leaflet library not loaded');
+              return;
+            }
+            
+            // Only create map if it doesn't exist
+            if (!branchModalMap) {
+              try {
+                // Create new map
+                const map = L.map('branch-modal-map').setView([18.4861, -69.9312], 13);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                  attribution: '© OpenStreetMap'
+                }).addTo(map);
+                
+                // Add markers for each bank
+                availableBancas.forEach(b => {
+                  // Validate coordinates exist
+                  if (!b.coords || !Array.isArray(b.coords) || b.coords.length !== 2) {
+                    console.warn(`Invalid coordinates for banca: ${b.name}`);
+                    return;
+                  }
+                  
+                  const marker = L.marker(b.coords).addTo(map);
+                  
+                  // Create popup content using DOM elements to avoid XSS
+                  const popupDiv = document.createElement('div');
+                  popupDiv.style.textAlign = 'center';
+                  popupDiv.style.minWidth = '150px';
+                  
+                  const nameDiv = document.createElement('div');
+                  nameDiv.style.fontWeight = 'bold';
+                  nameDiv.style.marginBottom = '4px';
+                  nameDiv.style.fontSize = '14px';
+                  nameDiv.textContent = b.name || 'Sin nombre';
+                  
+                  const hoursDiv = document.createElement('div');
+                  hoursDiv.style.fontSize = '12px';
+                  hoursDiv.style.color = '#666';
+                  hoursDiv.style.marginBottom = '8px';
+                  hoursDiv.textContent = b.hours || 'Horario no disponible';
+                  
+                  const selectBtn = document.createElement('button');
+                  selectBtn.textContent = 'Seleccionar esta banca ✓';
+                  selectBtn.style.backgroundColor = '#10b981';
+                  selectBtn.style.color = 'white';
+                  selectBtn.style.border = 'none';
+                  selectBtn.style.padding = '6px 12px';
+                  selectBtn.style.borderRadius = '20px';
+                  selectBtn.style.cursor = 'pointer';
+                  selectBtn.style.fontSize = '12px';
+                  selectBtn.style.fontWeight = '600';
+                  selectBtn.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)';
+                  selectBtn.onclick = (e) => {
+                    e.preventDefault();
+                    selectBankFromModal(b);
+                  };
+                  
+                  popupDiv.appendChild(nameDiv);
+                  popupDiv.appendChild(hoursDiv);
+                  popupDiv.appendChild(selectBtn);
+                  
+                  marker.bindPopup(popupDiv);
+                });
+                
+                setBranchModalMap(map);
+              } catch (error) {
+                console.error('Error initializing map:', error);
+              }
+            }
+          }, 100);
+        }
+        
+        // Cleanup function
+        return () => {
+          if (timeoutId) {
+            clearTimeout(timeoutId);
+          }
+        };
+      }, [showBranchSelectorModal, branchModalViewMode, availableBancas, branchModalMap]);
+      
       // Toggle number selection
       const toggleNumber = (num) => {
         const maxNumbers = playModalModality === 'Quiniela' ? 1 : playModalModality === 'Palé' ? 2 : 3;
@@ -7468,7 +7590,7 @@ Código: ${ticket.ticketCode || ticket.id}`;
                       </div>
                       <button 
                         type="button"
-                        onClick={() => setShowBranchSelector(!showBranchSelector)}
+                        onClick={openBranchSelectorModal}
                         className="px-3 py-1.5 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full text-sm font-medium hover:bg-blue-200 dark:hover:bg-blue-800/40 transition-colors flex items-center gap-1 cursor-pointer"
                         style={{ cursor: 'pointer' }}
                       >
@@ -7477,56 +7599,6 @@ Código: ${ticket.ticketCode || ticket.id}`;
                     </div>
                     <button onClick={closePlayModal} className="text-gray-400 hover:text-black dark:hover:text-white text-2xl">✕</button>
                   </div>
-                  
-                  {/* Branch Selector Dropdown */}
-                  {showBranchSelector && (
-                    <div className="p-4 bg-blue-50 dark:bg-slate-800 border-b dark:border-slate-700">
-                      <div className="flex justify-between items-center mb-3">
-                        <div className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                          Selecciona otra sucursal:
-                        </div>
-                        {loadingBancas && (
-                          <div className="text-xs text-gray-500">Cargando...</div>
-                        )}
-                      </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                        {availableBancas.map(bank => (
-                          <button
-                            type="button"
-                            key={bank.id}
-                            onClick={() => {
-                              setSelectedBank(bank);
-                              localStorage.setItem('ll_selected_banca', JSON.stringify(bank));
-                              setShowBranchSelector(false);
-                            }}
-                            className={`p-3 rounded-lg text-left transition-all cursor-pointer ${
-                              selectedBank?.id === bank.id 
-                                ? 'bg-blue-600 text-white' 
-                                : 'bg-white dark:bg-slate-700 hover:bg-blue-100 dark:hover:bg-slate-600'
-                            }`}
-                            style={{ cursor: 'pointer' }}
-                          >
-                            <div className="font-medium dark:text-white">{bank.name}</div>
-                            <div className={`text-xs ${selectedBank?.id === bank.id ? 'text-blue-100' : 'text-gray-500 dark:text-gray-400'}`}>
-                              📍 {bank.address}
-                            </div>
-                            {bank.phone && (
-                              <div className={`text-xs mt-1 ${selectedBank?.id === bank.id ? 'text-blue-100' : 'text-gray-500 dark:text-gray-400'}`}>
-                                📞 {bank.phone}
-                              </div>
-                            )}
-                          </button>
-                        ))}
-                      </div>
-                      <button
-                        type="button"
-                        onClick={loadNearbyBancas}
-                        className="mt-3 w-full py-2 px-4 bg-white dark:bg-slate-700 border border-gray-300 dark:border-slate-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-600 transition-colors"
-                      >
-                        🔄 Actualizar bancas cercanas
-                      </button>
-                    </div>
-                  )}
                 </div>
                 
                 {/* Modal Body - Scrollable */}
@@ -7772,6 +7844,143 @@ Código: ${ticket.ticketCode || ticket.id}`;
                       </div>
                     </div>
                   )}
+                </div>
+              </div>
+            </div>
+          )}
+          
+          {/* Branch Selector Modal - Reusing Loterías Disponibles structure */}
+          {showBranchSelectorModal && (
+            <div className="fixed inset-0 z-50 overflow-y-auto overflow-x-hidden" style={{WebkitOverflowScrolling: 'touch'}}>
+              <div 
+                className="fixed inset-0 bg-black/60 backdrop-blur-sm" 
+                onClick={closeBranchSelectorModal}
+              ></div>
+              <div className="relative min-h-screen flex items-center justify-center p-4">
+                <div 
+                  className="relative w-full max-w-5xl bg-white dark:bg-slate-800 rounded-2xl shadow-2xl overflow-hidden"
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.95)',
+                    backdropFilter: 'blur(20px) saturate(180%)',
+                    WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+                    border: '1px solid rgba(255, 255, 255, 0.18)',
+                    maxHeight: '90vh'
+                  }}
+                >
+                  {/* Header with gradient matching selected bank or default */}
+                  <div 
+                    className="p-6 flex items-center gap-4 text-white"
+                    style={{background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'}}
+                  >
+                    <div className="w-16 h-16 rounded-xl bg-white/20 flex items-center justify-center text-2xl font-bold shadow-lg">
+                      🏪
+                    </div>
+                    <div className="flex-1">
+                      <h2 className="text-3xl font-bold">Selecciona tu Banca</h2>
+                      <p className="text-sm text-white/80 mt-1">Elige la sucursal donde realizarás tu jugada</p>
+                    </div>
+                    <button 
+                      onClick={closeBranchSelectorModal}
+                      className="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg font-medium transition"
+                    >
+                      Cerrar
+                    </button>
+                  </div>
+                  
+                  {/* Content with List/Map Toggle */}
+                  <div className="p-8 overflow-y-auto" style={{maxHeight: 'calc(90vh - 120px)'}}>
+                    {/* Toggle between List and Map View */}
+                    <div className="flex gap-2 mb-6 justify-center">
+                      <button 
+                        onClick={() => toggleBranchModalView('list')}
+                        className={`px-4 py-2 rounded-lg font-medium text-sm transition ${
+                          branchModalViewMode === 'list' 
+                            ? 'bg-blue-600 text-white' 
+                            : 'bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600'
+                        }`}
+                      >
+                        📋 Ver Lista
+                      </button>
+                      <button 
+                        onClick={() => toggleBranchModalView('map')}
+                        className={`px-4 py-2 rounded-lg font-medium text-sm transition ${
+                          branchModalViewMode === 'map' 
+                            ? 'bg-blue-600 text-white' 
+                            : 'bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600'
+                        }`}
+                      >
+                        🗺️ Ver en el Mapa
+                      </button>
+                    </div>
+                    
+                    {/* List View */}
+                    {branchModalViewMode === 'list' && (
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {availableBancas.map(bank => (
+                          <button 
+                            key={bank.id}
+                            onClick={() => selectBankFromModal(bank)}
+                            className="border-2 dark:border-slate-600 rounded-xl p-5 text-left hover:border-blue-500 hover:shadow-lg transition group"
+                          >
+                            <div className="flex items-start gap-3">
+                              <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center text-2xl flex-shrink-0">
+                                🏪
+                              </div>
+                              <div className="flex-1">
+                                <div className="font-bold text-lg mb-1 dark:text-white group-hover:text-blue-600">{bank.name}</div>
+                                <div className="text-sm text-gray-500 dark:text-gray-400 mb-2">
+                                  <span className="inline-flex items-center gap-1">
+                                    🕐 {bank.hours}
+                                  </span>
+                                </div>
+                                {bank.address && (
+                                  <div className="text-xs text-gray-400 dark:text-gray-500">
+                                    📍 {bank.address}
+                                  </div>
+                                )}
+                                {bank.phone && (
+                                  <div className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                                    📞 {bank.phone}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                            <div className="mt-3 text-xs text-blue-600 dark:text-blue-400 font-medium">
+                              Seleccionar esta banca →
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                    
+                    {/* Map View */}
+                    {branchModalViewMode === 'map' && (
+                      <div>
+                        <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg text-sm text-gray-700 dark:text-gray-300 text-center">
+                          <strong>💡 Tip:</strong> Haz clic en un marcador del mapa para ver los detalles y seleccionar la banca
+                        </div>
+                        <div 
+                          id="branch-modal-map" 
+                          style={{
+                            height: '500px',
+                            width: '100%',
+                            borderRadius: '12px',
+                            overflow: 'hidden'
+                          }}
+                        ></div>
+                      </div>
+                    )}
+                    
+                    {/* Info Box */}
+                    <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                      <div className="flex items-start gap-3">
+                        <div className="text-2xl">ℹ️</div>
+                        <div className="text-sm text-gray-700 dark:text-gray-300">
+                          <strong>¿Por qué seleccionar una banca?</strong> La banca que selecciones procesará tu jugada y será donde puedas cobrar tus premios si ganas.
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
