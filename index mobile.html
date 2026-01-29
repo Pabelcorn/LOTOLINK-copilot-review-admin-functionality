@@ -107,7 +107,8 @@
       --border-color: #d2d2d7;
     }
     
-    /* Dark mode CSS variables */
+    /* Dark mode CSS variables - DISABLED to force light mode only */
+    /* 
     @media (prefers-color-scheme: dark) {
       :root:not([data-theme="light"]) {
         --bg-primary: #000000;
@@ -117,6 +118,7 @@
         --border-color: #38383a;
       }
     }
+    */
 
     * {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
@@ -376,149 +378,12 @@
     }
     
     /* ========================================
-       AUTO DARK MODE - System Preference Detection
-       Automatically applies dark mode when browser/OS is in dark mode
-       UNLESS user has manually selected light mode
-       Print media is excluded to avoid dark prints
+       AUTO DARK MODE - DISABLED TO FORCE LIGHT MODE ONLY
+       Dark mode styles have been disabled to prevent visibility issues.
+       The application will now always display in light mode.
        ======================================== */
     
-    @media (prefers-color-scheme: dark) and (not print) {
-      :root:not([data-theme="light"]) body { 
-        background: linear-gradient(180deg, #000000 0%, #1c1c1e 100%);
-        color: #f5f5f7; 
-      }
-      :root:not([data-theme="light"]) .dark\:bg-slate-800 { background-color: #1c1c1e; }
-      :root:not([data-theme="light"]) .dark\:bg-slate-900 { background-color: #000000; }
-      :root:not([data-theme="light"]) .dark\:text-gray-100 { color: #f5f5f7; }
-      :root:not([data-theme="light"]) .dark\:text-gray-300 { color: #a1a1a6; }
-      :root:not([data-theme="light"]) .dark\:text-gray-500 { color: #6e6e73; }
-      :root:not([data-theme="light"]) .dark\:border-gray-700 { border-color: #38383a; }
-      
-      :root:not([data-theme="light"]) .premium-header {
-        background: rgba(28, 28, 30, 0.85);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      }
-      
-      :root:not([data-theme="light"]) .glass-card {
-        background: rgba(28, 28, 30, 0.8);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-      }
-      
-      :root:not([data-theme="light"]) .premium-card {
-        background: #1c1c1e;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        color: #f5f5f7;
-      }
-      
-      /* Text colors */
-      :root:not([data-theme="light"]) h1, :root:not([data-theme="light"]) h2, :root:not([data-theme="light"]) h3, :root:not([data-theme="light"]) h4, :root:not([data-theme="light"]) h5, :root:not([data-theme="light"]) h6 {
-        color: #f5f5f7;
-      }
-      
-      :root:not([data-theme="light"]) p, :root:not([data-theme="light"]) span, :root:not([data-theme="light"]) label, :root:not([data-theme="light"]) div {
-        color: inherit;
-      }
-      
-      /* Form elements */
-      :root:not([data-theme="light"]) input, :root:not([data-theme="light"]) select, :root:not([data-theme="light"]) textarea {
-        background: #2c2c2e;
-        color: #f5f5f7;
-        border-color: #48484a;
-      }
-      
-      :root:not([data-theme="light"]) input::placeholder, :root:not([data-theme="light"]) textarea::placeholder {
-        color: #98989d;
-      }
-      
-      :root:not([data-theme="light"]) input:focus, :root:not([data-theme="light"]) select:focus, :root:not([data-theme="light"]) textarea:focus {
-        border-color: #64b5f6;
-        outline-color: #64b5f6;
-      }
-      
-      /* Buttons */
-      :root:not([data-theme="light"]) .btn-apple-secondary {
-        background: rgba(255, 255, 255, 0.1);
-        color: #64b5f6;
-      }
-      
-      :root:not([data-theme="light"]) .btn-apple-secondary:hover {
-        background: rgba(255, 255, 255, 0.15);
-      }
-      
-      :root:not([data-theme="light"]) button.border, :root:not([data-theme="light"]) .border {
-        border-color: #48484a;
-      }
-      
-      /* Modals */
-      :root:not([data-theme="light"]) .modal-backdrop {
-        background: rgba(0, 0, 0, 0.7);
-      }
-      
-      /* Tables */
-      :root:not([data-theme="light"]) table th {
-        background: #2c2c2e;
-        color: #f5f5f7;
-      }
-      
-      :root:not([data-theme="light"]) table td {
-        color: #f5f5f7;
-        border-color: #38383a;
-      }
-      
-      /* Footer */
-      :root:not([data-theme="light"]) footer {
-        background: #1c1c1e;
-        color: #a1a1a6;
-      }
-      
-      /* Ticket print area - excluded via media query (not print) */
-      :root:not([data-theme="light"]) #ticket-print-area {
-        background: #374151;
-        color: #f5f5f7;
-      }
-      
-      /* Status badges and small text elements */
-      :root:not([data-theme="light"]) .text-gray-500 {
-        color: #a1a1a6;
-      }
-      
-      :root:not([data-theme="light"]) .text-gray-600 {
-        color: #98989d;
-      }
-      
-      :root:not([data-theme="light"]) .text-gray-700 {
-        color: #86868b;
-      }
-      
-      :root:not([data-theme="light"]) .text-gray-900 {
-        color: #f5f5f7;
-      }
-      
-      :root:not([data-theme="light"]) .bg-white {
-        background: #1c1c1e;
-      }
-      
-      :root:not([data-theme="light"]) .bg-gray-50 {
-        background: #2c2c2e;
-      }
-      
-      :root:not([data-theme="light"]) .bg-gray-100 {
-        background: #000000;
-      }
-      
-      :root:not([data-theme="light"]) .border-gray-200 {
-        border-color: #48484a;
-      }
-      
-      :root:not([data-theme="light"]) .border-gray-300 {
-        border-color: #48484a;
-      }
-      
-      /* Icons and SVGs */
-      :root:not([data-theme="light"]) .icon, :root:not([data-theme="light"]) svg {
-        color: currentColor;
-      }
-    }
+    /* @media (prefers-color-scheme: dark) and (not print) { ... } COMMENTED OUT */
     
     /* ========================================
        MOBILE RESPONSIVE ENHANCEMENTS

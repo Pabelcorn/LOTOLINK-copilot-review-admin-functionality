@@ -50,66 +50,8 @@
       box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.1);
     }
     
-    /* Auto Dark Mode Support */
-    @media (prefers-color-scheme: dark) and (not print) {
-      :root:not([data-theme="light"]) .auth-modal-content {
-        background: #1c1c1e;
-        color: #f5f5f7;
-      }
-      
-      :root:not([data-theme="light"]) .auth-modal-content h2 {
-        color: #f5f5f7;
-      }
-      
-      :root:not([data-theme="light"]) .auth-modal-content p,
-      :root:not([data-theme="light"]) .auth-modal-content label,
-      :root:not([data-theme="light"]) .auth-modal-content span {
-        color: #a1a1a6;
-      }
-      
-      :root:not([data-theme="light"]) .auth-modal-content .text-gray-600 {
-        color: #a1a1a6;
-      }
-      
-      :root:not([data-theme="light"]) .auth-modal-content .text-gray-700 {
-        color: #86868b;
-      }
-      
-      :root:not([data-theme="light"]) .auth-modal-content .border-gray-200,
-      :root:not([data-theme="light"]) .auth-modal-content .border-gray-300 {
-        border-color: #48484a;
-      }
-      
-      :root:not([data-theme="light"]) .auth-modal-content .bg-white {
-        background: #2c2c2e;
-      }
-      
-      :root:not([data-theme="light"]) .input-field {
-        background: #2c2c2e;
-        color: #f5f5f7;
-        border-color: #48484a;
-      }
-      
-      :root:not([data-theme="light"]) .input-field::placeholder {
-        color: #98989d;
-      }
-      
-      :root:not([data-theme="light"]) .input-field:focus {
-        border-color: #64b5f6;
-        box-shadow: 0 0 0 3px rgba(100, 181, 246, 0.1);
-      }
-      
-      :root:not([data-theme="light"]) .social-btn:not(.bg-black) {
-        background: #2c2c2e;
-        border-color: #48484a;
-        color: #f5f5f7;
-      }
-      
-      :root:not([data-theme="light"]) .social-btn:not(.bg-black):hover {
-        background: #38383a;
-        border-color: #64b5f6;
-      }
-    }
+    /* Auto Dark Mode Support - DISABLED TO FORCE LIGHT MODE ONLY */
+    /* @media (prefers-color-scheme: dark) and (not print) { ... } COMMENTED OUT */
   </style>
 </head>
 <body>
