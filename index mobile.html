@@ -2867,7 +2867,7 @@
           {Object.entries(mostPlayed).map(([k, v]) => (
             <div key={k} className="mb-2 sm:mb-3 pb-2 sm:pb-3 border-b last:border-b-0">
               <div className="font-semibold text-xs sm:text-sm mb-1">{k}</div>
-              <div className="text-[10px] sm:text-xs text-gray-500 mb-2">
+              <div className="text-[10px] sm:text-xs text-gray-700 mb-2">
                 {Array.isArray(v[0]) ? v[0].join(', ') : v.join(', ')}
               </div>
               <button 
@@ -7080,7 +7080,7 @@ Código: ${ticket.ticketCode || ticket.id}`;
                       <div className="flex items-center justify-between mb-4 sm:mb-6">
                         <div>
                           <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Bancas Cercanas</h3>
-                          <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm sm:text-base">Encuentra tu banca favorita</p>
+                          <p className="text-gray-700 dark:text-gray-400 mt-1 text-sm sm:text-base">Encuentra tu banca favorita</p>
                         </div>
                         <button 
                           onClick={() => setView('bancas')}
@@ -7110,12 +7110,12 @@ Código: ${ticket.ticketCode || ticket.id}`;
                                     </span>
                                   )}
                                 </div>
-                                <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 flex items-center gap-2 mt-1">
+                                <div className="text-xs sm:text-sm text-gray-700 dark:text-gray-400 flex items-center gap-2 mt-1">
                                   <span className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></span>
                                   <span className="truncate">{b.hours || 'Horario no disponible'}</span>
                                 </div>
                                 {b.address && (
-                                  <div className="text-xs text-gray-400 dark:text-gray-500 mt-0.5 truncate">
+                                  <div className="text-xs text-gray-600 dark:text-gray-500 mt-0.5 truncate">
                                     📍 {b.address}
                                   </div>
                                 )}
@@ -7153,7 +7153,7 @@ Código: ${ticket.ticketCode || ticket.id}`;
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-2 sm:gap-0">
                         <div>
                           <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Resultados en Vivo</h3>
-                          <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm sm:text-base">
+                          <p className="text-gray-700 dark:text-gray-400 mt-1 text-sm sm:text-base">
                             {isLotteryConnected ? (
                               <>Conectado a <span className="text-blue-500 font-medium">loteriasdominicanas.com</span></>
                             ) : (
@@ -7169,7 +7169,7 @@ Código: ${ticket.ticketCode || ticket.id}`;
                             </span>
                           </div>
                           {lotteryLastUpdate && (
-                            <span className="text-[9px] sm:text-[10px] text-gray-400">
+                            <span className="text-[9px] sm:text-[10px] text-gray-600">
                               Actualizado: {lotteryLastUpdate.toLocaleTimeString('es-DO', { hour: '2-digit', minute: '2-digit' })}
                             </span>
                           )}
@@ -7193,9 +7193,9 @@ Código: ${ticket.ticketCode || ticket.id}`;
                                 </span>
                               ))}
                             </div>
-                            <div className="text-[10px] sm:text-xs text-gray-400 mt-2 sm:mt-3">{v.time}</div>
+                            <div className="text-[10px] sm:text-xs text-gray-600 mt-2 sm:mt-3">{v.time}</div>
                             {v.source && (
-                              <div className="text-[8px] sm:text-[9px] text-gray-400 mt-1 opacity-60">{v.source}</div>
+                              <div className="text-[8px] sm:text-[9px] text-gray-600 mt-1 opacity-60">{v.source}</div>
                             )}
                           </div>
                         ))}
