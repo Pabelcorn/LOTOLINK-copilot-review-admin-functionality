@@ -352,6 +352,149 @@
     }
     
     /* ========================================
+       AUTO DARK MODE - System Preference Detection
+       Automatically applies dark mode when browser/OS is in dark mode
+       ======================================== */
+    
+    @media (prefers-color-scheme: dark) {
+      body { 
+        background: linear-gradient(180deg, #000000 0%, #1c1c1e 100%);
+        color: #f5f5f7; 
+      }
+      .dark\:bg-slate-800 { background-color: #1c1c1e; }
+      .dark\:bg-slate-900 { background-color: #000000; }
+      .dark\:text-gray-100 { color: #f5f5f7; }
+      .dark\:text-gray-300 { color: #a1a1a6; }
+      .dark\:text-gray-500 { color: #6e6e73; }
+      .dark\:border-gray-700 { border-color: #38383a; }
+      
+      .premium-header {
+        background: rgba(28, 28, 30, 0.85);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      
+      .glass-card {
+        background: rgba(28, 28, 30, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      
+      .premium-card {
+        background: #1c1c1e;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: #f5f5f7;
+      }
+      
+      /* Text colors */
+      h1, h2, h3, h4, h5, h6 {
+        color: #f5f5f7;
+      }
+      
+      p, span, label, div {
+        color: inherit;
+      }
+      
+      /* Form elements */
+      input, select, textarea {
+        background: #2c2c2e;
+        color: #f5f5f7;
+        border-color: #48484a;
+      }
+      
+      input::placeholder, textarea::placeholder {
+        color: #98989d;
+      }
+      
+      input:focus, select:focus, textarea:focus {
+        border-color: #64b5f6;
+        outline-color: #64b5f6;
+      }
+      
+      /* Buttons */
+      .btn-apple-secondary {
+        background: rgba(255, 255, 255, 0.1);
+        color: #64b5f6;
+      }
+      
+      .btn-apple-secondary:hover {
+        background: rgba(255, 255, 255, 0.15);
+      }
+      
+      button.border, .border {
+        border-color: #48484a;
+      }
+      
+      /* Modals */
+      .modal-backdrop {
+        background: rgba(0, 0, 0, 0.7);
+      }
+      
+      /* Tables */
+      table th {
+        background: #2c2c2e;
+        color: #f5f5f7;
+      }
+      
+      table td {
+        color: #f5f5f7;
+        border-color: #38383a;
+      }
+      
+      /* Footer */
+      footer {
+        background: #1c1c1e;
+        color: #a1a1a6;
+      }
+      
+      /* Ticket print area */
+      #ticket-print-area {
+        background: #374151;
+        color: #f5f5f7;
+      }
+      
+      /* Status badges and small text elements */
+      .text-gray-500 {
+        color: #a1a1a6;
+      }
+      
+      .text-gray-600 {
+        color: #98989d;
+      }
+      
+      .text-gray-700 {
+        color: #86868b;
+      }
+      
+      .text-gray-900 {
+        color: #f5f5f7;
+      }
+      
+      .bg-white {
+        background: #1c1c1e;
+      }
+      
+      .bg-gray-50 {
+        background: #2c2c2e;
+      }
+      
+      .bg-gray-100 {
+        background: #000000;
+      }
+      
+      .border-gray-200 {
+        border-color: #48484a;
+      }
+      
+      .border-gray-300 {
+        border-color: #48484a;
+      }
+      
+      /* Icons and SVGs */
+      .icon, svg {
+        color: currentColor;
+      }
+    }
+    
+    /* ========================================
        MOBILE RESPONSIVE ENHANCEMENTS
        Full responsive support for all phone sizes
        ======================================== */
