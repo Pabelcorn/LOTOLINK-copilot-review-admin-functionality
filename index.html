@@ -2067,10 +2067,11 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-  <!-- Lottery Data (must be loaded before React app) -->
+  <!-- Lottery Data Placeholder -->
   <script>
-    // Initialize MOCKUP_LOTTERIES early so React component can access it
-    // This will be populated with the full data later in the page
+    // Initialize MOCKUP_LOTTERIES placeholder early for React component
+    // Actual data will be populated later in the document when vanilla JS scripts run
+    // React component has fallback logic to use LOTERIES if MOCKUP_LOTTERIES is not yet loaded
     window.MOCKUP_LOTTERIES = null;
   </script>
 
@@ -2139,7 +2140,10 @@
       Leidsa: { next: "Hoy 8:55 PM", modalities: ["Quiniela", "Palé", "Tripleta", "Pega 3"] },
       Loteka: { next: "Hoy 7:55 PM", modalities: ["Quiniela", "Palé", "Tripleta", "Toca 3"] },
       "La Primera": { next: "Hoy 8:00 PM", modalities: ["Quiniela", "Palé", "Tripleta"] },
-      "Lotería Nacional": { next: "Hoy 9:00 PM", modalities: ["Quiniela", "Palé", "Tripleta"] }
+      "Lotería Nacional": { next: "Hoy 9:00 PM", modalities: ["Quiniela", "Palé", "Tripleta"] },
+      "Lotería Real": { next: "Hoy 12:55 PM", modalities: ["Quiniela", "Palé", "Tripleta"] },
+      "La Suerte Dominicana": { next: "Hoy 6:00 PM", modalities: ["Quiniela", "Palé", "Tripleta"] },
+      "LoteDom": { next: "Hoy 12:00 PM", modalities: ["Quiniela", "Palé", "Tripleta"] }
     };
 
     /* --- HELPERS --- */
@@ -7620,6 +7624,7 @@ Código: ${ticket.ticketCode || ticket.id}`;
                         {(() => {
                           // Get MOCKUP_LOTTERIES from window if available, fallback to LOTERIES
                           const lotteries = window.MOCKUP_LOTTERIES || Object.keys(LOTERIES).map(name => ({
+                            id: name.toLowerCase().replace(/\s+/g, '-'),
                             name,
                             color: '#667eea',
                             schedule: LOTERIES[name].next,
