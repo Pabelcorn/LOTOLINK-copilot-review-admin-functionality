@@ -354,142 +354,144 @@
     /* ========================================
        AUTO DARK MODE - System Preference Detection
        Automatically applies dark mode when browser/OS is in dark mode
+       UNLESS user has manually selected light mode
+       Print media is excluded to avoid dark prints
        ======================================== */
     
-    @media (prefers-color-scheme: dark) {
-      body { 
+    @media (prefers-color-scheme: dark) and (not print) {
+      :root:not([data-theme="light"]) body { 
         background: linear-gradient(180deg, #000000 0%, #1c1c1e 100%);
         color: #f5f5f7; 
       }
-      .dark\:bg-slate-800 { background-color: #1c1c1e; }
-      .dark\:bg-slate-900 { background-color: #000000; }
-      .dark\:text-gray-100 { color: #f5f5f7; }
-      .dark\:text-gray-300 { color: #a1a1a6; }
-      .dark\:text-gray-500 { color: #6e6e73; }
-      .dark\:border-gray-700 { border-color: #38383a; }
+      :root:not([data-theme="light"]) .dark\:bg-slate-800 { background-color: #1c1c1e; }
+      :root:not([data-theme="light"]) .dark\:bg-slate-900 { background-color: #000000; }
+      :root:not([data-theme="light"]) .dark\:text-gray-100 { color: #f5f5f7; }
+      :root:not([data-theme="light"]) .dark\:text-gray-300 { color: #a1a1a6; }
+      :root:not([data-theme="light"]) .dark\:text-gray-500 { color: #6e6e73; }
+      :root:not([data-theme="light"]) .dark\:border-gray-700 { border-color: #38383a; }
       
-      .premium-header {
+      :root:not([data-theme="light"]) .premium-header {
         background: rgba(28, 28, 30, 0.85);
         border-bottom: 1px solid rgba(255, 255, 255, 0.08);
       }
       
-      .glass-card {
+      :root:not([data-theme="light"]) .glass-card {
         background: rgba(28, 28, 30, 0.8);
         border: 1px solid rgba(255, 255, 255, 0.1);
       }
       
-      .premium-card {
+      :root:not([data-theme="light"]) .premium-card {
         background: #1c1c1e;
         border: 1px solid rgba(255, 255, 255, 0.08);
         color: #f5f5f7;
       }
       
       /* Text colors */
-      h1, h2, h3, h4, h5, h6 {
+      :root:not([data-theme="light"]) h1, :root:not([data-theme="light"]) h2, :root:not([data-theme="light"]) h3, :root:not([data-theme="light"]) h4, :root:not([data-theme="light"]) h5, :root:not([data-theme="light"]) h6 {
         color: #f5f5f7;
       }
       
-      p, span, label, div {
+      :root:not([data-theme="light"]) p, :root:not([data-theme="light"]) span, :root:not([data-theme="light"]) label, :root:not([data-theme="light"]) div {
         color: inherit;
       }
       
       /* Form elements */
-      input, select, textarea {
+      :root:not([data-theme="light"]) input, :root:not([data-theme="light"]) select, :root:not([data-theme="light"]) textarea {
         background: #2c2c2e;
         color: #f5f5f7;
         border-color: #48484a;
       }
       
-      input::placeholder, textarea::placeholder {
+      :root:not([data-theme="light"]) input::placeholder, :root:not([data-theme="light"]) textarea::placeholder {
         color: #98989d;
       }
       
-      input:focus, select:focus, textarea:focus {
+      :root:not([data-theme="light"]) input:focus, :root:not([data-theme="light"]) select:focus, :root:not([data-theme="light"]) textarea:focus {
         border-color: #64b5f6;
         outline-color: #64b5f6;
       }
       
       /* Buttons */
-      .btn-apple-secondary {
+      :root:not([data-theme="light"]) .btn-apple-secondary {
         background: rgba(255, 255, 255, 0.1);
         color: #64b5f6;
       }
       
-      .btn-apple-secondary:hover {
+      :root:not([data-theme="light"]) .btn-apple-secondary:hover {
         background: rgba(255, 255, 255, 0.15);
       }
       
-      button.border, .border {
+      :root:not([data-theme="light"]) button.border, :root:not([data-theme="light"]) .border {
         border-color: #48484a;
       }
       
       /* Modals */
-      .modal-backdrop {
+      :root:not([data-theme="light"]) .modal-backdrop {
         background: rgba(0, 0, 0, 0.7);
       }
       
       /* Tables */
-      table th {
+      :root:not([data-theme="light"]) table th {
         background: #2c2c2e;
         color: #f5f5f7;
       }
       
-      table td {
+      :root:not([data-theme="light"]) table td {
         color: #f5f5f7;
         border-color: #38383a;
       }
       
       /* Footer */
-      footer {
+      :root:not([data-theme="light"]) footer {
         background: #1c1c1e;
         color: #a1a1a6;
       }
       
-      /* Ticket print area */
-      #ticket-print-area {
+      /* Ticket print area - excluded via media query (not print) */
+      :root:not([data-theme="light"]) #ticket-print-area {
         background: #374151;
         color: #f5f5f7;
       }
       
       /* Status badges and small text elements */
-      .text-gray-500 {
+      :root:not([data-theme="light"]) .text-gray-500 {
         color: #a1a1a6;
       }
       
-      .text-gray-600 {
+      :root:not([data-theme="light"]) .text-gray-600 {
         color: #98989d;
       }
       
-      .text-gray-700 {
+      :root:not([data-theme="light"]) .text-gray-700 {
         color: #86868b;
       }
       
-      .text-gray-900 {
+      :root:not([data-theme="light"]) .text-gray-900 {
         color: #f5f5f7;
       }
       
-      .bg-white {
+      :root:not([data-theme="light"]) .bg-white {
         background: #1c1c1e;
       }
       
-      .bg-gray-50 {
+      :root:not([data-theme="light"]) .bg-gray-50 {
         background: #2c2c2e;
       }
       
-      .bg-gray-100 {
+      :root:not([data-theme="light"]) .bg-gray-100 {
         background: #000000;
       }
       
-      .border-gray-200 {
+      :root:not([data-theme="light"]) .border-gray-200 {
         border-color: #48484a;
       }
       
-      .border-gray-300 {
+      :root:not([data-theme="light"]) .border-gray-300 {
         border-color: #48484a;
       }
       
       /* Icons and SVGs */
-      .icon, svg {
+      :root:not([data-theme="light"]) .icon, :root:not([data-theme="light"]) svg {
         color: currentColor;
       }
     }
@@ -6855,7 +6857,11 @@ Código: ${ticket.ticketCode || ticket.id}`;
         speakText(greeting);
       };
 
-      useEffect(() => { document.documentElement.classList.toggle('dark', theme === 'dark'); localStorage.setItem('ll_theme', theme); }, [theme]);
+      useEffect(() => { 
+        document.documentElement.classList.toggle('dark', theme === 'dark'); 
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('ll_theme', theme); 
+      }, [theme]);
       useEffect(() => localStorage.setItem("ll_cart", JSON.stringify(cart)), [cart]);
       useEffect(() => localStorage.setItem("ll_cart_banca", JSON.stringify(cartBanca)), [cartBanca]);
       
