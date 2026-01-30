@@ -2865,9 +2865,9 @@
         <div className="p-3 sm:p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
           <div className="font-bold mb-2 sm:mb-3 text-sm sm:text-base text-gray-900 dark:text-white">Jugadas más populares</div>
           {Object.entries(mostPlayed).map(([k, v]) => (
-            <div key={k} className="mb-2 sm:mb-3 pb-2 sm:pb-3 border-b last:border-b-0">
-              <div className="font-semibold text-gray-900 text-xs sm:text-sm mb-1">{k}</div>
-              <div className="text-[10px] sm:text-xs text-gray-700 mb-2">
+            <div key={k} className="mb-2 sm:mb-3 pb-2 sm:pb-3 border-b last:border-b-0 dark:border-gray-700">
+              <div className="font-semibold text-gray-900 dark:text-white text-xs sm:text-sm mb-1">{k}</div>
+              <div className="text-[10px] sm:text-xs text-gray-700 dark:text-gray-300 mb-2">
                 {Array.isArray(v[0]) ? v[0].join(', ') : v.join(', ')}
               </div>
               <button 
@@ -2888,21 +2888,21 @@
         <div className="p-3 sm:p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
           <div className="font-bold mb-2 sm:mb-3 text-sm sm:text-base text-gray-900 dark:text-white">Métodos de pago</div>
           <div className="grid grid-cols-2 gap-2 text-[10px] sm:text-xs">
-            <div className="p-2 sm:p-3 border rounded-lg text-center hover:bg-gray-50 transition">
+            <div className="p-2 sm:p-3 border rounded-lg text-center hover:bg-gray-50 dark:hover:bg-gray-700 dark:border-gray-600 transition">
               <img src="https://cdn-icons-png.flaticon.com/512/196/196578.png" alt="Visa" className="h-5 sm:h-6 mx-auto mb-1" />
-              <p className="text-gray-900">Tarjeta Visa</p>
+              <p className="text-gray-900 dark:text-white">Tarjeta Visa</p>
             </div>
-            <div className="p-2 sm:p-3 border rounded-lg text-center hover:bg-gray-50 transition">
+            <div className="p-2 sm:p-3 border rounded-lg text-center hover:bg-gray-50 dark:hover:bg-gray-700 dark:border-gray-600 transition">
               <img src="https://cdn-icons-png.flaticon.com/512/349/349221.png" alt="MasterCard" className="h-5 sm:h-6 mx-auto mb-1" />
-              <p className="text-gray-900">MasterCard</p>
+              <p className="text-gray-900 dark:text-white">MasterCard</p>
             </div>
-            <div className="p-2 sm:p-3 border rounded-lg text-center hover:bg-gray-50 transition">
+            <div className="p-2 sm:p-3 border rounded-lg text-center hover:bg-gray-50 dark:hover:bg-gray-700 dark:border-gray-600 transition">
               <div className="text-base sm:text-lg mb-1">🍎</div>
-              <p className="text-gray-900">Apple Pay</p>
+              <p className="text-gray-900 dark:text-white">Apple Pay</p>
             </div>
-            <div className="p-2 sm:p-3 border rounded-lg text-center hover:bg-gray-50 transition">
+            <div className="p-2 sm:p-3 border rounded-lg text-center hover:bg-gray-50 dark:hover:bg-gray-700 dark:border-gray-600 transition">
               <img src="https://cdn-icons-png.flaticon.com/512/5969/5969059.png" alt="Banco" className="h-5 sm:h-6 mx-auto mb-1" />
-              <p className="text-gray-900">Banco</p>
+              <p className="text-gray-900 dark:text-white">Banco</p>
             </div>
           </div>
         </div>
