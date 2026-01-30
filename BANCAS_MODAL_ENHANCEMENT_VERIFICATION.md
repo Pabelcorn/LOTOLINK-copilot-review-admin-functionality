@@ -258,8 +258,8 @@ build-android:
 
 All three HTML files contain identical feature counts:
 
-| Feature | index.html | index mobile.html | mobile-app/index.html |
-|---------|-----------|------------------|---------------------|
+| Feature | index.html | mobile.html | mobile-app/index.html |
+|---------|-----------|-------------|---------------------|
 | `lottery-dark-mode` | 11 | 11 | 11 |
 | `assistantMode` | 24 | 24 | 24 |
 | `modal-content-scroll` | 2 | 2 | 2 |
