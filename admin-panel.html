@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LotoLink - Panel de Administración</title>
+    <!-- Force Light Mode - Prevents dark mode visibility issues -->
+    <meta name="color-scheme" content="light">
     <!-- 
         CONFIGURACIÓN:
         Para cambiar la URL del backend, edita la variable API_BASE_URL en la sección <script> al final de este archivo.
@@ -26,6 +28,9 @@
         }
 
         :root {
+            /* Force light color scheme - prevents browser dark mode overrides */
+            color-scheme: light;
+            
             /* Brand Colors - LotoLink */
             --primary: #0071e3;
             --primary-dark: #0077ED;
@@ -1545,7 +1550,219 @@
         .dark .page-info {
             color: #a1a1a6;
         }
-    </style>
+
+        /* ========================================
+           AUTO DARK MODE - System Preference Detection
+           Automatically applies dark mode when browser/OS is in dark mode
+           UNLESS user has manually selected light mode
+           ======================================== */
+            ======================================== */
+         
+        /* DARK MODE DISABLED - @media (prefers-color-scheme: dark) ... */
+        /*
+            /*     color: #f5f5f7;
+            /* }
+
+            /* :root:not([data-theme="light"]) .sidebar {
+            /*     background: #1c1c1e;
+            /*     border-right-color: #38383a;
+            /* }
+
+            /* :root:not([data-theme="light"]) .sidebar-header {
+            /*     border-bottom-color: #38383a;
+            /* }
+
+            /* :root:not([data-theme="light"]) .sidebar-logo-text {
+            /*     color: #f5f5f7;
+            /* }
+
+            /* :root:not([data-theme="light"]) .sidebar-nav-item {
+            /*     color: #f5f5f7;
+            /* }
+
+            /* :root:not([data-theme="light"]) .sidebar-nav-item:hover {
+            /*     background: #2c2c2e;
+            /* }
+
+            /* :root:not([data-theme="light"]) .sidebar-nav-item.active {
+            /*     background: var(--primary);
+            /*     color: white;
+            /* }
+
+            /* :root:not([data-theme="light"]) .main-content {
+            /*     background: #000000;
+            /* }
+
+            /* :root:not([data-theme="light"]) .top-bar {
+            /*     background: rgba(28, 28, 30, 0.85);
+            /*     border-bottom-color: #38383a;
+            /* }
+
+            /* :root:not([data-theme="light"]) .page-title {
+            /*     color: #f5f5f7;
+            /* }
+
+            /* :root:not([data-theme="light"]) .subtitle {
+            /*     color: #a1a1a6;
+            /* }
+
+            /* :root:not([data-theme="light"]) .kpi-card {
+            /*     background: #1c1c1e;
+            /*     border-color: #38383a;
+            /* }
+
+            /* :root:not([data-theme="light"]) .kpi-card:hover {
+            /*     background: #2c2c2e;
+            /* }
+
+            /* :root:not([data-theme="light"]) .kpi-value {
+            /*     color: #f5f5f7;
+            /* }
+
+            /* :root:not([data-theme="light"]) .kpi-label {
+            /*     color: #a1a1a6;
+            /* }
+
+            /* :root:not([data-theme="light"]) .card {
+            /*     background: #1c1c1e;
+            /*     border-color: #38383a;
+            /* }
+
+            /* :root:not([data-theme="light"]) .card-header h2,
+            /* :root:not([data-theme="light"]) .card-header h3 {
+            /*     color: #f5f5f7;
+            /* }
+
+            /* :root:not([data-theme="light"]) table {
+            /*     background: #1c1c1e;
+            /* }
+
+            /* :root:not([data-theme="light"]) table thead {
+            /*     background: #2c2c2e;
+            /*     border-bottom-color: #38383a;
+            /* }
+
+            /* :root:not([data-theme="light"]) table th {
+            /*     color: #f5f5f7;
+            /* }
+
+            /* :root:not([data-theme="light"]) table td {
+            /*     color: #f5f5f7;
+            /*     border-bottom-color: #38383a;
+            /* }
+
+            /* :root:not([data-theme="light"]) table tbody tr:hover {
+            /*     background: #2c2c2e;
+            /* }
+
+            /* :root:not([data-theme="light"]) input,
+            /* :root:not([data-theme="light"]) select,
+            /* :root:not([data-theme="light"]) textarea {
+            /*     background: #2c2c2e;
+            /*     border-color: #48484a;
+            /*     color: #f5f5f7;
+            /* }
+
+            /* :root:not([data-theme="light"]) input::placeholder,
+            /* :root:not([data-theme="light"]) textarea::placeholder {
+            /*     color: #98989d;
+            /* }
+
+            /* :root:not([data-theme="light"]) input:focus,
+            /* :root:not([data-theme="light"]) select:focus,
+            /* :root:not([data-theme="light"]) textarea:focus {
+            /*     border-color: #64b5f6;
+            /* }
+
+            /* :root:not([data-theme="light"]) .btn-secondary {
+            /*     background: #2c2c2e;
+            /*     color: #f5f5f7;
+            /*     border-color: #48484a;
+            /* }
+
+            /* :root:not([data-theme="light"]) .btn-secondary:hover {
+            /*     background: #38383a;
+            /* }
+
+            /* :root:not([data-theme="light"]) .modal {
+            /*     background: rgba(0, 0, 0, 0.7);
+            /* }
+
+            /* :root:not([data-theme="light"]) .modal-content {
+            /*     background: #1c1c1e;
+            /* }
+
+            /* :root:not([data-theme="light"]) .modal-header {
+            /*     border-bottom-color: #38383a;
+            /* }
+
+            /* :root:not([data-theme="light"]) .modal-header h2 {
+            /*     color: #f5f5f7;
+            /* }
+
+            /* :root:not([data-theme="light"]) .modal-close {
+            /*     color: #a1a1a6;
+            /* }
+
+            /* :root:not([data-theme="light"]) .modal-close:hover {
+            /*     color: #f5f5f7;
+            /* }
+
+            /* :root:not([data-theme="light"]) .empty-state {
+            /*     color: #a1a1a6;
+            /* }
+
+            /* :root:not([data-theme="light"]) .credentials-box {
+            /*     background: #2c2c2e;
+            /*     border-color: #38383a;
+            /* }
+
+            /* :root:not([data-theme="light"]) .credentials-box h3 {
+            /*     color: #f5f5f7;
+            /* }
+
+            /* :root:not([data-theme="light"]) .credentials-box .credential-item label {
+            /*     color: #a1a1a6;
+            /* }
+
+            /* :root:not([data-theme="light"]) .credentials-box .credential-item input {
+            /*     background: #000000;
+            /*     border-color: #48484a;
+            /*     color: #f5f5f7;
+            /* }
+
+            /* :root:not([data-theme="light"]) .alert {
+            /*     background: rgba(255, 59, 48, 0.15);
+            /*     border-color: rgba(255, 59, 48, 0.3);
+            /*     color: #ff6961;
+            /* }
+
+            /* :root:not([data-theme="light"]) .alert.success {
+            /*     background: rgba(52, 199, 89, 0.15);
+            /*     border-color: rgba(52, 199, 89, 0.3);
+            /*     color: #5cd671;
+            /* }
+
+            /* :root:not([data-theme="light"]) .filters-grid select {
+            /*     background: #2c2c2e;
+            /*     color: #f5f5f7;
+            /* }
+
+            /* :root:not([data-theme="light"]) .pagination button {
+            /*     background: #2c2c2e;
+            /*     color: #f5f5f7;
+            /*     border-color: #48484a;
+            /* }
+
+            /* :root:not([data-theme="light"]) .pagination button:hover:not(:disabled) {
+            /*     background: var(--primary);
+            /* }
+
+            /* :root:not([data-theme="light"]) .page-info {
+            /*     color: #a1a1a6;
+            /* }
+        } */
+        */
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
           integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
@@ -4603,7 +4820,9 @@
         function toggleDarkMode() {
             document.documentElement.classList.toggle('dark');
             const isDark = document.documentElement.classList.contains('dark');
-            localStorage.setItem('ll_admin_theme', isDark ? 'dark' : 'light');
+            const theme = isDark ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('ll_admin_theme', theme);
             
             // Update button text
             const btn = document.getElementById('theme-toggle');
@@ -4617,13 +4836,15 @@
             const savedTheme = localStorage.getItem('ll_admin_theme');
             const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
             
-            if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+            const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+            if (theme === 'dark') {
                 document.documentElement.classList.add('dark');
                 const btn = document.getElementById('theme-toggle');
                 if (btn) {
                     btn.textContent = '☀️ Modo Claro';
                 }
             }
+            document.documentElement.setAttribute('data-theme', theme);
         });
     </script>
 </body>

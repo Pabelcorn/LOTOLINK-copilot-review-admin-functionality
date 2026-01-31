@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Auth Modal - LotoLink</title>
+  <!-- Force Light Mode - Prevents dark mode visibility issues -->
+  <meta name="color-scheme" content="light">
   <!-- This is an embeddable auth modal component for index.html -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -15,6 +17,11 @@
   <script type="text/javascript" src="https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js"></script>
   
   <style>
+    /* Force light color scheme - prevents browser dark mode overrides */
+    :root {
+      color-scheme: light;
+    }
+    
     .auth-modal-overlay {
       backdrop-filter: blur(8px);
       background: rgba(0, 0, 0, 0.5);
@@ -42,6 +49,9 @@
       transform: scale(1.01);
       box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.1);
     }
+    
+    /* Auto Dark Mode Support - DISABLED TO FORCE LIGHT MODE ONLY */
+    /* @media (prefers-color-scheme: dark) and (not print) { ... } COMMENTED OUT */
   </style>
 </head>
 <body>

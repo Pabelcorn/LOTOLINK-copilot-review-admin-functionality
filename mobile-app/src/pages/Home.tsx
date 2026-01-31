@@ -170,7 +170,7 @@ const Home: React.FC = () => {
         {topNearbyBancas.length > 0 && (
           <div style={{ padding: '24px 16px 0' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-              <h2 style={{ fontSize: '20px', fontWeight: '600', margin: 0 }}>
+              <h2 style={{ fontSize: '20px', fontWeight: '600', margin: 0, color: 'var(--ion-text-color)' }}>
                 Bancas Cercanas
               </h2>
               <IonButton 
